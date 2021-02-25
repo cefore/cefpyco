@@ -89,8 +89,8 @@ int register_name(const char *uri) { return cph_register_name(fhdl, CefC_App_Reg
 int deregister_name(const char *uri) { return cph_register_name(fhdl, CefC_App_DeReg, uri); }
 
 
-int receive(cefpyco_app_frame* app_frame, int error_on_timeout) {
-    return cph_receive(fhdl, app_frame, 4000, error_on_timeout);
+int receive(cefpyco_app_frame* app_frame, int error_on_timeout, int timeout_ms) {
+    return cph_receive(fhdl, app_frame, timeout_ms, error_on_timeout);
 }
 
 CefT_Client_Handle create_cef_handler(int port_num, char* conf_path) {
@@ -153,6 +153,7 @@ int cph_receive(CefT_Client_Handle handler,
 MILESTONE
     int res, rec_len;
 
+    cpc_set_null_name_info(app_frame);
     if (handler < 1) return exit_with_error_msg(handler, "Handle must be created.");
     rec_len = wait_receive(handler, timeout_ms, error_on_timeout);
     
@@ -295,6 +296,7 @@ MILESTONE
     if (res) return res;
     while (1) {
 		res = cef_client_read(handler, buf, CefpycoC_Buffer_Size);
+        elapsedtime += 1000000; // read takes 1 sec from cefore-0.8.2.2
         if (res > 0) break;
 		if (elapsedtime >= timeout_us) { // 13-tries take 1s, 18-tries take 4s
             if (error_on_timeout) {
@@ -317,7 +319,7 @@ MILESTONE
 
 static int exit_with_error_msg(CefT_Client_Handle handler, const char* msg) {
     fprintf(stderr, "[ERROR] %s\n", msg);
-    sprintf(err_msg, "%s", msg);
+    sprintf(err_msg, "%s\n", msg);
     // destroy_cef_handler(handler);
     return -1;
 }

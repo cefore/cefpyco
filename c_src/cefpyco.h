@@ -50,7 +50,7 @@ int send_interest(const char *uri, int chunk_num);
 int send_data(const char *uri, int chunk_num, const char *payload, int payload_len);
 int register_name(const char *uri);
 int deregister_name(const char *uri);
-int receive(cefpyco_app_frame* app_frame, int error_on_timeout);
+int receive(cefpyco_app_frame* app_frame, int error_on_timeout, int timeout_ms);
 
 int convert_nametlv_to_readable_str(
     unsigned char* tlv, int name_len, char* output);

@@ -45,15 +45,7 @@ if (test) # If needs libcefpyco.so, run 'cmake -Dtest=on .'
     #)
 endif()
 
-if (python3) # If forces to use python3, run 'cmake -Dpython3=on .'
-    install(
-        CODE [[
-            execute_process(
-                COMMAND sudo -EH python3 setup.py install --record uninstall.txt
-            )
-        ]]
-    )
-else()
+if (python2) # If forces to use python2, run 'cmake -Dpython2=on .'
     install(
         CODE [[
             execute_process(
@@ -61,6 +53,24 @@ else()
             )
         ]]
     )
+else()
+    if (COMMAND sudo)
+        install(
+            CODE [[
+                execute_process(
+                    COMMAND sudo -EH python3 setup.py install --record uninstall.txt
+                )
+            ]]
+        )
+    else()
+        install(
+            CODE [[
+                execute_process(
+                    COMMAND python3 setup.py install --record uninstall.txt
+                )
+            ]]
+        )
+    endif()
 endif()
 
 add_custom_target(uninstall

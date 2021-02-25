@@ -67,6 +67,7 @@ MILESTONE
     
     app_frame->version = wrk_frame->version;
     app_frame->type = wrk_frame->type;
+    app_frame->flags = 0x00000000ul;
     app_frame->actual_data_len = acutal_len;
     app_frame->name = &(wrk_frame->data_entity[0]);
     app_frame->name_len = wrk_frame->name_len;

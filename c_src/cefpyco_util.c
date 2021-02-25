@@ -50,3 +50,15 @@ void cpc_force_print(const unsigned char* src, int len) {
     fprintf(stderr, "%s\n", outputbuf);
 #endif
 }
+
+void cpc_set_null_name_info(cefpyco_app_frame* app_frame) {
+    app_frame->version = 0;
+    app_frame->type = 0;
+    app_frame->actual_data_len = 0;
+    app_frame->name = (unsigned char *)CefpycoC_Null_Msg;
+    app_frame->name_len = 0;
+    app_frame->chunk_num = 0;
+    app_frame->end_chunk_num = 0;
+    app_frame->payload = (unsigned char *)CefpycoC_Null_Msg;
+    app_frame->payload_len = 0;
+}

@@ -47,9 +47,17 @@
 #define CefpycoC_APIData_Len (65536)
 #define CefpycoC_Payload_Len (CefpycoC_APIData_Len - CefpycoC_Name_Len)
 
+enum cefpycoC_packet_flags {
+	REGULAR = (0x00000000ul),
+	ONLY_SYMBOLIC = (0x00000001ul),
+	ONLY_LONGLIFE = (0x00000002ul),
+	SYMBOLIC = (0x00000003ul),
+};
+
 typedef struct {
 	uint32_t        version;
 	uint32_t        type;
+	uint32_t        flags;
 	uint64_t        actual_data_len;
 	unsigned char*  name;
 	uint16_t        name_len;

@@ -40,8 +40,6 @@
 
 static cpcparse_parse_info info = {NULL, 0, 0};
 
-static void set_null_name_info(cefpyco_app_frame* app_frame);
-
 int cpc_buf_remains() {
     if (info.offset >= info.len) { info.len = 0; info.offset = 0; }
     if (info.len > 0) return info.len;
@@ -55,6 +53,7 @@ int cpc_parse_info(unsigned char *_buf, int _len, cefpyco_app_frame* app_frame) 
     info.buf = _buf;
     info.len = _len;
     
+MILESTONE
 	/* Seek the head of message 		*/
     res = 0;
 	while (res == 0 && info.offset < info.len) {
@@ -63,6 +62,7 @@ int cpc_parse_info(unsigned char *_buf, int _len, cefpyco_app_frame* app_frame) 
             if (res != 0) break;
         }
 	}
+MILESTONE
     if (res > 0) {
         /* Complete */
         parsed_offset = info.offset;
@@ -72,22 +72,9 @@ int cpc_parse_info(unsigned char *_buf, int _len, cefpyco_app_frame* app_frame) 
         /* Failed to seek */
         info.len = 0;
         info.offset = 0;
-        set_null_name_info(app_frame);
+        cpc_set_null_name_info(app_frame);
         return -1;
     }
-}
-
-
-static void set_null_name_info(cefpyco_app_frame* app_frame) {
-    app_frame->version = 0;
-    app_frame->type = 0;
-    app_frame->actual_data_len = 0;
-    app_frame->name = (unsigned char *)CefpycoC_Null_Msg;
-    app_frame->name_len = 0;
-    app_frame->chunk_num = 0;
-    app_frame->end_chunk_num = 0;
-    app_frame->payload = (unsigned char *)CefpycoC_Null_Msg;
-    app_frame->payload_len = 0;
 }
 
 /* The name tlv is a sequence of the following 3 segments:

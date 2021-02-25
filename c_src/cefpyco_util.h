@@ -40,5 +40,6 @@
 #endif
 
 void cpc_force_print(const unsigned char* src, int len);
+void cpc_set_null_name_info(cefpyco_app_frame* app_frame);
 
 #endif

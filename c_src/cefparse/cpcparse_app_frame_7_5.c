@@ -64,6 +64,7 @@ MILESTONE
     
     app_frame->version = wrk_buf->version;
     app_frame->type = CPC_CCNX_PT_CONTENT;
+    app_frame->flags = 0x00000000ul;
     app_frame->actual_data_len = actual_len;
     app_frame->name = wrk_buf->name;
     app_frame->name_len = wrk_buf->name_len;

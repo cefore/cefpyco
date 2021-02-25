@@ -338,6 +338,12 @@ receiveメソッドは、
 InterestとDataを同時に受信するようなアプリケーションでなければ、
 受信したパケットがInterestかDataを区別する必要は無いだろう。
 
+Interest を受信した場合に、それが SMI であるかを判別するには、
+`is_symbolic` プロパティを利用できる。
+特に Interest であるかと SMI か否かを同時に判別したい場合は、
+通常の Interest (Regular Interest) については `is_regular_interest` プロパティ、
+SMI については `is_symbolic_interest` プロパティを利用できる。
+
 注意点を以下に述べる。
 
 * receiveメソッドは、cefnetdが受信したすべてのパケットを待ち受ける訳ではない。
@@ -566,6 +572,7 @@ hello
 
 ## 更新履歴
 
+* 2021/02/25: Symbolic Interest (SMI) の送受信に対応。
 * 2019/08/21: バイナリデータの送受信に対応。CcnPacketInfo.payloadのデフォルトをバイト列に変更し、文字列用にpayload_sを追加。
 * 2019/08/06: Cefore-0.8.1に対応。Mac環境用に微調整。
 * 2019/05/15: Cefore-0.8.0に対応。テストコードを追加。Optionalヘッダ等の機能を追加。CefpycoHandle.send_dataの引数順が変更されたので要注意。

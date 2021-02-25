@@ -54,7 +54,7 @@ MILESTONE
 
     if (is_not_ccnx_1_0_interest_packet(buf, remained_length)) { return 0; } 
     memset(wrk_buf, 0, sizeof(struct cef_app_request));
-    res = cef_client_request_get_with_info(buf, remained_length, wrk_buf);
+    res = cpc_client_request_get_with_info(buf, remained_length, wrk_buf);
     if (res < 0) { return 0; }
     if (is_not_targeted_header(wrk_buf)) { return 0; }
     
@@ -65,6 +65,8 @@ MILESTONE
     
     app_frame->version = wrk_buf->version;
     app_frame->type = CPC_CCNX_PT_INTEREST;
+    app_frame->flags = 0x00000000ul;
+    app_frame->flags |= wrk_buf->symbolic_f << 0;
     app_frame->actual_data_len = actual_len;
     app_frame->name = wrk_buf->name;
     app_frame->name_len = wrk_buf->name_len;

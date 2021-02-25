@@ -38,6 +38,8 @@ INTEREST_TYPE_SYMBOLIC = 0x0002 # CefC_T_LONGLIFE
 class CcnPacketInfo:
     PacketTypeInterest = 0x00
     PacketTypeData = 0x01
+    PacketFlagSymbolic = 0x01
+    PacketFlagLonglife = 0x02
     
     def __init__(self, res):
         self.is_succeeded = (res[0] >= 0 and res[3] > 0)
@@ -49,21 +51,43 @@ class CcnPacketInfo:
         self.name_len = res[5]
         self.chunk_num = res[6] if res[6] >= 0 else None
         self.end_chunk_num = res[7] if res[7] >= 0 else None
-        self.payload = res[8]
-        self.payload_len = res[9]
+        self.flags = res[8]
+        self.payload = res[9]
+        self.payload_len = res[10]
     
     @property
     def is_interest(self):
         return self.is_succeeded and (self.type == self.PacketTypeInterest)
     
     @property
+    def is_regular_interest(self):
+        return (self.is_succeeded and 
+            (self.type == self.PacketTypeInterest) and
+            not self.is_symbolic)
+    
+    @property
+    def is_symbolic_interest(self):
+        return (self.is_succeeded and 
+            (self.type == self.PacketTypeInterest) and
+            self.is_symbolic)
+    
+    @property
     def is_data(self):
         return self.is_succeeded and (self.type == self.PacketTypeData)
+
+    @property
+    def is_symbolic(self):
+        return (
+            ((self.flags & self.PacketFlagSymbolic) != 0) and 
+            ((self.flags & self.PacketFlagLonglife) != 0)
+        )
     
     @property
     def packet_type(self):
         if self.is_succeeded:
-            if self.is_interest:
+            if self.is_symbolic_interest:
+                return "Symbolic-interest"
+            elif self.is_interest:
                 return "Interest"
             elif self.is_data:
                 return "Data"
@@ -104,7 +128,6 @@ class CefpycoHandle(object):
             self.sequence_of_chars_type = str
             self.sequence_of_bytes_type = bytes
 
-    
     def log(self, msg, force=False):
         if self.enable_log or force: stderr.write("[cefpyco] %s\n" % msg)
     

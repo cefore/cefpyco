@@ -36,7 +36,15 @@
 #include <cefore/cef_frame.h>
 #include <cefore/cef_log.h>
 
+#define CefpycoC_AppBuff_Size       (10000000)
+
 uint32_t cpcparse_tlv_read_length(unsigned char* tlv);
 // unsigned int cpcparse_tlv_read_segnum(unsigned char* tlv);
+
+int cpc_client_request_get_with_info (
+	unsigned char* buff, 
+	int buff_len, 
+	struct cef_app_request* app_request
+);
 
 #endif

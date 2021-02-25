@@ -5,16 +5,17 @@
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 
 <style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
 body {
-	font-family: "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
-	font-size: 14px;
-	padding: 0 12px;
-	line-height: 22px;
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
 	word-wrap: break-word;
 }
 
@@ -38,7 +39,6 @@ body {
 	background-color:#007acc;
 	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
 }
-
 
 body.scrollBeyondLastLine {
 	margin-bottom: calc(100vh - 22px);
@@ -71,12 +71,20 @@ body.showEditorSelection li.code-line:hover:before {
 	border-left: 3px solid rgba(0, 0, 0, 0.40);
 }
 
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
 .vscode-dark.showEditorSelection .code-active-line:before {
 	border-left: 3px solid rgba(255, 255, 255, 0.4);
 }
 
 .vscode-dark.showEditorSelection .code-line:hover:before {
 	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
 }
 
 .vscode-high-contrast.showEditorSelection .code-active-line:before {
@@ -87,14 +95,21 @@ body.showEditorSelection li.code-line:hover:before {
 	border-left: 3px solid rgba(255, 160, 0, 1);
 }
 
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
 img {
 	max-width: 100%;
 	max-height: 100%;
 }
 
 a {
-	color: #4080D0;
 	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
 }
 
 a:focus,
@@ -122,21 +137,6 @@ h1, h2, h3 {
 	font-weight: normal;
 }
 
-h1 code,
-h2 code,
-h3 code,
-h4 code,
-h5 code,
-h6 code {
-	font-size: inherit;
-	line-height: auto;
-}
-
-a:hover {
-	color: #4080D0;
-	text-decoration: underline;
-}
-
 table {
 	border-collapse: collapse;
 }
@@ -160,22 +160,18 @@ table > tbody > tr + tr > td {
 blockquote {
 	margin: 0 7px 0 5px;
 	padding: 0 16px 0 10px;
-	border-left: 5px solid;
+	border-left-width: 5px;
+	border-left-style: solid;
 }
 
 code {
 	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
-	font-size: 14px;
-	line-height: 19px;
+	font-size: 1em;
+	line-height: 1.357em;
 }
 
 body.wordWrap pre {
 	white-space: pre-wrap;
-}
-
-.mac code {
-	font-size: 12px;
-	line-height: 18px;
 }
 
 pre:not(.hljs),
@@ -185,43 +181,22 @@ pre.hljs code > div {
 	overflow: auto;
 }
 
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
 /** Theming */
 
-.vscode-light,
-.vscode-light pre code {
-	color: rgb(30, 30, 30);
-}
-
-.vscode-dark,
-.vscode-dark pre code {
-	color: #DDD;
-}
-
-.vscode-high-contrast,
-.vscode-high-contrast pre code {
-	color: white;
-}
-
-.vscode-light code {
-	color: #A31515;
-}
-
-.vscode-dark code {
-	color: #D7BA7D;
-}
-
-.vscode-light pre:not(.hljs),
-.vscode-light code > div {
+.vscode-light pre {
 	background-color: rgba(220, 220, 220, 0.4);
 }
 
-.vscode-dark pre:not(.hljs),
-.vscode-dark code > div {
+.vscode-dark pre {
 	background-color: rgba(10, 10, 10, 0.4);
 }
 
-.vscode-high-contrast pre:not(.hljs),
-.vscode-high-contrast code > div {
+.vscode-high-contrast pre {
 	background-color: rgb(0, 0, 0);
 }
 
@@ -249,16 +224,6 @@ pre.hljs code > div {
 	border-color: rgba(255, 255, 255, 0.18);
 }
 
-.vscode-light blockquote,
-.vscode-dark blockquote {
-	background: rgba(127, 127, 127, 0.1);
-	border-color: rgba(0, 122, 204, 0.5);
-}
-
-.vscode-high-contrast blockquote {
-	background: transparent;
-	border-color: #fff;
-}
 </style>
 
 <style>
@@ -343,7 +308,8 @@ pre.hljs code > div {
  */
 
  body {
-	font-family:  "Meiryo", "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
 }
 
 pre {
@@ -369,6 +335,11 @@ blockquote {
 	height: 1.4em;
 }
 
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
 /* for inline code */
 :not(pre):not(.hljs) > code {
 	color: #C9AE75; /* Change the old color so it seems less like an error */
@@ -383,8 +354,17 @@ blockquote {
 
 </style>
 
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
 </head>
 <body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
 <!--
 Copyright (c) 2018, National Institute of Information and Communications
 Technology (NICT). All rights reserved.
@@ -673,6 +653,7 @@ CcnPacketInfoオブジェクトを返す。</strong></p>
     print(<span class="hljs-string">"info.chunk_num:{0}"</span>.format(info.chunk_num))
     print(<span class="hljs-string">"info.end_chunk_num:{0}"</span>.format(info.end_chunk_num))
     print(<span class="hljs-string">"info.payload:{0}"</span>.format(info.payload))
+    print(<span class="hljs-string">"info.payload_s:{0}"</span>.format(info.payload_s))
     print(<span class="hljs-string">"info.payload_len:{0}"</span>.format(info.payload_len))
 </div></code></pre>
 <p><strong>receiveメソッドはオプション引数<code>error_on_timeout</code>(デフォルト値: False)を持つメソッドである。
@@ -694,13 +675,19 @@ CefpycoHandleはCeforeとの接続を切断する
 <li>name_len: 名前の長さ。</li>
 <li>chunk_num: チャンクの数。</li>
 <li>end_chunk_num: コンテンツの最後のチャンク番号(Data送出時に設定したときのみ)。</li>
-<li>payload: stringで表されたペイロード(空の場合は<code>(empty)</code>と表示される)。</li>
+<li>payload: ペイロードのバイト列(空の場合は<code>(empty)</code>と表示される)。Python2ではstr、Python3ではbytesを返す。</li>
+<li>payload_s: stringで表されたペイロード(空の場合は<code>(empty)</code>と表示される)。Python2ではunicode、Python3ではstrを返す。</li>
 <li>payload_len: ペイロードの長さ。空の場合は0となる。</li>
 </ul>
 <p>また、<code>is_interest</code>および<code>is_data</code>プロパティを持つ。
 しかし、後述のようにInterestとDataでは取得する方法が異なるため、
 InterestとDataを同時に受信するようなアプリケーションでなければ、
 受信したパケットがInterestかDataを区別する必要は無いだろう。</p>
+<p>Interest を受信した場合に、それが SMI であるかを判別するには、
+<code>is_symbolic</code> プロパティを利用できる。
+特に Interest であるかと SMI か否かを同時に判別したい場合は、
+通常の Interest (Regular Interest) については <code>is_regular_interest</code> プロパティ、
+SMI については <code>is_symbolic_interest</code> プロパティを利用できる。</p>
 <p>注意点を以下に述べる。</p>
 <ul>
 <li>receiveメソッドは、cefnetdが受信したすべてのパケットを待ち受ける訳ではない。
@@ -723,7 +710,7 @@ InterestとDataを同時に受信するようなアプリケーションでな�
 
 <span class="hljs-keyword">with</span> cefpyco.create_handle() <span class="hljs-keyword">as</span> h:
     h.register(<span class="hljs-string">"ccn:/test"</span>)
-    <span class="hljs-keyword">while</span> <span class="hljs-keyword">True</span>:
+    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
         info = h.receive()
         <span class="hljs-keyword">if</span> info.is_success <span class="hljs-keyword">and</span> info.name == <span class="hljs-string">"ccn:/test"</span> <span class="hljs-keyword">and</span> info.chunk_num == <span class="hljs-number">0</span>:
             h.send_data(<span class="hljs-string">"ccn:/test"</span>, <span class="hljs-string">"hello"</span>, <span class="hljs-number">0</span>)
@@ -744,7 +731,7 @@ publisherアプリなので無限ループし続けるが、
 <span class="hljs-keyword">import</span> cefpyco
 
 <span class="hljs-keyword">with</span> cefpyco.create_handle() <span class="hljs-keyword">as</span> h:
-    <span class="hljs-keyword">while</span> <span class="hljs-keyword">True</span>:
+    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
         h.send_interest(<span class="hljs-string">"ccn:/test"</span>, <span class="hljs-number">0</span>)
         info = h.receive()
         <span class="hljs-keyword">if</span> info.is_success <span class="hljs-keyword">and</span> info.name == <span class="hljs-string">"ccn:/test"</span> <span class="hljs-keyword">and</span> info.chunk_num == <span class="hljs-number">0</span>:
@@ -924,7 +911,6 @@ hello
 <ul>
 <li>Ubuntu 16.04とRaspberry piでのみ動作確認済み(cefpyco 0.2.0現在)。</li>
 <li>python3での動作確認のみを行っている。</li>
-<li>バグが発生した場合はNICT 大岡(a-ooka@nict.go.jp)へ。</li>
 </ul>
 </li>
 <li>cefnetdをsudo権限で起動する場合、pythonツール使用時にもsudoが必要なことがある。
@@ -978,6 +964,8 @@ $ sudo sysctl -w net.local.stream.recvspace=2000000
 </ul>
 <h2 id="%E6%9B%B4%E6%96%B0%E5%B1%A5%E6%AD%B4">更新履歴</h2>
 <ul>
+<li>2021/02/25: Symbolic Interest (SMI) の送受信に対応。</li>
+<li>2019/08/21: バイナリデータの送受信に対応。CcnPacketInfo.payloadのデフォルトをバイト列に変更し、文字列用にpayload_sを追加。</li>
 <li>2019/08/06: Cefore-0.8.1に対応。Mac環境用に微調整。</li>
 <li>2019/05/15: Cefore-0.8.0に対応。テストコードを追加。Optionalヘッダ等の機能を追加。CefpycoHandle.send_dataの引数順が変更されたので要注意。</li>
 <li>2018/08/09: ceftoolからcefpycoに名称を変更。cefore-0.7.2に対応。setuptoolsを用いたインストールに対応。ファイル構造の大幅な修正を反映。</li>
