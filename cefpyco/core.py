@@ -35,25 +35,80 @@ from contextlib import contextmanager
 INTEREST_TYPE_REGULAR = 0x0000 # CefC_T_OPT_REGULAR
 INTEREST_TYPE_SYMBOLIC = 0x0002 # CefC_T_LONGLIFE
 
+class InterestReturnCode:
+    class CodeObj:
+        def __init__(self, code, name, desc):
+            self._code = code
+            self._name = name
+            self._desc = desc
+        
+        @property
+        def code(self): return self._code
+        
+        @property
+        def name(self): return self._name
+        
+        @property
+        def desc(self): return self._desc
+        @property
+        def description(self): return self._desc
+
+        def __repr__(self):
+            return "ReturnCode: 0x{0:02X} ({1})".format(self.code, self.name)
+
+    def __init__(self):
+        raise Exception("Instantiation is not allowed.")
+
+    # c.f.
+    # * https://datatracker.ietf.org/doc/html/rfc8569#section-10.2
+    # * https://datatracker.ietf.org/doc/html/rfc8609#section-4.2
+    Codes = [
+        CodeObj(0x00, "Reserved", "Reserved"),
+        CodeObj(0x01, "No Route", "The returning forwarder has no route to the Interest name."),
+        CodeObj(0x02, "HopLimit Exceeded", "The HopLimit has decremented to 0 and needs to forward the packet."),
+        CodeObj(0x03, "Interest MTU too large", "The Interest's MTU does not conform to the required minimum and would require fragmentation."),
+        CodeObj(0x04, "No Resources", "The node does not have the resources to process the Interest."),
+        CodeObj(0x05, "Path error", "There was a transmission error when forwarding the Interest along a route (a transient error)."),
+        CodeObj(0x06, "Prohibited", "An administrative setting prohibits processing this Interest."),
+        CodeObj(0x07, "Congestion", "The Interest was dropped due to congestion (a transient error)."),
+        CodeObj(0x08, "Unsupported ContentObjectHash Restriction", "The Interest was dropped because it requested a Content Object Hash restriction using a hash algorithm that cannot be computed."),
+        CodeObj(0x09, "Malformed Interest", "The Interest was dropped because the parse or validation were failed."),
+    ]
+
+    @classmethod
+    def get(cls, returncode):
+        if not isinstance(returncode, int):
+            return cls.CodeObj(
+                0xFF, 
+                "Invalid ReturnCode: '{0}'".format(returncode), 
+                "ReturnCode is invalid (maybe None).")
+        if 0x00 <= returncode and returncode <= 0x09:
+            return cls.Codes[returncode]
+        return cls.CodeObj(
+            returncode, "Undefined", "Undefined ReturnCode is specified.")
+
 class CcnPacketInfo:
     PacketTypeInterest = 0x00
     PacketTypeData = 0x01
+    PacketTypeInterestReturn = 0x02
     PacketFlagSymbolic = 0x01
     PacketFlagLonglife = 0x02
     
     def __init__(self, res):
-        self.is_succeeded = (res[0] >= 0 and res[3] > 0)
+        self.is_succeeded = (res[0] >= 0 and res[4] > 0)
         self.is_failed = not self.is_succeeded
         self.version = res[1]
         self.type = res[2]
-        self.actual_data_len = res[3]
-        self.name = res[4]
-        self.name_len = res[5]
-        self.chunk_num = res[6] if res[6] >= 0 else None
-        self.end_chunk_num = res[7] if res[7] >= 0 else None
-        self.flags = res[8]
-        self.payload = res[9]
-        self.payload_len = res[10]
+        stderr.write(f"----- [DEBUG] returncode: {res[3]} ({type(res[3])})\n")
+        self.returncode = res[3] if self.is_return else None
+        self.actual_data_len = res[4]
+        self.name = res[5]
+        self.name_len = res[6]
+        self.chunk_num = res[7] if res[7] >= 0 else None
+        self.end_chunk_num = res[8] if res[8] >= 0 else None
+        self.flags = res[9]
+        self.payload = res[10]
+        self.payload_len = res[11]
     
     @property
     def is_interest(self):
@@ -76,6 +131,13 @@ class CcnPacketInfo:
         return self.is_succeeded and (self.type == self.PacketTypeData)
 
     @property
+    def is_interest_return(self):
+        return self.is_succeeded and (self.type == self.PacketTypeInterestReturn)
+    @property
+    def is_return(self):
+        return self.is_interest_return
+
+    @property
     def is_symbolic(self):
         return (
             ((self.flags & self.PacketFlagSymbolic) != 0) and 
@@ -91,6 +153,8 @@ class CcnPacketInfo:
                 return "Interest"
             elif self.is_data:
                 return "Data"
+            elif self.is_return:
+                return "Interest-Return"
         return "Unknown (id: %08x)" % self.type
     
     @property
@@ -115,6 +179,8 @@ class CcnPacketInfo:
         if self.payload_len > 0:
             ret += " and payload '{0}' ({1} Bytes)".format(
                 self.payload, self.payload_len)
+        if self.is_interest_return:
+            ret += " and {0}".format(InterestReturnCode.get(self.returncode))
         return ret
 
 class CefpycoHandle(object):

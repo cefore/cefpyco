@@ -158,10 +158,11 @@ MILESTONE
     rec_len = wait_receive(handler, timeout_ms, error_on_timeout);
     
 #ifdef CEFPYCO_DEBUG
-printf("\nrec_len: %d\n", rec_len);
+fprintf(stderr, "\nrec_len: %d\n", rec_len);
 cpc_force_print(buf, rec_len);
 #endif
 
+MILESTONE
     if (rec_len < 0) return exit_with_error_msg(handler, "Failed to read cefnetd buf.");
     // if (rec_len == 0) return 0;
     res = cpc_parse_info(buf, rec_len, app_frame);
@@ -171,11 +172,13 @@ cpc_force_print(buf, rec_len);
             return exit_with_error_msg(handler, "Retrieved data is empty.");
     }
     
+MILESTONE
 #ifdef CEFPYCO_DEBUG
-printf("\nparse_len: %d\n", res);
+fprintf(stderr, "\nparse_len: %d\n", res);
 show_app_frame(app_frame);
 #endif
     
+MILESTONE
     return 0;
 }
 

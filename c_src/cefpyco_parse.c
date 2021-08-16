@@ -86,7 +86,7 @@ MILESTONE
  * name_len is 8 bytes larger than 
  * the length for only name segments.
  * 
- * For example, a name 'ccn:/a' is 13 byte length as follows:
+ * For example, a name 'ccnx:/a' is 13 byte length as follows:
  *   - Name segument 'a' (5B): T(2B) + L(2B) + 'a'(1B)
  *   - Segment number   (8B): T(2B) + L(2B) + 0x0000(4B)
  */
@@ -103,7 +103,7 @@ int cpc_convert_nametlv_to_readable_str(
     // Need a segment of 'Segment number' (8 bytes).
     if (name_len < 8) return -1;    
     
-    memcpy(output, "ccn:/", 5);
+    memcpy(output, "ccnx:/", 5);
     offset = 0;
     rnlen = 5;
     while (offset < name_len - 8) {

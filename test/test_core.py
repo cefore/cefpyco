@@ -50,76 +50,76 @@ def test_request_and_satisfy():
     with cefpyco.create_handle(enable_log=False) as h_prod:
         sleep(sleeptime)
         with cefpyco.create_handle(enable_log=False) as h_cons:
-            h_prod.register("ccn:/core/a")
-            h_cons.send_interest("ccn:/core/a", 0)
+            h_prod.register("ccnx:/core/a")
+            h_cons.send_interest("ccnx:/core/a", 0)
             info = h_prod.receive(True)
             assert info.is_succeeded
             assert info.is_interest
-            assert info.name == "ccn:/core/a"
-            h_prod.send_data("ccn:/core/a", "hello", chunk_num=0)
+            assert info.name == "ccnx:/core/a"
+            h_prod.send_data("ccnx:/core/a", "hello", chunk_num=0)
             info = h_cons.receive(True)
             assert info.is_succeeded
             assert info.is_data
-            assert info.name == "ccn:/core/a"
+            assert info.name == "ccnx:/core/a"
             assert info.payload_s == "hello"
 
 def test_request_and_satisfy_with_binary_data():
     with cefpyco.create_handle(enable_log=False) as h_prod:
         sleep(sleeptime)
         with cefpyco.create_handle(enable_log=False) as h_cons:
-            h_prod.register("ccn:/core/c")
-            h_prod.register("ccn:/core/d")
-            h_cons.send_interest("ccn:/core/c", 0)
+            h_prod.register("ccnx:/core/c")
+            h_prod.register("ccnx:/core/d")
+            h_cons.send_interest("ccnx:/core/c", 0)
             info = h_prod.receive(True)
             assert info.is_succeeded
             assert info.is_interest
-            assert info.name == "ccn:/core/c"
+            assert info.name == "ccnx:/core/c"
             multibytes = u"こんにちは"
-            h_prod.send_data("ccn:/core/c", multibytes, chunk_num=0)
+            h_prod.send_data("ccnx:/core/c", multibytes, chunk_num=0)
             info = h_cons.receive(True)
             assert info.is_succeeded
             assert info.is_data
-            assert info.name == "ccn:/core/c"
+            assert info.name == "ccnx:/core/c"
             assert info.payload_s == multibytes
-            h_cons.send_interest("ccn:/core/d", 0)
+            h_cons.send_interest("ccnx:/core/d", 0)
             info = h_prod.receive(True)
             assert info.is_succeeded
             assert info.is_interest
-            assert info.name == "ccn:/core/d"
-            h_prod.send_data("ccn:/core/d", "\x01\x00\x80\xff\x02", chunk_num=0)
+            assert info.name == "ccnx:/core/d"
+            h_prod.send_data("ccnx:/core/d", "\x01\x00\x80\xff\x02", chunk_num=0)
             info = h_cons.receive(True)
             assert info.is_succeeded
             assert info.is_data
-            assert info.name == "ccn:/core/d"
+            assert info.name == "ccnx:/core/d"
             assert info.payload == b"\x01\x00\x80\xff\x02"
 
 def test_request_and_satisfy_with_smi():
     with cefpyco.create_handle(enable_log=False) as h_prod:
         sleep(sleeptime)
         with cefpyco.create_handle(enable_log=False) as h_cons:
-            h_cons.send_symbolic_interest("ccn:/core/b")
+            h_cons.send_symbolic_interest("ccnx:/core/b")
             sleep(0.2)
-            h_prod.send_data("ccn:/core/b", "hello", 0, end_chunk_num=1)
-            h_prod.send_data("ccn:/core/b", "world", 1)
-            h_prod.send_data("ccn:/core/b", b"no\x00\x80chunk")
+            h_prod.send_data("ccnx:/core/b", "hello", 0, end_chunk_num=1)
+            h_prod.send_data("ccnx:/core/b", "world", 1)
+            h_prod.send_data("ccnx:/core/b", b"no\x00\x80chunk")
             info = h_cons.receive(True)
             assert info.is_succeeded
             assert info.is_data
-            assert info.name == "ccn:/core/b"
+            assert info.name == "ccnx:/core/b"
             assert info.chunk_num == 0
             assert info.end_chunk_num == 1
             assert info.payload_s == "hello"
             info = h_cons.receive(True)
             assert info.is_succeeded
             assert info.is_data
-            assert info.name == "ccn:/core/b"
+            assert info.name == "ccnx:/core/b"
             assert info.chunk_num == 1
             assert info.end_chunk_num is None
             assert info.payload_s == "world"
             info = h_cons.receive(True)
             assert info.is_succeeded
             assert info.is_data
-            assert info.name == "ccn:/core/b"
+            assert info.name == "ccnx:/core/b"
             # assert info.chunk_num is None
             assert info.chunk_num == 0
             assert info.end_chunk_num is None

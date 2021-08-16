@@ -54,21 +54,21 @@ def send_i():
     print("1")
     cefpyco.begin(9896, get_cefdir())
     print("2")
-    cefpyco.send_interest("ccn:/a", 0)
+    cefpyco.send_interest("ccnx:/a", 0)
     print("3")
-    cefpyco.send_interest("ccn:/a", 1)
+    cefpyco.send_interest("ccnx:/a", 1)
     print("4")
     cefpyco.end()
 
 def send_d():
     cefpyco.begin(9896, get_cefdir())
-    cefpyco.send_data("ccn:/a", "hello", 5, 0)
-    cefpyco.send_data("ccn:/a", "world", 5, 1)
+    cefpyco.send_data("ccnx:/a", "hello", 5, 0)
+    cefpyco.send_data("ccnx:/a", "world", 5, 1)
     cefpyco.end()
 
 def recv_i():
     cefpyco.begin(9896, get_cefdir())
-    cefpyco.register("ccn:/a")
+    cefpyco.register("ccnx:/a")
     res = cefpyco.receive()
     show_res(res)
     res = cefpyco.receive()
@@ -77,8 +77,8 @@ def recv_i():
 
 def recv_d():
     cefpyco.begin(9896, get_cefdir())
-    cefpyco.send_interest("ccn:/a", 0)
-    cefpyco.send_interest("ccn:/a", 1)
+    cefpyco.send_interest("ccnx:/a", 0)
+    cefpyco.send_interest("ccnx:/a", 1)
     res = cefpyco.receive()
     show_res(res)
     res = cefpyco.receive()
@@ -87,13 +87,13 @@ def recv_d():
 
 def response():
     cefpyco.begin(9896, get_cefdir())
-    cefpyco.register("ccn:/a")
+    cefpyco.register("ccnx:/a")
     res = cefpyco.receive()
     show_res(res)
-    cefpyco.send_data("ccn:/a", "hello", 5, 0)
+    cefpyco.send_data("ccnx:/a", "hello", 5, 0)
     res = cefpyco.receive()
     show_res(res)
-    cefpyco.send_data("ccn:/a", "world", 5, 1)
+    cefpyco.send_data("ccnx:/a", "world", 5, 1)
     cefpyco.end()
 
 @click.command()

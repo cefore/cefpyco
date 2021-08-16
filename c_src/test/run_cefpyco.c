@@ -30,9 +30,9 @@
 #include <Python.h>
 #include "cefpyco.h"
 
-#define NAME ("ccn:/a")
-#define NAMEA ("ccn:/a/a")
-#define NAMEB ("ccn:/b")
+#define NAME ("ccnx:/a")
+#define NAMEA ("ccnx:/a/a")
+#define NAMEB ("ccnx:/b")
 
 static int request_state();
 static int provide_state();
@@ -87,9 +87,9 @@ static int request_state() {
     res = send_interest(NAME, 1);
     stop_on_error(res<0, "Failed to send Interest.", res);
     printf("Send Interest with name %s(%d)\n", NAME, res);
-    res = receive(&app_frame, 1);
+    res = receive(&app_frame, -1, 1);
     stop_on_error(res<0, "Failed to satisfy Interest.", res);
-    res = receive(&app_frame, 1);
+    res = receive(&app_frame, -1, 1);
     stop_on_error(res<0, "Failed to satisfy Interest.", res);
     printf("Succeeded to receive Data with name %s(%d)\n", NAME, res);
     return 0;
@@ -113,17 +113,17 @@ static int listen_state() {
     res = register_name(NAME);
     res = register_name(NAMEA);
     if (res < 0) printf("Failed to register name to receive Interest.");
-    res = receive(&app_frame, 1);
+    res = receive(&app_frame, -1, 1);
     printf("%s to receive Interest with name %s(%d)\n", 
         res == 0 ? "Succeeded" : "Failed",
         NAME,
         res);
-    res = receive(&app_frame, 1);
+    res = receive(&app_frame, -1, 1);
     printf("%s to receive Interest with name %s(%d)\n", 
         res == 0 ? "Succeeded" : "Failed",
         NAME,
         res);
-    res = receive(&app_frame, 0);
+    res = receive(&app_frame, -1, 0);
     printf("%s to receive Interest with name %s(%d)\n", 
         res == 0 ? "Succeeded" : "Failed",
         NAME,
@@ -146,7 +146,7 @@ static int respond_state() {
     
     res = register_name(NAME);
     if (res < 0) printf("Failed to register name to receive Interest.");
-    res = receive(&app_frame, 1);
+    res = receive(&app_frame, -1, 1);
     printf("%s to receive Interest with name %s(%d)\n", 
         res == 0 ? "Succeeded" : "Failed",
         NAME,

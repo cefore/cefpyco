@@ -40,7 +40,6 @@
 // #define CEFPYCO_DEBUG
 // #define CEFPYCO_DUMP
 
-
 #define CefpycoC_Default_Timeout (4000)
 #define CefpycoC_Null_Msg ("(empty)")
 #define CefpycoC_Name_Len (2048)
@@ -57,6 +56,7 @@ enum cefpycoC_packet_flags {
 typedef struct {
 	uint32_t        version;
 	uint32_t        type;
+	uint32_t        returncode;
 	uint32_t        flags;
 	uint64_t        actual_data_len;
 	unsigned char*  name;

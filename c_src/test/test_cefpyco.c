@@ -70,7 +70,7 @@ static void test_send_interest_simple() {
 
     res = begin_cef(TEST_CEF_PORT, TEST_CEF_CONF);
     assert (res == 0);
-    res = send_interest("ccn:/csrc/b", 0);
+    res = send_interest("ccnx:/csrc/b", 0);
     assert (res == 0);
     usleep(SLEEP_TIME);
     res = end_cef();
@@ -100,35 +100,34 @@ static void test_send_and_receive_interest() {
     int res;
 
     setup_cefore_handler();
-    res = cph_register_name(cphp, CefC_App_Reg, "ccn:/csrc/a");
+    res = cph_register_name(cphp, CefC_App_Reg, "ccnx:/csrc/a");
     assert(res >= 0);
     usleep(SLEEP_TIME);
 
-    set_basic_interest_params(&params_i, "ccn:/csrc/a", 0);
+    set_basic_interest_params(&params_i, "ccnx:/csrc/a", 0);
     res = cph_send_interest(cphc, &params_i);
     assert(res == 0);
     usleep(SLEEP_TIME);
     res = cph_receive(cphp, &frame, 4000, 1);
     assert(res == 0);
     cef_frame_conversion_name_to_uri(frame.name, frame.name_len, uri_name);
-    assert(strncmp(uri_name, "ccn:/csrc/a", sizeof(char) * 11) == 0);
+    assert(strncmp(uri_name, "ccnx:/csrc/a", sizeof(char) * 11) == 0);
     assert(frame.chunk_num == 0);
     usleep(SLEEP_TIME);
 
-    set_basic_interest_params(&params_i, "ccn:/csrc/a", 1);
+    set_basic_interest_params(&params_i, "ccnx:/csrc/a", 1);
     res = cph_send_interest(cphc, &params_i);
     assert(res == 0);
     usleep(SLEEP_TIME);
     res = cph_receive(cphp, &frame, 4000, 1);
     assert(res == 0);
     cef_frame_conversion_name_to_uri(frame.name, frame.name_len, uri_name);
-    assert(strncmp(uri_name, "ccn:/csrc/a", sizeof(char) * 11) == 0);
+    assert(strncmp(uri_name, "ccnx:/csrc/a", sizeof(char) * 11) == 0);
     assert(frame.chunk_num == 1);
     usleep(SLEEP_TIME);
 
     teardown_cefore_handler();
 }
-
 
 static void test_request_and_satisfy() {
     CefT_Interest_TLVs params_i;
@@ -138,24 +137,24 @@ static void test_request_and_satisfy() {
     int res;
 
     setup_cefore_handler();
-    res = cph_register_name(cphp, CefC_App_Reg, "ccn:/csrc/c");
+    res = cph_register_name(cphp, CefC_App_Reg, "ccnx:/csrc/c");
     assert(res >= 0);
     usleep(SLEEP_TIME);
-    set_basic_interest_params(&params_i, "ccn:/csrc/c", 0);
+    set_basic_interest_params(&params_i, "ccnx:/csrc/c", 0);
     res = cph_send_interest(cphc, &params_i);
     assert(res == 0);
     usleep(SLEEP_TIME);
     res = cph_receive(cphp, &frame, 4000, 0);
     assert(res == 0);
     usleep(SLEEP_TIME);
-    set_basic_data_params(&params_d, "ccn:/csrc/c", 0, "test.", 5);
+    set_basic_data_params(&params_d, "ccnx:/csrc/c", 0, "test.", 5);
     res = cph_send_data(cphp, &params_d);
     assert(res == 0);
     usleep(SLEEP_TIME);
     res = cph_receive(cphc, &frame, 4000, 0);
     assert(res == 0);
     cef_frame_conversion_name_to_uri(frame.name, frame.name_len, uri_name);
-    assert(strncmp(uri_name, "ccn:/csrc/c", sizeof(char) * 11) == 0);
+    assert(strncmp(uri_name, "ccnx:/csrc/c", sizeof(char) * 11) == 0);
     assert(strncmp(frame.payload, "test.", sizeof(char) * 5) == 0);
     teardown_cefore_handler();
 }
@@ -171,25 +170,51 @@ static void test_request_and_satisfy_with_cast() {
     setup_cefore_handler();
     handler_p = (long long)cphp;
     handler_c = (long long)cphc;    
-    res = cph_register_name((CefT_Client_Handle)handler_p, CefC_App_Reg, "ccn:/csrc/d");
+    res = cph_register_name((CefT_Client_Handle)handler_p, CefC_App_Reg, "ccnx:/csrc/d");
     assert(res >= 0);
     usleep(SLEEP_TIME);
-    set_basic_interest_params(&params_i, "ccn:/csrc/d", 0);
+    set_basic_interest_params(&params_i, "ccnx:/csrc/d", 0);
     res = cph_send_interest((CefT_Client_Handle)handler_c, &params_i);
     assert(res == 0);
     usleep(SLEEP_TIME);
     res = cph_receive((CefT_Client_Handle)handler_p, &frame, 4000, 0);
     assert(res == 0);
     usleep(SLEEP_TIME);
-    set_basic_data_params(&params_d, "ccn:/csrc/d", 0, "test.", 5);
+    set_basic_data_params(&params_d, "ccnx:/csrc/d", 0, "test.", 5);
     res = cph_send_data((CefT_Client_Handle)handler_p, &params_d);
     assert(res == 0);
     usleep(SLEEP_TIME);
     res = cph_receive((CefT_Client_Handle)handler_c, &frame, 4000, 0);
     assert(res == 0);
     cef_frame_conversion_name_to_uri(frame.name, frame.name_len, uri_name);
-    assert(strncmp(uri_name, "ccn:/csrc/d", sizeof(char) * 11) == 0);
+    assert(strncmp(uri_name, "ccnx:/csrc/d", sizeof(char) * 11) == 0);
     assert(strncmp(frame.payload, "test.", sizeof(char) * 5) == 0);
+    teardown_cefore_handler();
+}
+
+static void test_send_and_receive_smi() {
+    CefT_Interest_TLVs params_i;
+    CefT_Object_TLVs params_d;
+    cefpyco_app_frame frame;
+    char uri_name[256];
+    int res;
+
+    setup_cefore_handler();
+    res = cph_register_name(cphp, CefC_App_Reg, "ccnx:/csrc/d");
+    assert(res >= 0);
+    usleep(SLEEP_TIME);
+
+    set_basic_interest_params(&params_i, "ccnx:/csrc/d", 0);
+    res = cph_send_interest(cphc, &params_i);
+    assert(res == 0);
+    usleep(SLEEP_TIME);
+    res = cph_receive(cphp, &frame, 4000, 1);
+    assert(res == 0);
+    cef_frame_conversion_name_to_uri(frame.name, frame.name_len, uri_name);
+    assert(strncmp(uri_name, "ccnx:/csrc/d", sizeof(char) * 11) == 0);
+    assert(frame.chunk_num == 0);
+    usleep(SLEEP_TIME);
+
     teardown_cefore_handler();
 }
 

@@ -27,35 +27,18 @@
  * SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/time.h>
-#include <unistd.h>
-#include <ctype.h>
 
-#include "cpcparse_type.h"
-// #include "cpcparse_interest.h"
-// #include "cpcparse_app_frame.h"
-#include "cpcparse_app_frame_7_5.h"
-#include "cpcparse_app_request.h"
-#include "cpcparse_intreturn.h"
-#include "cefpyco_util.h"
+#ifndef __CEFPYCO_PARSE_INTRETURN_HEADER__
+#define __CEFPYCO_PARSE_INTRETURN_HEADER__
 
-int cpcparse_stop_parse_and_next_byte(
+#include <cefore/cef_define.h>
+#include <cefore/cef_client.h>
+#include <cefore/cef_frame.h>
+#include <cefore/cef_log.h>
+#include "cefpyco_def.h"
+
+int cpcparse_try_parse_intreturn(
     cpcparse_parse_info* info,
-    cefpyco_app_frame* app_frame
-) {
-MILESTONE
-    info->offset++;
-    return 0;
-}
+    cefpyco_app_frame* app_frame);
 
-const try_parse try_parser_list[] = {
-    // cpcparse_try_parse_app_frame,
-    cpcparse_try_parse_app_frame_7_5,
-    // cpcparse_try_parse_interest,
-    cpcparse_try_parse_app_request,
-    cpcparse_try_parse_intreturn, // from cefore 0.8.3
-    cpcparse_stop_parse_and_next_byte,
-    NULL
-};
+#endif

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Copyright (c) 2018, National Institute of Information and Communications
@@ -51,18 +51,39 @@ def test_learn_iteratable_mock():
     assert m() == 0
     assert m() == 0
 
-def create_test_info(res):
+def create_test_info(res, echunk=-1, retcode=0):
+    is_succeeded = res[0]
+    version = res[1]
+    type = res[2]
+    returncode = retcode
+    actual_data_len = res[3]
+    name = res[4]
+    name_len = res[5]
+    chunk_num = res[6]
+    end_chunk_num = echunk
+    flags = -1
+    payload = res[7]
+    payload_len = res[8]
     return CcnPacketInfo((
-        res[0], res[1], res[2], 
-        res[3], res[4], res[5],
-        res[6], -1, res[7], res[8]
+        is_succeeded,
+        version,
+        type,
+        returncode,
+        actual_data_len,
+        name,
+        name_len,
+        chunk_num,
+        end_chunk_num,
+        flags,
+        payload.encode(),
+        payload_len,
         ))
 
 def create_data_mock(name, data_list, meta=False):
     def _mock_effect(name, data_list, meta):
         cob_num = 0
         name_len = len(name)
-        empty = create_test_info((0, 0, 0, 0, "", 0, 0, 0, "", 0))
+        empty = create_test_info((0, 0, 0, 0, "", 0, 0, "", 0), echunk=0)
         if meta: 
             meta_name = "%s/meta" % name
             data_num = "%d" % len(data_list)
@@ -81,66 +102,66 @@ def create_data_mock(name, data_list, meta=False):
     return m
 
 def test_running_consumer_for_hello():
-    m = create_data_mock("ccn:/test", ["hello"])
+    m = create_data_mock("ccnx:/test", ["hello"])
     app = CefAppConsumer(m)
-    app.run("ccn:/test", 1)
+    app.run("ccnx:/test", 1)
     assert app.data == "hello"
 
 def test_running_consumer_for_hw():
-    m = create_data_mock("ccn:/test", ["hello", "world"])
+    m = create_data_mock("ccnx:/test", ["hello", "world"])
     app = CefAppConsumer(m)
-    app.run("ccn:/test", 2)
+    app.run("ccnx:/test", 2)
     assert app.data == "helloworld" 
 
 def test_running_consumer_for_hw_with_error():
-    m = create_data_mock("ccn:/test", ["hello", None, "world"])
+    m = create_data_mock("ccnx:/test", ["hello", None, "world"])
     app = CefAppConsumer(m)
-    app.run("ccn:/test", 2)
+    app.run("ccnx:/test", 2)
     assert app.data == "helloworld" 
 
 def test_running_consumer_random_order():
     m = mock.MagicMock()
     m.receive = mock.MagicMock(side_effect = [
-        create_test_info((1, 0, 0, 1, "ccn:/test", 9, 0, "aaa", 5)),
-        create_test_info((1, 0, 0, 1, "ccn:/test", 9, 2, "ccc", 5)),
+        create_test_info((1, 0, 0, 1, "ccnx:/test", 9, 0, "aaa", 5)),
+        create_test_info((1, 0, 0, 1, "ccnx:/test", 9, 2, "ccc", 5)),
         create_test_info((0, 0, 0, 0, "", 0, 0, "", 0)),
-        create_test_info((1, 0, 0, 1, "ccn:/test", 9, 0, "aaa", 5)),
-        create_test_info((1, 0, 0, 1, "ccn:/test", 9, 2, "ccc", 5)),
-        create_test_info((1, 0, 0, 1, "ccn:/test", 9, 1, "bbb", 5)),
+        create_test_info((1, 0, 0, 1, "ccnx:/test", 9, 0, "aaa", 5)),
+        create_test_info((1, 0, 0, 1, "ccnx:/test", 9, 2, "ccc", 5)),
+        create_test_info((1, 0, 0, 1, "ccnx:/test", 9, 1, "bbb", 5)),
         ])
     app = CefAppConsumer(m)
-    app.run("ccn:/test", 3)
+    app.run("ccnx:/test", 3)
     assert app.data == "aaabbbccc"
 
 def test_running_consumer_random_order_on_error():
     m = mock.MagicMock()
     m.receive = mock.MagicMock(side_effect = [
-        create_test_info((1, 0, 0, 1, "ccn:/test", 9, 0, "aaa", 5)),
-        create_test_info((1, 0, 0, 1, "ccn:/test", 9, 2, "ccc", 5)),
+        create_test_info((1, 0, 0, 1, "ccnx:/test", 9, 0, "aaa", 5)),
+        create_test_info((1, 0, 0, 1, "ccnx:/test", 9, 2, "ccc", 5)),
         create_test_info((0, 0, 0, 0, "", 0, 0, "", 0)),
         create_test_info((0, 0, 0, 0, "", 0, 0, "", 0)),
-        create_test_info((1, 0, 0, 1, "ccn:/test", 9, 1, "bbb", 5)),
+        create_test_info((1, 0, 0, 1, "ccnx:/test", 9, 1, "bbb", 5)),
         ])
     app = CefAppConsumer(m, timeout_limit=2)
-    app.run("ccn:/test", 3)
+    app.run("ccnx:/test", 3)
     assert app.data == "aaaccc"
 
 def test_running_consumer_only_check():
-    m = create_data_mock("ccn:/test", ["hello", "world"])
+    m = create_data_mock("ccnx:/test", ["hello", "world"])
     app = CefAppConsumer(m, data_store=False)
-    app.run("ccn:/test", 2)
+    app.run("ccnx:/test", 2)
     assert app.data is None
 
 def test_running_consumer_without_count():
-    m = create_data_mock("ccn:/test", ["hello", "world"], meta=True)
+    m = create_data_mock("ccnx:/test", ["hello", "world"], meta=True)
     app = CefAppConsumer(m)
-    app.run("ccn:/test")
+    app.run("ccnx:/test")
     assert app.data == "helloworld"
 
 def test_running_consumer_without_count():
-    m = create_data_mock("ccn:/test", ["hello"] * 100, meta=True)
+    m = create_data_mock("ccnx:/test", ["hello"] * 100, meta=True)
     app = CefAppConsumer(m)
-    app.run("ccn:/test")
+    app.run("ccnx:/test")
     assert app.data == ("hello" * 100)
 
 def create_interest_mock(name, chunk_num_list, meta=False):
@@ -165,44 +186,34 @@ def create_interest_mock(name, chunk_num_list, meta=False):
     return m
 
 def test_running_producer():
-    m = create_interest_mock("ccn:/test", [0, 1])
+    m = create_interest_mock("ccnx:/test", [0, 1])
     app = CefAppProducer(m, data="helloworld", cob_len=5)
-    app.run("ccn:/test")
+    app.run("ccnx:/test")
     assert len(m.register.call_args_list) == 1
     c = m.send_data.call_args_list
     assert len(c) == 2
-    assert c[0][0][0] == "ccn:/test"
-    assert c[0][0][1] == 0
-    assert c[0][0][2] == "hello"
-    assert c[1][0][0] == "ccn:/test"
-    assert c[1][0][1] == 1
-    assert c[1][0][2] == "world"
+    assert c[0][0][0] == "ccnx:/test"
+    assert c[0][0][1] == "hello"
+    assert c[0][0][2] == 0
+    assert c[1][0][0] == "ccnx:/test"
+    assert c[1][0][1] == "world"
+    assert c[1][0][2] == 1
 
-def test_running_producer():
-    m = create_interest_mock("ccn:/test", [0, None, 1])
-    app = CefAppProducer(m, data="helloworld", cob_len=5)
-    app.run("ccn:/test")
-    assert len(m.register.call_args_list) == 2
-    c = m.send_data.call_args_list
-    assert len(c) == 2
-    assert c[0][0][2] == "hello"
-    assert c[1][0][2] == "world"
-    
 def test_running_consumer_random_order_on_error():
     m = mock.MagicMock()
     m.receive = mock.MagicMock(side_effect = [
-        create_test_info((1, 0, 0, 1, "ccn:/test/meta", 14, 0, "", 0)),
-        create_test_info((1, 0, 0, 1, "ccn:/test", 9, 0, "", 0)),
-        create_test_info((1, 0, 0, 1, "ccn:/test", 9, 1, "", 0)),
+        create_test_info((1, 0, 0, 1, "ccnx:/test/meta", 14, 0, "", 0)),
+        create_test_info((1, 0, 0, 1, "ccnx:/test", 9, 0, "", 0)),
+        create_test_info((1, 0, 0, 1, "ccnx:/test", 9, 1, "", 0)),
         create_test_info((0, 0, 0, 0, "", 0, 0, "", 0)),
         create_test_info((0, 0, 0, 0, "", 0, 0, "", 0)),
         create_test_info((0, 0, 0, 0, "", 0, 0, "", 0)),
         ])
     app = CefAppProducer(m, data="helloworld", cob_len=5)
-    app.run("ccn:/test")
+    app.run("ccnx:/test")
     assert m.send_data.call_args_list
     c = m.send_data.call_args_list
     assert len(c) == 3
-    assert c[0][0][2] == "2"
-    assert c[1][0][2] == "hello"
-    assert c[2][0][2] == "world"
+    assert c[0][0][1] == "2"
+    assert c[1][0][1] == "hello"
+    assert c[2][0][1] == "world"

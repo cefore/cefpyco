@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Copyright (c) 2018, National Institute of Information and Communications
@@ -32,9 +32,35 @@ from setuptools import setup, find_packages, Extension
 with open("README.md", "r") as f:
     long_description = f.read()
 
+module_libcefpyco = Extension(    
+    "libcefpyco", 
+    sources=[
+        "c_src/cefpyco_util.c",
+        "c_src/cefparse/cpcparse_tlv.c",
+        # "c_src/cefparse/cpcparse_app_frame.c",
+        # "c_src/cefparse/cpcparse_interest.c",
+        "c_src/cefparse/cpcparse_app_frame_7_5.c",
+        "c_src/cefparse/cpcparse_app_request.c",
+        "c_src/cefparse/cpcparse_intreturn.c",
+        "c_src/cefparse/cpcparse_type.c",
+        "c_src/cefpyco_parse.c",
+        "c_src/cefpyco.c",
+        "c_src/pywrap_cefpyco.c",
+        ],
+    libraries=[
+        "cefore",
+        "crypto",
+        ],
+    include_dirs=[
+        "c_src", 
+        "c_src/cefparse",
+        ],
+    swig_opts=["-fPIC"],
+    )
+
 setup(
     name="cefpyco",
-    version="0.4.2",
+    version="0.6.0",
     author="Atsushi Ooka",
     author_email="a-ooka@nict.go.jp",
     description=(
@@ -51,30 +77,5 @@ setup(
         "Operating System :: MacOS",
         "Operating System :: POSIX :: Linux",
     ],
-    ext_modules = [
-        Extension(
-            "libcefpyco", 
-            sources=[
-                "c_src/pywrap_cefpyco.c",
-                "c_src/cefpyco_parse.c",
-                "c_src/cefpyco.c",
-                "c_src/cefpyco_util.c",
-                "c_src/cefparse/cpcparse_tlv.c",
-                "c_src/cefparse/cpcparse_type.c",
-                # "c_src/cefparse/cpcparse_app_frame.c",
-                # "c_src/cefparse/cpcparse_interest.c",
-                "c_src/cefparse/cpcparse_app_frame_7_5.c",
-                "c_src/cefparse/cpcparse_app_request.c",
-                ],
-            libraries=[
-                "cefore",
-                "crypto",
-                ],
-            include_dirs=[
-                "c_src", 
-                "c_src/cefparse",
-                ],
-            swig_opts=["-fPIC"],
-            )
-        ],
+    ext_modules = [module_libcefpyco],
 )

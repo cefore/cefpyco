@@ -394,44 +394,44 @@ SUCH DAMAGE.
 -->
 <h1 id="cefore-python-compact-%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-cefpyco">Cefore Python Compact パッケージ: cefpyco</h1>
 <ul>
-<li><a href="#cefore-python-compact-%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8-cefpyco">Cefore Python Compact パッケージ: cefpyco</a>
+<li><a href="#cefore-python-compact-%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-cefpyco">Cefore Python Compact パッケージ: cefpyco</a>
 <ul>
-<li><a href="#%e6%a6%82%e8%a6%81">概要</a></li>
-<li><a href="#%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e6%96%b9%e6%b3%95">インストール方法</a>
+<li><a href="#%E6%A6%82%E8%A6%81">概要</a></li>
+<li><a href="#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E6%96%B9%E6%B3%95">インストール方法</a>
 <ul>
-<li><a href="#cefore%e3%81%ae%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">Ceforeのインストール</a></li>
-<li><a href="#cefpyco%e3%81%ae%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">cefpycoのインストール</a></li>
-<li><a href="#cefpyco%e3%81%ae%e3%82%a2%e3%83%b3%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">cefpycoのアンインストール</a></li>
+<li><a href="#cefore%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB">Ceforeのインストール</a></li>
+<li><a href="#cefpyco%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB">cefpycoのインストール</a></li>
+<li><a href="#cefpyco%E3%81%AE%E3%82%A2%E3%83%B3%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB">cefpycoのアンインストール</a></li>
 </ul>
 </li>
-<li><a href="#%e6%a7%8b%e6%88%90">構成</a>
+<li><a href="#%E6%A7%8B%E6%88%90">構成</a>
 <ul>
 <li><a href="#cefpyco">cefpyco</a></li>
 <li><a href="#cefapp">cefapp</a></li>
-<li><a href="#csrc">c_src</a></li>
+<li><a href="#c_src">c_src</a></li>
 <li><a href="#test">test</a></li>
 </ul>
 </li>
-<li><a href="#cefpyco%e3%81%ae%e4%bd%bf%e7%94%a8%e6%96%b9%e6%b3%95">cefpycoの使用方法</a>
+<li><a href="#cefpyco%E3%81%AE%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95">cefpycoの使用方法</a>
 <ul>
-<li><a href="#cefnetd%e3%81%b8%e3%81%ae%e6%8e%a5%e7%b6%9a%e3%81%a8%e5%88%87%e6%96%ad">cefnetdへの接続と切断</a></li>
-<li><a href="#interest%e3%83%91%e3%82%b1%e3%83%83%e3%83%88%e3%81%ae%e9%80%81%e4%bf%a1">Interestパケットの送信</a></li>
-<li><a href="#data%e3%83%91%e3%82%b1%e3%83%83%e3%83%88%e3%81%ae%e9%80%81%e4%bf%a1">Dataパケットの送信</a></li>
-<li><a href="#%e3%83%91%e3%82%b1%e3%83%83%e3%83%88%e3%81%ae%e5%8f%97%e4%bf%a1">パケットの受信</a></li>
-<li><a href="#publisher%e3%82%a2%e3%83%97%e3%83%aa%e3%81%ae%e4%bd%9c%e6%88%90">Publisherアプリの作成</a></li>
-<li><a href="#consumer%e3%82%a2%e3%83%97%e3%83%aa%e3%81%ae%e4%bd%9c%e6%88%90">Consumerアプリの作成</a></li>
+<li><a href="#cefnetd%E3%81%B8%E3%81%AE%E6%8E%A5%E7%B6%9A%E3%81%A8%E5%88%87%E6%96%AD">cefnetdへの接続と切断</a></li>
+<li><a href="#interest%E3%83%91%E3%82%B1%E3%83%83%E3%83%88%E3%81%AE%E9%80%81%E4%BF%A1">Interestパケットの送信</a></li>
+<li><a href="#data%E3%83%91%E3%82%B1%E3%83%83%E3%83%88%E3%81%AE%E9%80%81%E4%BF%A1">Dataパケットの送信</a></li>
+<li><a href="#%E3%83%91%E3%82%B1%E3%83%83%E3%83%88%E3%81%AE%E5%8F%97%E4%BF%A1">パケットの受信</a></li>
+<li><a href="#publisher%E3%82%A2%E3%83%97%E3%83%AA%E3%81%AE%E4%BD%9C%E6%88%90">Publisherアプリの作成</a></li>
+<li><a href="#consumer%E3%82%A2%E3%83%97%E3%83%AA%E3%81%AE%E4%BD%9C%E6%88%90">Consumerアプリの作成</a></li>
 </ul>
 </li>
-<li><a href="#cefapp%e3%81%ae%e4%bd%bf%e7%94%a8%e6%96%b9%e6%b3%95">CefAppの使用方法</a>
+<li><a href="#cefapp%E3%81%AE%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95">CefAppの使用方法</a>
 <ul>
-<li><a href="#%e6%a6%82%e8%a6%81-1">概要</a></li>
+<li><a href="#%E6%A6%82%E8%A6%81-1">概要</a></li>
 <li><a href="#cefappconsumerpy">cefappconsumer.py</a></li>
 <li><a href="#cefappproducerpy">cefappproducer.py</a></li>
-<li><a href="#%e9%80%9a%e4%bf%a1%e4%be%8b">通信例</a></li>
+<li><a href="#%E9%80%9A%E4%BF%A1%E4%BE%8B">通信例</a></li>
 </ul>
 </li>
-<li><a href="#%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a0%85">注意事項</a></li>
-<li><a href="#%e6%9b%b4%e6%96%b0%e5%b1%a5%e6%ad%b4">更新履歴</a></li>
+<li><a href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A0%85">注意事項</a></li>
+<li><a href="#%E6%9B%B4%E6%96%B0%E5%B1%A5%E6%AD%B4">更新履歴</a></li>
 <li><a href="#credit">Credit</a></li>
 </ul>
 </li>
@@ -452,16 +452,23 @@ SUCH DAMAGE.
 <li>言い換えれば、csmgrdを介さずにコンテンツを提供できる。</li>
 </ul>
 </li>
-<li>(0.3.0以降) Optional TLVに対応(チャンク番号・終端チャンク番号・最大ホップ数・Interestライフタイム・コンテンツ期限・キャッシュ期限)。
+<li>(cefpyco 0.3.0以降) Optional TLVに対応(チャンク番号・終端チャンク番号・最大ホップ数・Interestライフタイム・コンテンツ期限・キャッシュ期限)。
 <ul>
 <li>この修正のため、0.3.0以前と以降で、CefpycoHandle.send_data()の引数の順序が変わっているので注意。</li>
+</ul>
+</li>
+<li>(cefpyco 0.6.0, Cefore v0.8.3 以降) InterestReturn パケットに対応。
+<ul>
+<li>InterestReturn は Interest パケロス時に、ヘッダだけ付け替えた Interest を制御メッセージとして返送されるもの(NACK のように機能する)。</li>
+<li>Interest の上流転送設定を行っていない場合等にも No Route の InterestReturn が返送される。上流経路設定や Producer アプリ起動をしていない場合は要注意。</li>
 </ul>
 </li>
 </ul>
 <h2 id="%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E6%96%B9%E6%B3%95">インストール方法</h2>
 <h3 id="cefore%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB">Ceforeのインストール</h3>
-<p>まず、PCにCeforeをインストールする(対象バージョン:0.8.1以降)。
-CeforeのインストールはCeforeのサイト(<a href="https://cefore.net">https://cefore.net</a>)から行える
+<p>まず、PCにCeforeをインストールする(対象バージョン:0.8.3以降)。
+CeforeのインストールはCeforeのサイト(<a href="https://cefore.net">https://cefore.net</a>)
+またはgithub <a href="https://github.com/cefore/cefore">https://github.com/cefore/cefore</a> から行える
 （<a href="https://cefore.net/instruction">Instruction</a> からユーザマニュアル、  <a href="https://cefore.net/download">Download</a> から ソースコードを入手可能）。</p>
 <h3 id="cefpyco%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB">cefpycoのインストール</h3>
 <p>Ceforeおよびpythonがインストールされている環境で、以下のコマンドを実行する
@@ -586,7 +593,7 @@ handle.end()
 <pre class="hljs"><code><div><span class="hljs-keyword">import</span> cefpyco
 
 <span class="hljs-keyword">with</span> cefpyco.create_handle() <span class="hljs-keyword">as</span> h:
-    h.send_interest(<span class="hljs-string">"ccn:/test"</span>, <span class="hljs-number">0</span>)
+    h.send_interest(<span class="hljs-string">"ccnx:/test"</span>, <span class="hljs-number">0</span>)
 </div></code></pre>
 <p><strong><code>h.send_interest(name, chunk_num)</code>を用いて、
 コンテンツの名前<code>name</code>とチャンク番号<code>chunk_num</code>を指定して
@@ -597,7 +604,7 @@ Interestパケットを送出できる。</strong></p>
 
 <span class="hljs-keyword">with</span> cefpyco.create_handle() <span class="hljs-keyword">as</span> h:
     <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">100</span>):
-        h.send_interest(<span class="hljs-string">"ccn:/test"</span>, i)
+        h.send_interest(<span class="hljs-string">"ccnx:/test"</span>, i)
 </div></code></pre>
 <p>注意点として、これはInterestパケットを送出するだけであり、
 Dataパケットを受信するためには後述の「パケットの受信」を用いる必要がある。</p>
@@ -611,25 +618,25 @@ Dataパケットを受信するためには後述の「パケットの受信」�
 SMIは以下の2つの特徴を持つ。
 (1)cefnetdがDataを受信してもPITエントリが消えず、タイムアウトによってのみ削除される。
 (2)チャンク番号無しのprefixを指定すると、チャンク番号付きの任意のDataを受信できる
-(例:SMIで<code>ccn:/a</code>を要求すると、<code>ccn:/a/Chunk=0</code>, <code>ccn:/a/Chunk=1</code>, ... 等の名前のDataすべてを受け取れる)。
+(例:SMIで<code>ccnx:/a</code>を要求すると、<code>ccnx:/a/Chunk=0</code>, <code>ccnx:/a/Chunk=1</code>, ... 等の名前のDataすべてを受け取れる)。
 主に動画のリアルタイムストリーミング目的で用いるためのもの。</p>
 <h3 id="data%E3%83%91%E3%82%B1%E3%83%83%E3%83%88%E3%81%AE%E9%80%81%E4%BF%A1">Dataパケットの送信</h3>
 <p>Dataパケットを送出する処理の実装例は以下の通りである。</p>
 <pre class="hljs"><code><div><span class="hljs-keyword">import</span> cefpyco
 
 <span class="hljs-keyword">with</span> cefpyco.create_handle() <span class="hljs-keyword">as</span> h:
-    h.send_data(<span class="hljs-string">"ccn:/test"</span>, <span class="hljs-string">"hello"</span>, <span class="hljs-number">0</span>)
+    h.send_data(<span class="hljs-string">"ccnx:/test"</span>, <span class="hljs-string">"hello"</span>, <span class="hljs-number">0</span>)
 </div></code></pre>
 <p><strong><code>h.send_data(name, payload, chunk_num)</code>メソッドは、
 コンテンツの名前<code>name</code>とチャンク番号<code>chunk_num</code>に加えて、
-payload(cobのデータ)をstring型で指定する必要がある</strong>
-(高速化のためデータの型チェックを省いており、string型でないデータの動作は保証しない)。</p>
+payload(cobのデータ)を指定する必要がある。</strong>
+payload の型は byte または string を許容する。</p>
 <p>Interestパケットと同様、
 これはDataパケットを送出するだけのメソッドであり、
 Interestパケットを受信してから応答するためには後述の「パケットの受信」を用いる必要がある。</p>
 <p>また、以下のキーワード引数を持つ。</p>
 <ul>
-<li><code>end_chunk_num</code>: コンテンツの最後のチャンク番号。</li>
+<li><code>end_chunk_num</code>: コンテンツの終端チャンク番号。予め Producer がコンテンツ全体のチャンク数を知っている場合に、 Consumer にそれを伝えて要求すべきチャンク番号を知らせるために用いる。</li>
 <li><code>hop_limit</code>: 最大ホップ数。</li>
 <li><code>expiry</code>: コンテンツの有効期限。現在からの相対時間をミリ秒で指定する。</li>
 <li><code>cache_time</code>: コンテンツの推奨キャッシュ時間。現在からの相対時間をミリ秒で指定する。</li>
@@ -641,7 +648,7 @@ CcnPacketInfoオブジェクトを返す。</strong></p>
 <pre class="hljs"><code><div><span class="hljs-keyword">import</span> cefpyco
 
 <span class="hljs-keyword">with</span> cefpyco.create_handle() <span class="hljs-keyword">as</span> h:
-    h.send_interest(<span class="hljs-string">"ccn:/test"</span>, <span class="hljs-number">0</span>)
+    h.send_interest(<span class="hljs-string">"ccnx:/test"</span>, <span class="hljs-number">0</span>)
     info = h.receive()
     print(<span class="hljs-string">"info.is_succeeded:{0}"</span>.format(info.is_succeeded))
     print(<span class="hljs-string">"info.is_failed:{0}"</span>.format(info.is_failed))
@@ -669,7 +676,8 @@ CefpycoHandleはCeforeとの接続を切断する
 <ul>
 <li>is_succeeded/is_failed: 受信成功/失敗フラグ。</li>
 <li>version: 受信したパケットのバージョン値。</li>
-<li>type: 受信したパケットのタイプ値。DataかInterestかを見分けることが可能。</li>
+<li>type: 受信したパケットのタイプ値。Data/Interest/InterestReturn を見分けることが可能。</li>
+<li>returncode: InterestReturn が返送されてきた場合の ReturnCode 値 (<a href="https://datatracker.ietf.org/doc/html/rfc8609#section-4.2">RFC8609</a>参照)。</li>
 <li>actual_data_len: 受信したパケット（またはデータ）のヘッダを含むバイト長。</li>
 <li>name: string型で表された名前。</li>
 <li>name_len: 名前の長さ。</li>
@@ -679,10 +687,12 @@ CefpycoHandleはCeforeとの接続を切断する
 <li>payload_s: stringで表されたペイロード(空の場合は<code>(empty)</code>と表示される)。Python2ではunicode、Python3ではstrを返す。</li>
 <li>payload_len: ペイロードの長さ。空の場合は0となる。</li>
 </ul>
-<p>また、<code>is_interest</code>および<code>is_data</code>プロパティを持つ。
-しかし、後述のようにInterestとDataでは取得する方法が異なるため、
-InterestとDataを同時に受信するようなアプリケーションでなければ、
-受信したパケットがInterestかDataを区別する必要は無いだろう。</p>
+<p>また、<code>is_interest</code>、<code>is_data</code>、<code>is_interest_return</code>(または<code>is_return</code>)プロパティを持つ。
+これを用いて受信したパケットがどのタイプの CCN パケットか区別することができる。
+例えば Interest を送出して Data を受け取るような Consumer アプリの場合、
+Data だけでなく InterestReturn を受信する可能性がある
+(例として、 cefnetd に上流経路が設定されていない場合は <code>No Route</code> を示す InterestReturn を受信する)ため、
+こうした受信パケットの区別が必要となる。</p>
 <p>Interest を受信した場合に、それが SMI であるかを判別するには、
 <code>is_symbolic</code> プロパティを利用できる。
 特に Interest であるかと SMI か否かを同時に判別したい場合は、
@@ -692,8 +702,8 @@ SMI については <code>is_symbolic_interest</code> プロパティを利用�
 <ul>
 <li>receiveメソッドは、cefnetdが受信したすべてのパケットを待ち受ける訳ではない。
 <ul>
-<li>Interestパケット受信のためにはregisterメソッドを呼び出す必要がある。</li>
-<li>Dataパケット受信のためにはInterestパケットを先に送信する必要がある。</li>
+<li>Interestパケットをアプリで受信するためにはregisterメソッドを呼び出す必要がある。</li>
+<li>Dataパケットをアプリで受信するためにはInterestパケットを先に送信する必要がある。</li>
 </ul>
 </li>
 <li>あまりに多くのパケットをcefnetdのバッファに貯めておくことはできないため、
@@ -709,16 +719,16 @@ SMI については <code>is_symbolic_interest</code> プロパティを利用�
 <pre class="hljs"><code><div><span class="hljs-keyword">import</span> cefpyco
 
 <span class="hljs-keyword">with</span> cefpyco.create_handle() <span class="hljs-keyword">as</span> h:
-    h.register(<span class="hljs-string">"ccn:/test"</span>)
+    h.register(<span class="hljs-string">"ccnx:/test"</span>)
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
         info = h.receive()
-        <span class="hljs-keyword">if</span> info.is_success <span class="hljs-keyword">and</span> info.name == <span class="hljs-string">"ccn:/test"</span> <span class="hljs-keyword">and</span> info.chunk_num == <span class="hljs-number">0</span>:
-            h.send_data(<span class="hljs-string">"ccn:/test"</span>, <span class="hljs-string">"hello"</span>, <span class="hljs-number">0</span>)
+        <span class="hljs-keyword">if</span> info.is_success <span class="hljs-keyword">and</span> info.name == <span class="hljs-string">"ccnx:/test"</span> <span class="hljs-keyword">and</span> info.chunk_num == <span class="hljs-number">0</span>:
+            h.send_data(<span class="hljs-string">"ccnx:/test"</span>, <span class="hljs-string">"hello"</span>, <span class="hljs-number">0</span>)
             <span class="hljs-comment"># break # Uncomment if publisher provides content once</span>
 </div></code></pre>
 <p><strong>Interestの待ち受けには、<code>h.register()</code>メソッドを用いる。</strong>
 これは、自分が受け取りたいInterestのプレフィックスをcefnetdに登録するメソッドである。
-例えば、<code>ccn:/test</code>の他に、<code>ccn:/test/foo/bar.txt</code>のような名前のInterestも受け取ることができる。</p>
+例えば、<code>ccnx:/test</code>の他に、<code>ccnx:/test/foo/bar.txt</code>のような名前のInterestも受け取ることができる。</p>
 <p>その後、<code>h.receive()</code>を実行し続ける。
 対象のInterestの受信に成功した場合は、
 <code>h.send_data()</code>を用いてDataパケットを返送する。
@@ -732,16 +742,18 @@ publisherアプリなので無限ループし続けるが、
 
 <span class="hljs-keyword">with</span> cefpyco.create_handle() <span class="hljs-keyword">as</span> h:
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
-        h.send_interest(<span class="hljs-string">"ccn:/test"</span>, <span class="hljs-number">0</span>)
+        h.send_interest(<span class="hljs-string">"ccnx:/test"</span>, <span class="hljs-number">0</span>)
         info = h.receive()
-        <span class="hljs-keyword">if</span> info.is_success <span class="hljs-keyword">and</span> info.name == <span class="hljs-string">"ccn:/test"</span> <span class="hljs-keyword">and</span> info.chunk_num == <span class="hljs-number">0</span>:
+        <span class="hljs-keyword">if</span> info.is_success <span class="hljs-keyword">and</span> info.name == <span class="hljs-string">"ccnx:/test"</span> <span class="hljs-keyword">and</span> info.chunk_num == <span class="hljs-number">0</span>:
             print(<span class="hljs-string">"Success"</span>)
             print(info)
             <span class="hljs-keyword">break</span> <span class="hljs-comment"># Uncomment if publisher provides content once</span>
         sleep(<span class="hljs-number">1</span>)
 </div></code></pre>
 <p><strong>Interestを送出すれば、その後receiveメソッドでDataを受信できる。</strong>
-受信に成功した場合は<code>Success</code>と表示して終了する。</p>
+受信に成功した場合は<code>Success</code>と表示して終了する。
+InterestReturn が返送されてくる可能性もあるため、
+正式には <code>info.is_data</code> を条件に加えるべきである。</p>
 <p>この実装例ではDataを受信できるまでループしているが、
 Interestの送出間隔が短いとPITに集約されてしまうため、
 ループのたびに<code>sleep(1)</code>を挟んでいる。</p>
@@ -750,7 +762,7 @@ Interestの送出間隔が短いとPITに集約されてしまうため、
 複数チャンクから成るコンテンツを受け取ることも可能となる。
 多数のチャンクから成るコンテンツを受信したい場合は、
 一度に複数のInterestを送ることで高速通信も可能である。
-しかし、その際は同時に送出するInterestの数に注意(cefnetd.confのPITサイズや処理性能の制約等)し、
+しかし、その際は同時に送出するInterestの数に注意(cefnetd.confのPITサイズや処理性能の制約のため)し、
 一度に送りきれない場合はパイプライン処理を実装することを推奨する。</p>
 <h2 id="cefapp%E3%81%AE%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95">CefAppの使用方法</h2>
 <p>以下では、CefpycoHandleを用いて実装されたコンテンツ要求/提供ツールである、
@@ -781,6 +793,10 @@ cob数を取得する処理が事前に行われる。
 (cefappproducerとcefgetfileの組み合わせは通信可能)。</p>
 <p>直接コンテンツの取得・提供の目的で用いるよりは、
 開発者がCefpycoHandleを用いたプログラム作成の参考にすることを想定して作成されている。</p>
+<p>(2021年7月現在) Cefore が終端チャンク番号に対応したため、
+cob 数情報の共有のためだけにメタファイル交換を行うのは冗長となった。
+しかし、 cob 数以外の情報を事前に交換するためにも役立つため、
+メタファイル交換方式での実装を残す。</p>
 <h3 id="cefappconsumerpy">cefappconsumer.py</h3>
 <ul>
 <li>使用方法<pre class="hljs"><code><div>cefappconsumer.py [OPTIONS] name
@@ -809,24 +825,24 @@ cob数を取得する処理が事前に行われる。
 </li>
 <li>使用例
 <ul>
-<li><code>./cefappconsumer.py ccn:/test</code>
+<li><code>./cefappconsumer.py ccnx:/test</code>
 <ul>
-<li>ccn:/testという名前のコンテンツを受信し、標準出力に受信したコンテンツを出力する。</li>
+<li>ccnx:/testという名前のコンテンツを受信し、標準出力に受信したコンテンツを出力する。</li>
 </ul>
 </li>
-<li><code>./cefappconsumer.py ccn:/test/a -o file</code>
+<li><code>./cefappconsumer.py ccnx:/test/a -o file</code>
 <ul>
-<li>ccn:/test/aという名前のコンテンツを受信し、ファイル名<code>a</code>に受信したコンテンツを出力する。</li>
+<li>ccnx:/test/aという名前のコンテンツを受信し、ファイル名<code>a</code>に受信したコンテンツを出力する。</li>
 </ul>
 </li>
-<li><code>./cefappconsumer.py ccn:/test/a -o file -f b</code>
+<li><code>./cefappconsumer.py ccnx:/test/a -o file -f b</code>
 <ul>
-<li>ccn:/test/aという名前のコンテンツを受信し、ファイル名<code>b</code>に受信したコンテンツを出力する。</li>
+<li>ccnx:/test/aという名前のコンテンツを受信し、ファイル名<code>b</code>に受信したコンテンツを出力する。</li>
 </ul>
 </li>
-<li><code>./cefappconsumer.py ccn:/test -o none -q</code>
+<li><code>./cefappconsumer.py ccnx:/test -o none -q</code>
 <ul>
-<li>ccn:/testを受信するための通信のみ行い、ログや受信したコンテンツを一切出力しない。</li>
+<li>ccnx:/testを受信するための通信のみ行い、ログや受信したコンテンツを一切出力しない。</li>
 </ul>
 </li>
 </ul>
@@ -858,59 +874,60 @@ cob数を取得する処理が事前に行われる。
 </li>
 <li>使用例
 <ul>
-<li><code>./cefappproducer.py ccn:/test helloworld</code>
+<li><code>./cefappproducer.py ccnx:/test helloworld</code>
 <ul>
-<li><code>hellowolrd</code>という10文字のコンテンツをccn:/testという名前で作成し、提供する。</li>
+<li><code>hellowolrd</code>という10文字のコンテンツをccnx:/testという名前で作成し、提供する。</li>
 </ul>
 </li>
-<li><code>./cefappproducer.py ccn:/test helloworld -b 5</code>
+<li><code>./cefappproducer.py ccnx:/test helloworld -b 5</code>
 <ul>
-<li><code>hello</code>と<code>world</code>という5文字ごとのコンテンツをccn:/testという名前で作成し、提供する
+<li><code>hello</code>と<code>world</code>という5文字ごとのコンテンツをccnx:/testという名前で作成し、提供する
 (<code>hello</code>はチャンク番号0,<code>world</code>はチャンク番号1として提供される)。</li>
 </ul>
 </li>
-<li><code>./cefappproducer.py ccn:/test/a -i file</code>
+<li><code>./cefappproducer.py ccnx:/test/a -i file</code>
 <ul>
-<li><code>a</code>という名前のファイルからコンテンツを作成し、ccn:/test/aという名前で提供する。</li>
+<li><code>a</code>という名前のファイルからコンテンツを作成し、ccnx:/test/aという名前で提供する。</li>
 </ul>
 </li>
-<li><code>./cefappproducer.py ccn:/test/a b -i file -o none -q</code>
+<li><code>./cefappproducer.py ccnx:/test/a b -i file -o none -q</code>
 <ul>
-<li><code>b</code>という名前のファイルからコンテンツを作成し、ccn:/test/aという名前で提供する。</li>
+<li><code>b</code>という名前のファイルからコンテンツを作成し、ccnx:/test/aという名前で提供する。</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 <h3 id="%E9%80%9A%E4%BF%A1%E4%BE%8B">通信例</h3>
-<p>cefappproducerが&quot;hello&quot;という文字列を<code>ccn:/test</code>という名前で発行し、
+<p>cefappproducerが&quot;hello&quot;という文字列を<code>ccnx:/test</code>という名前で発行し、
 それをcefappconsumerが取りに行く通信例を示す。</p>
 <p>以下では、cefnetdを起動した状態で、
 cefappproducerを端末t1、
 cefappconsumerを端末t2で起動する
 (尚、各ツールで指定可能なオプションは<code>--help</code>オプションで確認できる)。</p>
-<pre class="hljs"><code><div>t1$ sudo ./cefappproducer.py ccn:/test hello
+<pre class="hljs"><code><div>t1$ sudo ./cefappproducer.py ccnx:/test hello
 [cefpyco] Configure directory is /usr/local/cefore
 YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Config directory is /usr/local/cefore
 YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Local Socket Name is /tmp/cef_9896.0
 YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Listen Port is 9896
 [cefapp] Receiving Interest...
-t2$ sudo ./cefappconsumer.py ccn:/test
+t2$ sudo ./cefappconsumer.py ccnx:/test
 [cefpyco] Configure directory is /usr/local/cefore
 YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Config directory is /usr/local/cefore
 YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Local Socket Name is /tmp/cef_9896.0
 YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Listen Port is 9896
-YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: Send interest (name: ccn:/test/meta, #chunk: 0)
-YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: Send interest (name: ccn:/test, #chunk: 0)
+YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: Send interest (name: ccnx:/test/meta, #chunk: 0)
+YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: Send interest (name: ccnx:/test, #chunk: 0)
 [cefapp] Succeed to receive.
 hello
 </div></code></pre>
 <h2 id="%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A0%85">注意事項</h2>
 <ul>
-<li>本ツールはCeforeを用いたアプリ開発を簡易化することを目的に個人的に開発されたが、デバッグが不十分。
+<li>本ツールはCeforeを用いたアプリ開発を簡易化することを目的に開発された。バグ報告は歓迎します。
 <ul>
 <li>Ubuntu 16.04とRaspberry piでのみ動作確認済み(cefpyco 0.2.0現在)。</li>
 <li>python3での動作確認のみを行っている。</li>
+<li>バグ報告は <a href="https://github.com/cefore/cefore/issues">github</a> または a-ooka@nict.go.jp (NICT 大岡) まで。</li>
 </ul>
 </li>
 <li>cefnetdをsudo権限で起動する場合、pythonツール使用時にもsudoが必要なことがある。
@@ -925,7 +942,7 @@ hello
 </li>
 <li><s>アプリがInterestを受け取れない場合は、FIBにマッチするエントリが無いか確認すること。</s>
 <ul>
-<li><s>特にFIBに<code>ccn:/</code>宛のエントリが登録されている場合等、そちらが優先される場合がある(cefore 0.7.2現在)。</s></li>
+<li><s>特にFIBに<code>ccnx:/</code>宛のエントリが登録されている場合等、そちらが優先される場合がある(cefore 0.7.2現在)。</s></li>
 <li>Cefore 0.8.0現在、アプリがInterestを優先して取得するように仕様変更された。</li>
 </ul>
 </li>
@@ -950,7 +967,7 @@ $ sudo sysctl -w net.local.stream.recvspace=2000000
 <li>PCの再起動の度にこの値は初期化されるので、PC起動時の常時実行に入れる等、実行忘れ防止策を取ることを推奨。</li>
 </ul>
 </li>
-<li>Interestの生存期間は4秒、Dataのキャッシュ生存時間は10時間に設定している。
+<li>Interestの生存期間は4秒、Dataのキャッシュ生存時間は10時間をデフォルト値に設定している。
 <ul>
 <li>変更する場合はcefpyco.cの該当箇所の値を変更すること。</li>
 </ul>
@@ -964,6 +981,8 @@ $ sudo sysctl -w net.local.stream.recvspace=2000000
 </ul>
 <h2 id="%E6%9B%B4%E6%96%B0%E5%B1%A5%E6%AD%B4">更新履歴</h2>
 <ul>
+<li>2021/07/20 (v0.6.０): cefore-0.8.3 に対応。InterestReturn へ対応(パケットタイプ0x02)。</li>
+<li>2021/05/31: name のプロコトル名を &quot;ccn:/&quot; から &quot;ccnx:/&quot; に変更。</li>
 <li>2021/02/25: Symbolic Interest (SMI) の送受信に対応。</li>
 <li>2019/08/21: バイナリデータの送受信に対応。CcnPacketInfo.payloadのデフォルトをバイト列に変更し、文字列用にpayload_sを追加。</li>
 <li>2019/08/06: Cefore-0.8.1に対応。Mac環境用に微調整。</li>

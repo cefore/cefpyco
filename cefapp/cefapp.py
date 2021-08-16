@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Copyright (c) 2018, National Institute of Information and Communications
@@ -150,8 +150,11 @@ class CefAppConsumer(CefApp):
             self.cef_handle.send_interest(meta_name, 0)
             packet = self.cef_handle.receive()
             if packet.is_failed: continue
+            if packet.is_interest_return:
+                self.log(str(packet))
+                continue
             if packet.name != meta_name: continue
-            return int(packet.payload)
+            return int(packet.payload_s)
         return None
     
     def on_start(self, info):
@@ -171,7 +174,7 @@ class CefAppConsumer(CefApp):
     def on_rcv_succeeded(self, info, packet):
         c = packet.chunk_num
         if info.finished_flag[c]: return
-        if self.data_store: self.cob_list[c] = packet.payload
+        if self.data_store: self.cob_list[c] = packet.payload_s
         info.finished_flag[c] = 1
         info.n_finished += 1
         self.send_next_interest(info)

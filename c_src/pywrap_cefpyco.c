@@ -248,6 +248,7 @@ PYWRAP_DEF(receive) {
     fprintf(stderr, "          res:%d\n",  res);
     fprintf(stderr, "      version:0x%llx\n",  version);
     fprintf(stderr, "         type:%lld\n",  type);
+    fprintf(stderr, "   returncode:%lld\n",  app_frame.returncode);
     fprintf(stderr, "        flags:%lx\n",  app_frame.flags);
     fprintf(stderr, "   actual len:%llu\n",  app_frame.actual_data_len);
     fprintf(stderr, "         name:[%s]\n",name);
@@ -258,10 +259,11 @@ PYWRAP_DEF(receive) {
     fprintf(stderr, "  payload len:%d (%d)\n",  app_frame.payload_len, strlen(payload));
 #endif
 
-    return Py_BuildValue("iLLLs#iiiL" BUILD_BYTES_ID "#i", 
+    return Py_BuildValue("iLLLLs#iiiL" BUILD_BYTES_ID "#i", 
         res,
         version,
         type,
+        app_frame.returncode,
         actual_data_len,
         name, r_name_len,
         name_len,

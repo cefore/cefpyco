@@ -40,6 +40,7 @@
 #define CPC_CCNX_VERSION     (0x01)
 #define CPC_CCNX_PT_INTEREST (0x00)
 #define CPC_CCNX_PT_CONTENT  (0x01)
+#define CPC_CCNX_PT_RETURN   (0x02)
 
 typedef struct {
 	unsigned char*  buf;
@@ -57,6 +58,6 @@ int cpcparse_stop_parse_and_next_byte(
     cpcparse_parse_info* info,
     cefpyco_app_frame* app_frame);
 
-extern const try_parse try_parser_list[4];
+extern const try_parse try_parser_list[];
 
 #endif
