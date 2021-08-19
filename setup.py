@@ -29,8 +29,9 @@
 
 from setuptools import setup, find_packages, Extension
 
-with open("README.md", "r") as f:
-    long_description = f.read()
+# TBD: encoding error
+# with open("README.md", "r") as f:
+#     long_description = f.read()
 
 module_libcefpyco = Extension(    
     "libcefpyco", 
@@ -67,8 +68,8 @@ setup(
         "Cefore Python Compact (cefpyco) package for "
         "developing a Cefore application in Python."
         ),
-    long_description=long_description,
-    long_description_content_type="text/markdown",
+    # long_description=long_description,
+    # long_description_content_type="text/markdown",
     #url="https://github.com/pypa/sampleproject",
     packages=find_packages(exclude=["test"]),
     classifiers=[

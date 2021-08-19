@@ -87,8 +87,8 @@ Ceforeおよびpythonがインストールされている環境で、以下の�
 (cmakeは"."をつけ忘れないように注意)。
 
 ```
-sudo apt-get install cmake python-pip
-pip install setuptools click numpy
+sudo apt-get install cmake python3-pip
+pip3 install setuptools click numpy
 cmake .
 sudo make install
 ```
