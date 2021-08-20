@@ -92,7 +92,10 @@ PYWRAP_DEF(send_interest) {
     }
     memset(&params_i, 0, sizeof(CefT_Interest_TLVs));
     res = cef_frame_conversion_uri_to_name(uri, params_i.name);
-    PYWRAP_ERR
+    if (res < 0) {
+        PyErr_SetString(PyExc_RuntimeError, CefpycoC_Err_Invalid_URI);
+        return NULL;
+    }
     params_i.name_len = res;
 
     params_i.hoplimit = hop_limit;
@@ -145,7 +148,10 @@ PYWRAP_DEF(send_data) {
     }
     memset(&params_d, 0, sizeof(CefT_Object_TLVs));
     res = cef_frame_conversion_uri_to_name(uri, params_d.name);
-    PYWRAP_ERR
+    if (res < 0) {
+        PyErr_SetString(PyExc_RuntimeError, CefpycoC_Err_Invalid_URI);
+        return NULL;
+    }
     params_d.name_len = res;
     
     memcpy(params_d.payload, payload, sizeof(char) * payload_len);

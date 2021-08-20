@@ -143,7 +143,7 @@ MILESTONE
     int res;
     unsigned char name[CefpycoC_Name_Len];
     res = cef_frame_conversion_uri_to_name(uri, name);
-    if (res < 0) return res;
+    if (res < 0) return exit_with_error_msg(handler, CefpycoC_Err_Invalid_URI);
     api(handler, func, name, (uint16_t)res);
     return res;
 }
@@ -188,7 +188,7 @@ int set_basic_interest_params(CefT_Interest_TLVs* params_i,
     
     memset(params_i, 0, sizeof(CefT_Interest_TLVs));
     res = cef_frame_conversion_uri_to_name(uri, params_i->name);
-    if (res < 0) return exit_with_error_msg(fhdl, "Failed to convert URI to name.");
+    if (res < 0) return exit_with_error_msg(fhdl, CefpycoC_Err_Invalid_URI);
     params_i->name_len = res;
 
     params_i->hoplimit = 32;
@@ -211,7 +211,7 @@ int set_basic_data_params(CefT_Object_TLVs* params_d,
     
     memset(params_d, 0, sizeof(CefT_Object_TLVs));
     res = cef_frame_conversion_uri_to_name(uri, params_d->name);
-    if (res < 0) return exit_with_error_msg(fhdl, "Failed to convert URI to name.");
+    if (res < 0) return exit_with_error_msg(fhdl, CefpycoC_Err_Invalid_URI);
     params_d->name_len = res;
     
     memcpy(params_d->payload, payload, sizeof(char) * payload_len);
