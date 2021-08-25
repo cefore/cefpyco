@@ -99,7 +99,6 @@ class CcnPacketInfo:
         self.is_failed = not self.is_succeeded
         self.version = res[1]
         self.type = res[2]
-        stderr.write(f"----- [DEBUG] returncode: {res[3]} ({type(res[3])})\n")
         self.returncode = res[3] if self.is_return else None
         self.actual_data_len = res[4]
         self.name = res[5]
