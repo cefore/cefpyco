@@ -354,7 +354,7 @@ Since July 2021, Cefore has supported end chunk numbers, which makes the above t
 ### cefappconsumer.py
 
 * Usage.
-    ````
+    ```
     cefappconsumer.py [OPTIONS] name
     ````
 * Summary
@@ -381,9 +381,9 @@ Since July 2021, Cefore has supported end chunk numbers, which makes the above t
 ### cefappproducer.py
 
 * Usage.
-    ````
-    cefappproducer.py [OPTIONS] name [arg].
     ```
+    cefappproducer.py [OPTIONS] name [arg].
+    ````
 * Summary
     - Create Data from the contents specified by ``arg'' etc., and provide Data with the content name specified by ``name''.
 * Options.
