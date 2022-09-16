@@ -15,7 +15,7 @@
     - [Connecting to and disconnecting from cefnetd](#Connecting-to-and-disconnecting-from-cefnetd)
     - [Sending Interest packets](#Sending-Interest-Packets)
     - [Sending Data packets](#Sending-Data-Packets)
-    - [Receiving packets](#receiving-packets)
+    - [Receiving packets](#Receiving-packets)
     - [Creating Publisher app](#Creating-Publisher-App)
     - [Creating Consumer app](#Creating-Consumer-App)
   - [How to use CefApp](#How-to-use-cefapp)
@@ -165,7 +165,7 @@ import cefpyco
 
 with cefpyco.create_handle() as h:
     h.send_interest("ccnx:/test", 0)
-```
+````
 
 **With `h.send_interest(name, chunk_num)`, Interest packets are sent with the content `name` and `chunk_num`.**
 
@@ -203,7 +203,7 @@ import cefpyco
 
 with cefpyco.create_handle() as h:
     h.send_data("ccnx:/test", "hello", 0)
-```
+````
 
 **The `h.send_data(name, payload, chunk_num)` method requires that the content `name`, `chunk_num`, and payload(data in cob) be specified. **
 The payload type can be byte or string.
