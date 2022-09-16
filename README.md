@@ -3,15 +3,15 @@
 - [Cefore Python Compact package: cefpyco](#cefore-python-compact-package-cefpyco)
   - [Overview](#Overview)
   - [Installation](#Installation)
-    - [Installing Cefore](#cefore installation)
-    - [Installing cefpyco](#cefpyco installation)
+    - [Installing Cefore](#Installing Cefore)
+    - [Installing cefpyco](#Installing Cefpyco)
     - [Uninstall cefpyco](#cefpyco uninstallation)
   - [Configuration](#Configuration)
     - [cefpyco](#cefpyco)
     - [cefapp](#cefapp)
     - [c_src](#c_src)
     - [test](#test)
-  - [how to use cefpyco](#cefpyco)
+  - [How to use cefpyco](#cefpyco)
     - [Connecting to and disconnecting from cefnetd](#Connecting to and disconnecting from cefnetd)
     - Sending Interest Packets](#sending interest packets)
     - Sending Data Packets](#sending data packets)
@@ -50,7 +50,7 @@ First, install Cefore on your PC (target version: 0.8.3 or later).
 To install Cefore, visit the Cefore website (https://cefore.net) or GitHub (https://github.com/cefore/cefore).
 (The user manual is available at https://cefore.net/instruction and the source code is available at https://cefore.net/download).
 
-### Installing cefpyco
+### Installing Cefpyco
 
 Execute the following commands in an environment where Cefore and Python are installed.
 (Do not forget to add "." with cmake).
