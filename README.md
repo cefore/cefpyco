@@ -301,7 +301,7 @@ For example, in addition to `ccnx:/test`, you can receive Interests with a name 
 
 Then, by using the “while loop” syntax, the Publisher app continues to execute `h.receive()`.
 If the target Interest is successfully received, `h.send_data()` is called and a Data packet will be sent back.
-Because this is a Publisher app, it will keep looping indefinitely. If you want to provide the content just once, you can break the loop by inserting `break'.
+Because this is a Publisher app, it will keep looping indefinitely. If you want to provide the content just once, you can break the loop by inserting `break`.
 
 ### Creating Consumer app
 
