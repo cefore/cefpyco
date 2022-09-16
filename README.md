@@ -13,7 +13,7 @@
     - [test](#test)
   - [How to use cefpyco](#cefpyco)
     - [Connecting to and disconnecting from cefnetd](#Connecting_to_and_disconnecting_from_cefnetd)
-    - [Sending Interest Packets](#Sending Interest Packets)
+    - [Sending Interest Packets](#sending-interest-packets)
     - [Sending Data Packets](#Sending_Data_Packets)
     - [Receiving Packets](#Receiving_Packets)
     - [Creating Publisher App](#Creating_Publisher_App)
