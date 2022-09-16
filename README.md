@@ -120,7 +120,7 @@ The files in each directory are as follows.
 
 The following describes how to communicate with cefnetd using cefpyco.
 
-### Connecting_to_and_disconnecting_from_cefnetd
+### Connecting to and disconnecting from cefnetd
 
 **The process from connection to disconnection can be implemented using `cefpyco.create_handle()`. **
 
