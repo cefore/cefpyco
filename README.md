@@ -3,9 +3,9 @@
 - [Cefore Python Compact package: cefpyco](#cefore-python-compact-package-cefpyco)
   - [Overview](#Overview)
   - [Installation](#Installation)
-    - [Installing Cefore](#Installing_Cefore)
-    - [Installing Cefpyco](#Installing_Cefpyco)
-    - [Uninstalling Cefpyco](#Uninstalling_Cefpyco)
+    - [Installing Cefore](#Installing-Cefore)
+    - [Installing Cefpyco](#Installing-Cefpyco)
+    - [Uninstalling Cefpyco](#Uninstalling-Cefpyco)
   - [Configuration](#Configuration)
     - [cefpyco](#cefpyco)
     - [cefapp](#cefapp)
@@ -13,7 +13,7 @@
     - [test](#test)
   - [How to use cefpyco](#cefpyco)
     - [Connecting to and disconnecting from cefnetd](#Connecting_to_and_disconnecting_from_cefnetd)
-    - [Sending Interest Packets](#'Sending Interest Packets')
+    - [Sending Interest Packets](#Sending Interest Packets)
     - [Sending Data Packets](#Sending_Data_Packets)
     - [Receiving Packets](#Receiving_Packets)
     - [Creating Publisher App](#Creating_Publisher_App)
@@ -156,7 +156,7 @@ handle.begin()
 handle.end()
 ````
 
-###'Sending Interest packets'
+### Sending Interest packets
 
 The following is an example implementation of sending an Interest packet.
 
