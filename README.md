@@ -16,9 +16,9 @@
     - [Sending Interest Packets](#Sending_Interest_Packets)
     - [Sending Data Packets](#Sending_Data_Packets)
     - [Receiving Packets](#Receiving_Packets)
-    - [Create Publisher App](#Create Publisher App)
-    - Creating a Consumer App](#Creating a consumer app)
-  - [How to use CefApp](#How to use cefapp)
+    - [Creating Publisher App](#Creating_Publisher_App)
+    - [Creating Consumer App](#Creating_Consumer_App)
+  - [How to use CefApp](#How_to_use_cefapp)
     - [Overview](#Overview-1)
     - [cefappconsumer.py](#cefappconsumerpy)
     - [cefappproducer.py](#cefappproducerpy)
@@ -279,11 +279,11 @@ The following points should be noted.
     We recommend that you implement such that the application receives packets from cefnetd by calling the receive method at appropriate intervals.
 * Data packets are inserted into a structure prepared for Cefore apps and sent to the app; therefore, `actual_data_len` may not necessarily match the length of the CCNx packet format specification.
 
-### Creating a Publisher app
+### Creating_Publisher_App
 
 Using the previous functions, we can create a Publisher app (an app that listens for Interests and then sends back Data packets). The following example implements a Publisher app.
 
-````python
+```python
 import cefpyco
 
 with cefpyco.create_handle() as h:
@@ -303,11 +303,11 @@ Then, by using the “while loop” syntax, the Publisher app continues to execu
 If the target Interest is successfully received, `h.send_data()` is called and a Data packet will be sent back.
 Because this is a Publisher app, it will keep looping indefinitely. If you want to provide the content just once, you can break the loop by inserting `break'.
 
-### Creating a Consumer app
+### Creating_Consumer_app
 
 The following example implements a Consumer app (that waits for Data after sending an Interest).
 
-````python
+```python
 from time import sleep
 import cefpyco
 
@@ -330,7 +330,7 @@ In this example, the receive method loops until Data is received. Note that if t
 
 In this example, the loop exits after one chunk is received. It is also possible to receive content consisting of multiple chunks by changing each chunk number. If you wish to receive content consisting of many chunks, you can send multiple Interests concurrently for high-speed communication. However, in such a case, you must make preparations for the sending of a large number of Interests simultaneously (due to the PIT size configured in cefnetd.conf and the limitation of the processing performance). It is recommended that you implement pipeline processing for such cases.
 
-## How to use CefApp
+## How_to_use_CefApp
 
 The following describes the cefappconsumer and cefappproducer tools, which are content request and provision tools, respectively, implemented using CefpycoHandle.
 
