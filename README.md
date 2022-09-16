@@ -2,7 +2,7 @@
 
 - [Cefore Python Compact package: cefpyco](#cefore-python-compact-package-cefpyco)
   - [Overview](#Overview)
-  - [How to install](#How to install)
+  - [Installation](#Installation)
     - [Installing Cefore](#cefore installation)
     - [Installing cefpyco](#cefpyco installation)
     - [Uninstall cefpyco](#cefpyco uninstallation)
