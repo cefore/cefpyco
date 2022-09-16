@@ -13,9 +13,9 @@
     - [test](#test)
   - [How to use cefpyco](#cefpyco)
     - [Connecting to and disconnecting from cefnetd](#Connecting_to_and_disconnecting_from_cefnetd)
-    - Sending Interest Packets](#Sending_Interest_Packets)
-    - Sending Data Packets](#Sending_Data_Packets)
-    - Receive Packets](#Receive_Packets)
+    - [Sending Interest Packets](#Sending_Interest_Packets)
+    - [Sending Data Packets](#Sending_Data_Packets)
+    - [Receiving Packets](#Receiving_Packets)
     - [Create Publisher App](#Create Publisher App)
     - Creating a Consumer App](#Creating a consumer app)
   - [How to use CefApp](#How to use cefapp)
@@ -179,7 +179,7 @@ with cefpyco.create_handle() as h:
         h.send_interest("ccnx:/test", i)
 ````
 
-Note that this is only used for sending Interest packets. For receiving Data packets, see "Receive packets" described below.
+Note that this is only used for sending Interest packets. For receiving Data packets, see "Receiving packets" described below.
 
 It also has the following keyword arguments.
 
@@ -208,7 +208,7 @@ with cefpyco.create_handle() as h:
 **The `h.send_data(name, payload, chunk_num)` method requires that the content `name`, `chunk_num`, and payload(data in cob) be specified. **
 The payload type can be byte or string.
 
-As with the Interest packet, this is a method that only sends Data packets. For responding to an Interest packet after receiving it, see "Receive packets" below.
+As with the Interest packet, this is a method that only sends Data packets. For responding to an Interest packet after receiving it, see "Receiving packets" below.
 
 It also has the following keyword arguments.
 
@@ -218,7 +218,7 @@ It also has the following keyword arguments.
 * `cache_time`: Recommended cache time for the content. The relative time from the current time in milliseconds.
 
 
-### Receive packets
+### Receiving packets
 
 **The method for receiving a packet is `h.receive()`, and it returns the CcnPacketInfo object. **
 
