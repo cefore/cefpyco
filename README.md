@@ -13,7 +13,7 @@
     - [test](#test)
   - [How to use cefpyco](#cefpyco)
     - [Connecting to and disconnecting from cefnetd](#Connecting_to_and_disconnecting_from_cefnetd)
-    - [Sending Interest Packets](#Sending_Interest_Packets)
+    - [Sending Interest Packets](#Sending-Interest-Packets)
     - [Sending Data Packets](#Sending_Data_Packets)
     - [Receiving Packets](#Receiving_Packets)
     - [Creating Publisher App](#Creating_Publisher_App)
@@ -156,7 +156,7 @@ handle.begin()
 handle.end()
 ````
 
-### Sending Interest packets
+### Sending-Interest-packets
 
 The following is an example implementation of sending an Interest packet.
 
