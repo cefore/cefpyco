@@ -224,7 +224,7 @@ It also has the following keyword arguments.
 
 The following is an example implementation, which waits for Data reception after sending an Interest (it also shows the details of the last received Data).
 
-```python
+````python
 import cefpyco
 
 with cefpyco.create_handle() as h:
@@ -283,7 +283,7 @@ The following points should be noted.
 
 Using the previous functions, we can create a Publisher app (an app that listens for Interests and then sends back Data packets). The following example implements a Publisher app.
 
-```python
+````python
 import cefpyco
 
 with cefpyco.create_handle() as h:
@@ -307,7 +307,7 @@ Because this is a Publisher app, it will keep looping indefinitely. If you want 
 
 The following example implements a Consumer app (that waits for Data after sending an Interest).
 
-```python
+````python
 from time import sleep
 import cefpyco
 
