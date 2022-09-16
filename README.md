@@ -156,7 +156,7 @@ handle.begin()
 handle.end()
 ````
 
-### Sending_Interest_packets
+### Sending Interest packets
 
 The following is an example implementation of sending an Interest packet.
 
