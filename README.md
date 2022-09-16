@@ -44,13 +44,13 @@ It has the following features.
 
 ## Installation
 
-### Installing_Cefore	
+### Installing Cefore	
 
 First, install Cefore on your PC (target version: 0.8.3 or later).
 To install Cefore, visit the Cefore website (https://cefore.net) or GitHub (https://github.com/cefore/cefore).
 (The user manual is available at https://cefore.net/instruction and the source code is available at https://cefore.net/download).
 
-### Installing_Cefpyco
+### Installing Cefpyco
 
 Execute the following commands in an environment where Cefore and Python are installed.
 (Do not forget to add "." with cmake).
@@ -66,7 +66,7 @@ After executing the above commands, you can `import cefpyco` from any directory.
 
 For Python packages, setuptools is required for installation, but click and numpy are not necessary if you do not use cefapp.
 
-### Uninstalling_Cefpyco
+### Uninstalling Cefpyco
 
 You can uninstall cefpyco by running `sudo make uninstall`.
 
