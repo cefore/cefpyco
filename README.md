@@ -23,8 +23,7 @@
     - [cefappconsumer.py](#cefappconsumerpy)
     - [cefappproducer.py](#cefappproducerpy)
     - [Example](#Example)
-  - [Notes](#Cautions)
-  - [Credit](#credit)
+  - [Notes](#Notes)
 
 ## Overview
 
@@ -430,7 +429,7 @@ YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: Send interest (name: ccnx:/test, #chunk
 hello
 ````
 
-## Notes.
+## Notes
 
 * This tool was developed to simplify application development using Cefore. Bug reports are welcome.
     - It has only been confirmed to work on Ubuntu 16.04 and Raspberry Pi (as of cefpyco 0.2.0).
