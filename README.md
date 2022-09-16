@@ -3,19 +3,19 @@
 - [Cefore Python Compact package: cefpyco](#cefore-python-compact-package-cefpyco)
   - [Overview](#Overview)
   - [Installation](#Installation)
-    - [Installing Cefore](#Installing Cefore)
-    - [Installing Cefpyco](#Installing Cefpyco)
-    - [Uninstalling Cefpyco](#Uninstalling Cefpyco)
+    - [Installing Cefore](#Installing_Cefore)
+    - [Installing Cefpyco](#Installing_Cefpyco)
+    - [Uninstalling Cefpyco](#Uninstalling_Cefpyco)
   - [Configuration](#Configuration)
     - [cefpyco](#cefpyco)
     - [cefapp](#cefapp)
     - [c_src](#c_src)
     - [test](#test)
   - [How to use cefpyco](#cefpyco)
-    - [Connecting to and disconnecting from cefnetd](#Connecting to and disconnecting from cefnetd)
-    - Sending Interest Packets](#sending interest packets)
-    - Sending Data Packets](#sending data packets)
-    - Receive Packets](#Receive Packets)
+    - [Connecting to and disconnecting from cefnetd](#Connecting_to_and_disconnecting_from_cefnetd)
+    - Sending Interest Packets](#Sending_Interest_Packets)
+    - Sending Data Packets](#Sending_Data_Packets)
+    - Receive Packets](#Receive_Packets)
     - [Create Publisher App](#Create Publisher App)
     - Creating a Consumer App](#Creating a consumer app)
   - [How to use CefApp](#How to use cefapp)
@@ -44,13 +44,13 @@ It has the following features.
 
 ## Installation
 
-### Installing Cefore	
+### Installing_Cefore	
 
 First, install Cefore on your PC (target version: 0.8.3 or later).
 To install Cefore, visit the Cefore website (https://cefore.net) or GitHub (https://github.com/cefore/cefore).
 (The user manual is available at https://cefore.net/instruction and the source code is available at https://cefore.net/download).
 
-### Installing Cefpyco
+### Installing_Cefpyco
 
 Execute the following commands in an environment where Cefore and Python are installed.
 (Do not forget to add "." with cmake).
@@ -66,7 +66,7 @@ After executing the above commands, you can `import cefpyco` from any directory.
 
 For Python packages, setuptools is required for installation, but click and numpy are not necessary if you do not use cefapp.
 
-### Uninstalling cefpyco
+### Uninstalling_Cefpyco
 
 You can uninstall cefpyco by running `sudo make uninstall`.
 
@@ -120,7 +120,7 @@ The files in each directory are as follows.
 
 The following describes how to communicate with cefnetd using cefpyco.
 
-### Connecting to and disconnecting from cefnetd
+### Connecting_to_and_disconnecting_from_cefnetd
 
 **The process from connection to disconnection can be implemented using `cefpyco.create_handle()`. **
 
@@ -156,7 +156,7 @@ handle.begin()
 handle.end()
 ````
 
-### Sending Interest packets
+### Sending_Interest_packets
 
 The following is an example implementation of sending an Interest packet.
 
@@ -194,7 +194,7 @@ SMI has the following two characteristics.
 (Example: If you request `ccnx:/a` in SMI, you will receive all chunks named `ccnx:/a/Chunk=0`, `ccnx:/a/Chunk=1`, ..., etc.).
 This is mainly useful for real-time video streaming.
 
-### Sending Data packets
+### Sending_Data_packets
 
 The following is an example implementation of the process of sending Data packets.
 
