@@ -3,8 +3,8 @@
 - [Cefore Python Compact package: cefpyco](#cefore-python-compact-package-cefpyco)
   - [Overview](#Overview)
   - [Installation](#Installation)
-    - [Installing Cefore](#installing-cefore)
-    - [Installing Cefpyco](#installing-Cefpyco)
+    - [Installing Cefore](#Installing-Cefore)
+    - [Installing Cefpyco](#Installing-Cefpyco)
     - [Uninstalling Cefpyco](#Uninstalling-Cefpyco)
   - [Configuration](#Configuration)
     - [cefpyco](#cefpyco)
@@ -12,13 +12,13 @@
     - [c_src](#c_src)
     - [test](#test)
   - [How to use cefpyco](#cefpyco)
-    - [Connecting to and disconnecting from cefnetd](#Connecting_to_and_disconnecting_from_cefnetd)
-    - [Sending Interest Packets](#sending-interest-packets)
-    - [Sending Data Packets](#Sending_Data_Packets)
-    - [Receiving Packets](#Receiving_Packets)
-    - [Creating Publisher App](#Creating_Publisher_App)
-    - [Creating Consumer App](#Creating_Consumer_App)
-  - [How to use CefApp](#How_to_use_cefapp)
+    - [Connecting to and disconnecting from cefnetd](#Connecting-to-and-disconnecting-from-cefnetd)
+    - [Sending Interest Packets](#Sending-Interest-Packets)
+    - [Sending Data Packets](#Sending-Data-Packets)
+    - [Receiving Packets](#Receiving-Packets)
+    - [Creating Publisher App](#Creating-Publisher-App)
+    - [Creating Consumer App](#Creating-Consumer-App)
+  - [How to use CefApp](#How-to-use-cefapp)
     - [Overview](#Overview-1)
     - [cefappconsumer.py](#cefappconsumerpy)
     - [cefappproducer.py](#cefappproducerpy)
@@ -194,7 +194,7 @@ SMI has the following two characteristics.
 (Example: If you request `ccnx:/a` in SMI, you will receive all chunks named `ccnx:/a/Chunk=0`, `ccnx:/a/Chunk=1`, ..., etc.).
 This is mainly useful for real-time video streaming.
 
-### Sending_Data_packets
+### Sending Data packets
 
 The following is an example implementation of the process of sending Data packets.
 
@@ -279,7 +279,7 @@ The following points should be noted.
     We recommend that you implement such that the application receives packets from cefnetd by calling the receive method at appropriate intervals.
 * Data packets are inserted into a structure prepared for Cefore apps and sent to the app; therefore, `actual_data_len` may not necessarily match the length of the CCNx packet format specification.
 
-### Creating_Publisher_App
+### Creating Publisher App
 
 Using the previous functions, we can create a Publisher app (an app that listens for Interests and then sends back Data packets). The following example implements a Publisher app.
 
@@ -303,7 +303,7 @@ Then, by using the “while loop” syntax, the Publisher app continues to execu
 If the target Interest is successfully received, `h.send_data()` is called and a Data packet will be sent back.
 Because this is a Publisher app, it will keep looping indefinitely. If you want to provide the content just once, you can break the loop by inserting `break'.
 
-### Creating_Consumer_app
+### Creating Consumer app
 
 The following example implements a Consumer app (that waits for Data after sending an Interest).
 
@@ -330,7 +330,7 @@ In this example, the receive method loops until Data is received. Note that if t
 
 In this example, the loop exits after one chunk is received. It is also possible to receive content consisting of multiple chunks by changing each chunk number. If you wish to receive content consisting of many chunks, you can send multiple Interests concurrently for high-speed communication. However, in such a case, you must make preparations for the sending of a large number of Interests simultaneously (due to the PIT size configured in cefnetd.conf and the limitation of the processing performance). It is recommended that you implement pipeline processing for such cases.
 
-## How_to_use_CefApp
+## How to use CefApp
 
 The following describes the cefappconsumer and cefappproducer tools, which are content request and provision tools, respectively, implemented using CefpycoHandle.
 
@@ -406,7 +406,7 @@ Since July 2021, Cefore has supported end chunk numbers, which makes the above t
         - Create a content from a file named `b` and serve it under the name ccnx:/test/a.
 
 
-### Communications example
+### Example
 
 Below is an example of communication in which cefappproducer publishes the string "hello" as a Data packet with the name `ccnx:/test`, and cefappconsumer fetches it.
 
