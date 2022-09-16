@@ -22,7 +22,7 @@
     - [Overview](#Overview-1)
     - [cefappconsumer.py](#cefappconsumerpy)
     - [cefappproducer.py](#cefappproducerpy)
-    - [example communication](#example communication)
+    - [Example](#Example)
   - [Notes](#Cautions)
   - [Credit](#credit)
 
