@@ -313,9 +313,13 @@ MILESTONE
             		return 0;
             	}
 	    }
-	    Py_BEGIN_ALLOW_THREADS
+	    
 	    printf("%d\n", waittime);
+	    
+	    Py_BEGIN_ALLOW_THREADS
 	    sleep(1);
+	    Py_END_ALLOW_THREADS
+		    
 	    elapsedtime += waittime;
 	    waittime += 500 * tryn * tryn;
 	    tryn++;
