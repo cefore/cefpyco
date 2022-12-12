@@ -1,299 +1,229 @@
-<!--
-Copyright (c) 2018, National Institute of Information and Communications
-Technology (NICT). All rights reserved.
+# Cefore Python Compact package: cefpyco
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-1. Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-notice this list of conditions and the following disclaimer in the
-documentation and/or other materials provided with the distribution.
-3. Neither the name of the NICT nor the names of its contributors may be
-used to endorse or promote products derived from this software
-without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE NICT AND CONTRIBUTORS "AS IS" AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE NICT OR CONTRIBUTORS BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-SUCH DAMAGE.
--->
-
-# Cefore Python Compact パッケージ: cefpyco
-
-- [Cefore Python Compact パッケージ: cefpyco](#cefore-python-compact-パッケージ-cefpyco)
-  - [概要](#概要)
-  - [インストール方法](#インストール方法)
-    - [Ceforeのインストール](#ceforeのインストール)
-    - [cefpycoのインストール](#cefpycoのインストール)
-    - [cefpycoのアンインストール](#cefpycoのアンインストール)
-  - [構成](#構成)
+- [Cefore Python Compact package: cefpyco](#cefore-python-compact-package-cefpyco)
+  - [Overview](#Overview)
+  - [Installation](#Installation)
+    - [Installing Cefore](#Installing-Cefore)
+    - [Installing Cefpyco](#Installing-Cefpyco)
+    - [Uninstalling Cefpyco](#Uninstalling-Cefpyco)
+  - [Configuration](#Configuration)
     - [cefpyco](#cefpyco)
     - [cefapp](#cefapp)
     - [c_src](#c_src)
     - [test](#test)
-  - [cefpycoの使用方法](#cefpycoの使用方法)
-    - [cefnetdへの接続と切断](#cefnetdへの接続と切断)
-    - [Interestパケットの送信](#interestパケットの送信)
-    - [Dataパケットの送信](#dataパケットの送信)
-    - [パケットの受信](#パケットの受信)
-    - [Publisherアプリの作成](#publisherアプリの作成)
-    - [Consumerアプリの作成](#consumerアプリの作成)
-  - [CefAppの使用方法](#cefappの使用方法)
-    - [概要](#概要-1)
+  - [How to use cefpyco](#cefpyco)
+    - [Connecting to and disconnecting from cefnetd](#Connecting-to-and-disconnecting-from-cefnetd)
+    - [Sending Interest packets](#Sending-Interest-Packets)
+    - [Sending Data packets](#Sending-Data-Packets)
+    - [Receiving packets](#Receiving-packets)
+    - [Creating Publisher app](#Creating-Publisher-App)
+    - [Creating Consumer app](#Creating-Consumer-App)
+  - [How to use CefApp](#How-to-use-cefapp)
+    - [Overview](#Overview-1)
     - [cefappconsumer.py](#cefappconsumerpy)
     - [cefappproducer.py](#cefappproducerpy)
-    - [通信例](#通信例)
-  - [注意事項](#注意事項)
-  - [更新履歴](#更新履歴)
-  - [Credit](#credit)
+    - [Example](#Example)
+  - [Notes](#Notes)
 
-## 概要
+## Overview
 
-cefpycoはceforeアプリ用pythonパッケージである。
-以下のような特徴を持つ。
+cefpyco is a Python package for Cefore applications.
+It has the following features.
 
-* もともとC言語で記述されているceforeの機能をpythonから呼び出せる。
-  * pythonを用いてC言語よりも簡単に開発できる。
-* InterestやDataの送受信が関数1つで実行できる。
-* withブロックをサポートしており、cefnetdとの接続の初期化・終了処理を簡明に記述できる。
-* 現在のceforeでは提供されていない「受信したInterestに応答してDataを返送するアプリケーション」の開発が容易にできる。
-  * 言い換えれば、csmgrdを介さずにコンテンツを提供できる。
-* (cefpyco 0.3.0以降) Optional TLVに対応(チャンク番号・終端チャンク番号・最大ホップ数・Interestライフタイム・コンテンツ期限・キャッシュ期限)。
-  * この修正のため、0.3.0以前と以降で、CefpycoHandle.send_data()の引数の順序が変わっているので注意。
-* (cefpyco 0.6.0, Cefore v0.8.3 以降) InterestReturn パケットに対応。
-  * InterestReturn は Interest パケロス時に、ヘッダだけ付け替えた Interest を制御メッセージとして返送されるもの(NACK のように機能する)。
-  * Interest の上流転送設定を行っていない場合等にも No Route の InterestReturn が返送される。上流経路設定や Producer アプリ起動をしていない場合は要注意。
+* Cefore functions, which are written in C, can be called from Python programs.
+  * It is easier to develop Cefore applications in Python than in C.
+* Interest and Data transmission/reception can be executed with a single function.
+* Support for “with” blocks, enabling the easy programming of initialization and termination of connections with cefnetd.
+* A simple application that sends back Data in response to receiving an Interest can be easily developed.
+  * This means content can be provided without accessing csmgrd.
+* Optional TLVs are supported (e.g., chunk number, termination chunk number, maximum hop count, Interest lifetime, content expiration, and cache expiration).
+* InterestReturn packets are supported.
+  * InterestReturn is an Interest packet returned only when an Interest packet is lost (it works like NACK).
+  * Note that InterestReturn with "No Route" is returned when the upstream router or FIB is not appropriately set.
 
-## インストール方法
+## Installation
 
-### Ceforeのインストール
+### Installing Cefore	
 
-まず、PCにCeforeをインストールする(対象バージョン:0.8.3以降)。
-CeforeのインストールはCeforeのサイト([https://cefore.net](https://cefore.net))
-またはgithub [https://github.com/cefore/cefore](https://github.com/cefore/cefore) から行える
-（[Instruction](https://cefore.net/instruction) からユーザマニュアル、  [Download](https://cefore.net/download) から ソースコードを入手可能）。
+First, install Cefore on your PC (target version: 0.8.3 or later).
+To install Cefore, visit the Cefore website (https://cefore.net) or GitHub (https://github.com/cefore/cefore).
+(The user manual is available at https://cefore.net/instruction and the source code is available at https://cefore.net/download).
 
-### cefpycoのインストール
+### Installing Cefpyco
 
-Ceforeおよびpythonがインストールされている環境で、以下のコマンドを実行する
-(cmakeは"."をつけ忘れないように注意)。
+Execute the following commands in an environment where Cefore and Python are installed.
+(Do not forget to add "." with cmake).
 
 ```
 sudo apt-get install cmake python3-pip
 pip3 install setuptools click numpy
 cmake .
 sudo make install
-```
+````
 
-以降、任意のディレクトリから`import cefpyco`が可能となる。
+After executing the above commands, you can `import cefpyco` from any directory.
 
-pythonパッケージについて、setuptoolsはインストールに必須だが、
-clickとnumpyはcefappを使わないならば不要。
+For Python packages, setuptools is required for installation, but click and numpy are not necessary if you do not use cefapp.
 
-### cefpycoのアンインストール
+### Uninstalling Cefpyco
 
-アンインストール時には`sudo make uninstall`を実行すればよい。
+You can uninstall cefpyco by running `sudo make uninstall`.
 
-## 構成
+## Configuration
 
-以下のファイルおよびディレクトリから構成される。
+This cefpyco package consists of the following files and directories.
 
-* `README.md(.html)`: 本文書ファイル。
-* `LICENSE.md(.html)`: ライセンスファイル。
-* `CmakeLists.txt`: cmake用設定ファイル。
-* `cefpyco/`: cefpycoのPythonパッケージ本体。
-* `cefapp/`: cefpycoを用いたパイプライン通信可能なアプリケーション例。
-* `c_src/`: Cefore機能呼び出しのためのC言語コード。
-* `test/`: テスト用コード。
-* `setup.py`: cefpycoインストール用設定の書かれたファイル。
+* `README.md(.html)`: This document file.
+* `LICENSE.md(.html)`: License file.
+* `CmakeLists.txt`: Configuration file for cmake.
+* `cefpyco/`: Main Python package for cefpyco.
+* `cefapp/`: Example applications for cefpyco.
+* `c_src/`: C code for Cefore function calls.
+* `setup.py`: File containing configuration for cefpyco installation.
 
-以下では、各ディレクトリ内のファイルの説明を行う。
+The files in each directory are as follows.
 
 ### cefpyco
 
-* `__init__.py`: cefpycoパッケージのimport時に実行されるファイル。
-* `core.py`: cefpycoの主要機能の書かれたファイル。
+* `__init__.py`: File to be executed when importing a cefpyco package.
+* `core.py`: File describing the main functions of cefpyco.
 
 ### cefapp
 
-* `cefapp.py`: cefpycoを用いたパイプライン通信が可能なアプリケーション用クラスCefAppを提供。
-* `cefappproducer.py`: CefAppを用いたConsumerアプリケーション。
-* `cefappconsumer.py`: CefAppを用いたProducerアプリケーション。
-* `test/test_cefapp.py`: cefappのテスト用ファイル。
-
-<!-- 
-開発者向け情報: 
-test_cefapp.pyはpytestを利用している。
-cefappディレクトリまたはcefapp/testディレクトリ下で`pytest`を実行すれば機能をテスト可能。
-mockを使用しているため、cefnetdが起動していなくても機能をテストできる。
--->
+* `cefapp.py`: File that provides the CefApp class for applications that can communicate with pipelines using cefpyco.
+* `cefappproducer.py`: Consumer application using CefApp.
+* `cefappconsumer.py`: Producer application using CefApp.
 
 ### c_src
 
-* `pywrap_cefpyco.c`: CeforeのPythonラッパー。cefpyco.cの関数をpythonで使用できるようにする。
-* `cefpyco.c(.h)`: Ceforeの機能をラップして単純化した関数を提供。
-* `cefpyco_parse.c(.h)`: cef_client_read関数で受信したTLV等を解析するための関数を提供。
-* `cefpyco_def.h`: 各種定数等の定義。
-* `cefpyco_util.c(.h)`: 便利関数群。
-* `cefparse/cpcparse_tlv.c(.h)`: TLVヘッダ解析用関数を提供。
-* `cefparse/cpcparse_type.c(.h)`: 解析途中の情報を保持するcpcparse_parse_info構造体および関連関数を定義。
-    - cef_client_read関数から得たバッファを解析する関数をtry_parse型関数で定義している。
-* `cefparse/cpcparse_app_frame_7_5.c(.h)`: 受信したCeforeアプリ用データ(`struct cef_app_frame`)を解析する関数を提供。Dataパケット受信に利用。Cefore 0.7.5以降用。
-* `cefparse/cpcparse_interest.c(.h)`: 受信したInterestパケットを解析する関数を提供。Cefore 0.7.5以降用。
-* `cefparse/cpcparse_app_frame.c(.h)`: 受信したCeforeアプリ用データ(`struct cef_app_frame`)を解析する関数を提供。Dataパケット受信に利用していた。Cefore 0.7.5以前のもの。
-* `cefparse/cpcparse_interest.c(.h)`: 受信したInterestパケットを解析する関数を提供していた。Cefore 0.7.5以前のもの。
-* `test/test_cefpyco.c`: cefpyco.cの自動テスト用コード。cefnetdが起動している状態で実行するとテストを実行できる。
-* `test/run_cefpyco.c`: cefpyco.cの手動テスト用コード。引数の数に応じて5つの通信テスト用関数を実行できる。
+* `pywrap_cefpyco.c`: Python wrapper for Cefore that calls functions defined in cefpyco.c from Python programs.
+* `cefpyco.c(.h)`: Wraps Cefore functions and provides simplified functions.
+* `cefpyco_parse.c(.h)`: Provides functions to parse TLVs received by the cef_client_read function.
+* `cefpyco_def.h`: Definition of various constants.
+* `cefpyco_util.c(.h)`: Utilities.
+* `cefparse/cpcparse_tlv.c(.h)`: Provides functions for parsing TLV headers.
+* `cefparse/cpcparse_type.c(.h)`: Definitions of the cpcparse_parse_info structure and related functions to hold information during parsing.
+* `cefparse/cpcparse_app_frame_7_5.c(.h)`: Provides functions to parse received Data (`struct cef_app_frame`). Used in Cefore 0.7.5 or later versions.
+* `cefparse/cpcparse_app_frame.c(.h)`: Provides functions to parse received Data (`struct cef_app_frame`). Used in versions earlier than Cefore 0.7.5.
+* `cefparse/cpcparse_interest.c(.h)`: Provides functions to parse received Interest packets. Used in Cefore 0.7.5 or later versions.
 
-また、各ディレクトリにcmake用の設定ファイルとして`CMakeLists.txt`が存在する。
+`CMakeLists.txt` exists in each directory as a configuration file for cmake.
 
 ### test
 
-* `cefpycotest.py`: 共有ライブラリlibcefpyco.soの機能の手動テスト用のコード。
-* `test_libcefpycotest.py`: 共有ライブラリlibcefpyco.soの機能の自動テスト用のコード。
-* `test_core.py`: cefpyco/core.pyの自動テスト用のコード。
+* `cefpycotest.py`: Code for manual testing of features in the libcefpyco.so shared library.
+* `test_libcefpycotest.py`: Code for automatic testing of features in the libcefpyco.so shared library.
+* `test_core.py`: Code for automatic testing of cefpyco/core.py.
 
-<!-- 
-開発者向け情報: 
-libcefpyco.soは、親ディレクトリ下で`cmake .`の代わりに`cmake -Dtest=on`を実行後、
-`make`を実行することで得られる(インストール後に生成されるbuildディレクトリ下にも存在する)。
-idを指定することで、c_src/test/test_cefpyco.cと同様に5つの通信テスト用関数を実行できる。
-pytestの自動テストスクリプトではなく、手動で実行し、正常に動作しているか確認するためのもの。
--->
+## How to use cefpyco
 
-## cefpycoの使用方法
+The following describes how to communicate with cefnetd using cefpyco.
 
-以下では、cefpycoを用いてcefnetdと通信する方法を説明する。
+### Connecting to and disconnecting from cefnetd
 
-### cefnetdへの接続と切断
-
-**接続から切断までの処理は、`cefpyco.create_handle()`を用いて簡単に実装できる。**
+**The process from connection to disconnection can be implemented using `cefpyco.create_handle()`. **
 
 ```python
 import cefpyco
 
 with cefpyco.create_handle() as handle:
     # Write code.
-    pass
-```
+    Pass: # Write code.
+````
 
-handleはCefpycoHandleというクラスのインスタンスとなっており、これを通じて通信を行う。
-ファイル処理をwithブロックで行う場合と同様に、
-withブロックの開始時にCeforeとの接続初期化処理が行われ、
-withブロックの終了時に接続終了処理が行われる。
-使用者がwithブロック内で変数handleを用いる限り、Ceforeの初期化・終了処理に悩む必要はなく、
-アプリの処理を書くことに集中できる。
+“handle” is an instance of the CefpycoHandle class, through which applications communicate. As in the case of file processing with the “with” block, at the beginning of the “with” block, the connection with Cefore is initialized, and at the end of the “with” block, the connection is terminated.
 
-`create_handle()`関数は以下のオプション引数を持つ。
+The `create_handle()` function has the following optional arguments.
 
-* enable_log(デフォルト値: True): cefpycoのログを表示するか否かを設定する。
-* ceforedir(デフォルト値: None): cefnetd.conf等のceforeの設定ファイルのあるディレクトリを指定する。
-    - Noneを指定した場合、環境変数`CEFORE_DIR`の値を用いる。
-    - 環境変数も空の場合は、デフォルトのインストール先`/usr/local/cefore`を用いる。
-* portnum(デフォルト値: 9896): アプリが接続するcefnetdのポート番号。
+* enable_log(default value: True): Enables/disables displaying of cefpyco's log.
+* ceforedir(default value: None): Specifies the directory where Cefore configuration files such as cefnetd.conf are located.
+    - If `None' is specified, the value of the environment variable `CEFORE_DIR` is used.
+    - If the environment variable is also empty, the default installation directory `/usr/local/cefore` is used.
+* portnum (default value: 9896): cefnetd port number to which the application connects.
 
-注意点として、withブロックを使った場合、そのブロックの外でhandleを使用することはできない。
-また、ファイル処理とは異なり、
-**withブロック内で再度`cefpyco.create_handle()`を実行することはできない**(シングルトンパターン)。
+Note: If you use the “with” block, you cannot use “handle” outside of that block. Additionally, unlike file handling,
+**It is not possible to execute `cefpyco.create_handle()` again inside a “with” block** (singleton pattern).
 
-withブロックを使用したくない場合は、以下のようにCefpycoHandleインスタンスを生成し、
-使用開始までに`begin()`メソッドを呼び出し、
-使用終了後に`end()`メソッドを呼び出す。
+If you do not want to use the “with” block, create a CefpycoHandle instance (see below), call the `begin()` method before your code, and call the `end()` method at the end.
 
-```python
+````python
 import cefpyco
 
-handle = cefpyco.CefpycoHandle()
+CefpycoHandle()
 handle.begin()
 # Write code
 handle.end()
-```
+````
 
-### Interestパケットの送信
+### Sending Interest packets
 
-次に、Interestパケットを送出する処理の実装例を示す。
+The following is an example implementation of sending an Interest packet.
 
-```python
+````python
 import cefpyco
 
 with cefpyco.create_handle() as h:
     h.send_interest("ccnx:/test", 0)
-```
+````
 
-**`h.send_interest(name, chunk_num)`を用いて、
-コンテンツの名前`name`とチャンク番号`chunk_num`を指定して
-Interestパケットを送出できる。**
+**With `h.send_interest(name, chunk_num)`, Interest packets are sent with the content `name` and `chunk_num`.**
 
-複数のチャンクを受け取りたい場合は、複数のInterestを送出する必要がある。
-例えば、100個のチャンクを受け取りたい場合は以下のようにする。
+If you want to receive multiple chunks, you need to send multiple Interests. For example, if you want to receive 100 chunks, do the following.
 
-```python
+````python
 import cefpyco
 
 with cefpyco.create_handle() as h:
     for i in range(100):
         h.send_interest("ccnx:/test", i)
-```
+````
 
-注意点として、これはInterestパケットを送出するだけであり、
-Dataパケットを受信するためには後述の「パケットの受信」を用いる必要がある。
+Note that this is only used for sending Interest packets. For receiving Data packets, see "Receiving packets" described below.
 
-また、以下のキーワード引数を持つ。
+It also has the following keyword arguments.
 
-* `hop_limit`: Interestの最大ホップ数。
-* `lifetime`: Interestのライフタイム(ミリ秒で指定)。
+* `hop_limit`: The maximum number of hops for an Interest.
+* `lifetime`: Lifetime of an Interest (specified in milliseconds).
 
-また、通常のInterestではなく、Symbolic Interest (SMI)を用いたい場合は、
-**`h.send_symbolic_interest(name)`**を用いる。
-SMIは以下の2つの特徴を持つ。
-(1)cefnetdがDataを受信してもPITエントリが消えず、タイムアウトによってのみ削除される。
-(2)チャンク番号無しのprefixを指定すると、チャンク番号付きの任意のDataを受信できる
-(例:SMIで`ccnx:/a`を要求すると、`ccnx:/a/Chunk=0`, `ccnx:/a/Chunk=1`, ... 等の名前のDataすべてを受け取れる)。
-主に動画のリアルタイムストリーミング目的で用いるためのもの。
+In addition, if you wish to use Symbolic Interest (SMI) instead of regular Interest, use
+**`h.send_symbolic_interest(name)`**.
+SMI has the following two characteristics.
+(1) The PIT entry is not deleted when cefnetd receives Data, only after timeout.
+(2) Any chunk data can be received if a name prefix without a chunk number is specified.
+(Example: If you request `ccnx:/a` in SMI, you will receive all chunks named `ccnx:/a/Chunk=0`, `ccnx:/a/Chunk=1`, ..., etc.).
+This is mainly useful for real-time video streaming.
 
-### Dataパケットの送信
+### Sending Data packets
 
-Dataパケットを送出する処理の実装例は以下の通りである。
+The following is an example implementation of the process of sending Data packets.
 
-```python
+````python
 import cefpyco
 
 with cefpyco.create_handle() as h:
     h.send_data("ccnx:/test", "hello", 0)
-```
+````
 
-**`h.send_data(name, payload, chunk_num)`メソッドは、
-コンテンツの名前`name`とチャンク番号`chunk_num`に加えて、
-payload(cobのデータ)を指定する必要がある。**
-payload の型は byte または string を許容する。
+**The `h.send_data(name, payload, chunk_num)` method requires that the content `name`, `chunk_num`, and payload(data in cob) be specified. **
+The payload type can be byte or string.
 
-Interestパケットと同様、
-これはDataパケットを送出するだけのメソッドであり、
-Interestパケットを受信してから応答するためには後述の「パケットの受信」を用いる必要がある。
+As with the Interest packet, this is a method that only sends Data packets. For responding to an Interest packet after receiving it, see "Receiving packets" below.
 
-また、以下のキーワード引数を持つ。
+It also has the following keyword arguments.
 
-* `end_chunk_num`: コンテンツの終端チャンク番号。予め Producer がコンテンツ全体のチャンク数を知っている場合に、 Consumer にそれを伝えて要求すべきチャンク番号を知らせるために用いる。
-* `hop_limit`: 最大ホップ数。
-* `expiry`: コンテンツの有効期限。現在からの相対時間をミリ秒で指定する。
-* `cache_time`: コンテンツの推奨キャッシュ時間。現在からの相対時間をミリ秒で指定する。
+* `end_chunk_num`: End chunk number of the content. If the Producer knows the number of chunks of the entire content in advance, this is used to inform the Consumer of the chunk number to request.
+* `hop_limit`: Maximum number of hops.
+* `expiry`: Expiry time of the content. The relative time from the current time in milliseconds.
+* `cache_time`: Recommended cache time for the content. The relative time from the current time in milliseconds.
 
-### パケットの受信
 
-**パケットを受信するメソッドは`h.receive()`であり、
-CcnPacketInfoオブジェクトを返す。**
+### Receiving packets
 
-以下は、Interestを送信後、Dataを待ち受け、最後に受信したデータを表示する処理の実装例である。
+**The method for receiving a packet is `h.receive()`, and it returns the CcnPacketInfo object. **
 
-```python
+The following is an example implementation, which waits for Data reception after sending an Interest (it also shows the details of the last received Data).
+
+````python
 import cefpyco
 
 with cefpyco.create_handle() as h:
@@ -311,91 +241,72 @@ with cefpyco.create_handle() as h:
     print("info.payload:{0}".format(info.payload))
     print("info.payload_s:{0}".format(info.payload_s))
     print("info.payload_len:{0}".format(info.payload_len))
-```
+````
 
-**receiveメソッドはオプション引数`error_on_timeout`(デフォルト値: False)を持つメソッドである。
-メソッド実行後約4秒間待機し、受信できなかった場合は処理を戻す。**
-成功するまで受信したい場合は、while等のループ構文を使用する必要がある。
-この際、error_on_timeoutをTrueに指定すると、
-CefpycoHandleはCeforeとの接続を切断する
-(そのため、もう一度receiveしようとしても失敗する)。
+The **receive method has the optional argument `error_on_timeout` (default value: False).
+It waits for about 4 seconds after the method is executed and returns the process if it cannot receive the message. **
+If you want to receive packets until a successful packet reception, you need to use a loop syntax such as “while.”
+In this case, if error_on_timeout is set to “True,” CefpycoHandle disconnects from Cefore. (It cannot receive anything anymore.)
 
-receiveメソッドは、
-受信したパケットがInterestかDataかに関わらず、
-受信結果をCcnPacketInfoオブジェクトに入れて返す。
-このオブジェクトの各プロパティ値の意味は以下の通りである。
+The receive method returns the received result in a CcnPacketInfo object, regardless of whether the received packet is an Interest or Data packet. The meaning of each property value of this object is as follows.
 
-* is_succeeded/is_failed: 受信成功/失敗フラグ。
-* version: 受信したパケットのバージョン値。
-* type: 受信したパケットのタイプ値。Data/Interest/InterestReturn を見分けることが可能。
-* returncode: InterestReturn が返送されてきた場合の ReturnCode 値 ([RFC8609](https://datatracker.ietf.org/doc/html/rfc8609#section-4.2)参照)。
-* actual_data_len: 受信したパケット（またはデータ）のヘッダを含むバイト長。
-* name: string型で表された名前。
-* name_len: 名前の長さ。
-* chunk_num: チャンクの数。
-* end_chunk_num: コンテンツの最後のチャンク番号(Data送出時に設定したときのみ)。
-* payload: ペイロードのバイト列(空の場合は`(empty)`と表示される)。Python2ではstr、Python3ではbytesを返す。
-* payload_s: stringで表されたペイロード(空の場合は`(empty)`と表示される)。Python2ではunicode、Python3ではstrを返す。
-* payload_len: ペイロードの長さ。空の場合は0となる。
+* is_succeeded/is_failed: Success/failure flag of packet reception.
+* version: Version value of the received packet.
+* type: Type value of the received packet, which can distinguish Data/Interest/InterestReturn.
+* returncode: ReturnCode value if InterestReturn was returned (see [RFC8609] (https://datatracker.ietf.org/doc/html/rfc8609#section-4.2)).
+* actual_data_len: Byte length of the received packet (or data) including its header.
+* name: Name expressed in string type.
+* name_len: Length of the name.
+* chunk_num: Number of chunks.
+* end_chunk_num: Last chunk number of the content (available only when you set it at the data producer app.).
+* payload: Byte sequence of the payload (displayed as `(empty)` if the value is empty); returns “str” in Python 2, “bytes” in Python 3.
+* payload_len: Length of the payload. If it is empty, it is set to 0.
 
-また、`is_interest`、`is_data`、`is_interest_return`(または`is_return`)プロパティを持つ。
-これを用いて受信したパケットがどのタイプの CCN パケットか区別することができる。
-例えば Interest を送出して Data を受け取るような Consumer アプリの場合、
-Data だけでなく InterestReturn を受信する可能性がある
-(例として、 cefnetd に上流経路が設定されていない場合は `No Route` を示す InterestReturn を受信する)ため、
-こうした受信パケットの区別が必要となる。
+The CcnPacketInfo object also has the `is_interest`, `is_data`, and `is_interest_return` (or `is_return`) properties.
+These can be used to distinguish which type of CCN packet the received packet is.
+For example, in the case of a Consumer app that sends Interests and receives Data, it is possible to receive InterestReturn as well as Data. (For example, if cefnetd has no upstream route configured, it will receive an InterestReturn indicating `No Route`. Therefore, it is necessary to distinguish such received packets.)
 
-Interest を受信した場合に、それが SMI であるかを判別するには、
-`is_symbolic` プロパティを利用できる。
-特に Interest であるかと SMI か否かを同時に判別したい場合は、
-通常の Interest (Regular Interest) については `is_regular_interest` プロパティ、
-SMI については `is_symbolic_interest` プロパティを利用できる。
+When an Interest is received, to determine whether it is an SMI or not, the `is_symbolic` property can be used.
+The `is_regular_interest` and `is_symbolic_interest` properties are used to distinguish a regular Interest from an SMI.
 
-注意点を以下に述べる。
+The following points should be noted.
 
-* receiveメソッドは、cefnetdが受信したすべてのパケットを待ち受ける訳ではない。
-    - Interestパケットをアプリで受信するためにはregisterメソッドを呼び出す必要がある。
-    - Dataパケットをアプリで受信するためにはInterestパケットを先に送信する必要がある。
-* あまりに多くのパケットをcefnetdのバッファに貯めておくことはできないため、
-    適当な間隔でreceiveメソッドを呼び出して、
-    アプリがcefnetdからパケットを受け取るような実装にすることが推奨される。
-* DataパケットはCeforeのアプリ用に用意された構造体に収めてアプリに送られるため、
-    `actual_data_len`はCCNxパケットフォーマットの仕様から期待される長さと一致するとは限らない。
+* The receive method does not wait for all packets received by cefnetd.
+    - To receive Interest packets in your app, you need to call the “register” method.
+    - In order to receive Data packets in your app, Interest packets must be sent first.
+* Because the cefnetd buffer cannot store many packets, the receive method must be called at appropriate intervals.
+    We recommend that you implement such that the application receives packets from cefnetd by calling the receive method at appropriate intervals.
+* Data packets are inserted into a structure prepared for Cefore apps and sent to the app; therefore, `actual_data_len` may not necessarily match the length of the CCNx packet format specification.
 
-### Publisherアプリの作成
+### Creating Publisher App
 
-今までの機能を利用して、pubilsherアプリ
-(Interestを待ち受け、その後Dataパケットを返送するアプリ)を
-実装した例を以下に示す。
+Using the previous functions, we can create a Publisher app (an app that listens for Interests and then sends back Data packets). The following example implements a Publisher app.
 
-```python
+````python
 import cefpyco
 
 with cefpyco.create_handle() as h:
     h.register("ccnx:/test")
     while True:
         info = h.receive()
-        if info.is_success and info.name == "ccnx:/test" and info.chunk_num == 0:
+        if info.is_success and info.name == "ccnx:/test" and info.chunk_num == 0
             h.send_data("ccnx:/test", "hello", 0)
             # break # Uncomment if publisher provides content once
-```
+````
 
-**Interestの待ち受けには、`h.register()`メソッドを用いる。**
-これは、自分が受け取りたいInterestのプレフィックスをcefnetdに登録するメソッドである。
-例えば、`ccnx:/test`の他に、`ccnx:/test/foo/bar.txt`のような名前のInterestも受け取ることができる。
+**To wait for Interest packets, the `h.register()` method is used. **
+This method registers the prefix of the Interest that you want to receive from cefnetd.
+For example, in addition to `ccnx:/test`, you can receive Interests with a name such as `ccnx:/test/foo/bar.txt`.
 
-その後、`h.receive()`を実行し続ける。
-対象のInterestの受信に成功した場合は、
-`h.send_data()`を用いてDataパケットを返送する。
-publisherアプリなので無限ループし続けるが、
-一度しかコンテンツを提供しない場合はbreak等でループを抜ければ良い。
+Then, by using the “while loop” syntax, the Publisher app continues to execute `h.receive()`.
+If the target Interest is successfully received, `h.send_data()` is called and a Data packet will be sent back.
+Because this is a Publisher app, it will keep looping indefinitely. If you want to provide the content just once, you can break the loop by inserting `break`.
 
-### Consumerアプリの作成
+### Creating Consumer app
 
-更に、consumerアプリ(Interestを送出後、Dataを待ち受けるアプリ)を
-実装した例を以下に示す。
+The following example implements a Consumer app (that waits for Data after sending an Interest).
 
-```python
+````python
 from time import sleep
 import cefpyco
 
@@ -403,200 +314,153 @@ with cefpyco.create_handle() as h:
     while True:
         h.send_interest("ccnx:/test", 0)
         info = h.receive()
-        if info.is_success and info.name == "ccnx:/test" and info.chunk_num == 0:
+        if info.is_success and info.name == "ccnx:/test" and info.chunk_num == 0
             print("Success")
             print(info)
             break # Uncomment if publisher provides content once
         sleep(1)
-```
+````
 
-**Interestを送出すれば、その後receiveメソッドでDataを受信できる。**
-受信に成功した場合は`Success`と表示して終了する。
-InterestReturn が返送されてくる可能性もあるため、
-正式には `info.is_data` を条件に加えるべきである。
+**If you send Interests, you can then receive Data with the receive method. **
+If the Data is successfully received, print ``Success`` and exit.
+To consider the case that InterestReturn is returned if the content cannot be returned, `info.is_data` should be added to the condition.
 
-この実装例ではDataを受信できるまでループしているが、
-Interestの送出間隔が短いとPITに集約されてしまうため、
-ループのたびに`sleep(1)`を挟んでいる。
+In this example, the receive method loops until Data is received. Note that if the interval for sending Interests is too short, Interest packets will be aggregated into PIT; therefore, one chunk is `sleep(1)` and the other chunk is `data`.
 
-この例では1つのチャンクを受け取ったらループを抜けているが、
-チャンク番号を変えながらループすれば、
-複数チャンクから成るコンテンツを受け取ることも可能となる。
-多数のチャンクから成るコンテンツを受信したい場合は、
-一度に複数のInterestを送ることで高速通信も可能である。
-しかし、その際は同時に送出するInterestの数に注意(cefnetd.confのPITサイズや処理性能の制約のため)し、
-一度に送りきれない場合はパイプライン処理を実装することを推奨する。
+In this example, the loop exits after one chunk is received. It is also possible to receive content consisting of multiple chunks by changing each chunk number. If you wish to receive content consisting of many chunks, you can send multiple Interests concurrently for high-speed communication. However, in such a case, you must make preparations for the sending of a large number of Interests simultaneously (due to the PIT size configured in cefnetd.conf and the limitation of the processing performance). It is recommended that you implement pipeline processing for such cases.
 
-## CefAppの使用方法
+## How to use CefApp
 
-以下では、CefpycoHandleを用いて実装されたコンテンツ要求/提供ツールである、
-cefappconsumerツールとcefappproducerツールについて説明する。
+The following describes the cefappconsumer and cefappproducer tools, which are content request and provision tools, respectively, implemented using CefpycoHandle.
 
-### 概要
+### Overview
 
-cefappconsumerツールとcefappproducerツールは、以下の特徴を持つ
-（以下ではconsumer/producerと略記）。
+The cefappconsumer and cefappproducer tools have the following characteristics.
 
-* consumerはInterestを送出してDataを受信し、producerはInterestを待ち受けてDataを送信する。
-* 入出力はインライン・標準入出力・ファイルの3種類を選択できる。
-* consumerはパイプライン処理を実装しており、producerと高速通信が可能。
-    - 参考値として、開発者の環境における簡単な実験では約80Mbpsを観測。
+* cefappconsumer sends out an Interest and receives Data, while cefappproducer listens for an Interest and sends Data.
+* Three types of input/output can be selected: inline, standard input/output, and file.
+* cefappconsumer implements pipeline processing and can communicate with cefappproducer at high speed.
+    - As a reference, approximately 80 Mbps was observed in a simple environment.
 
-2つのツールは対となるものであり、
-cefnetd起動後に、consumerとproducerを起動すると、
-consumerがproducerからコンテンツを取得するための通信が行われる。
-consumerとproducerの起動順は問わないが、
-どちらかがタイムアウトしてしまうまでにはもう片方を起動しなければならない
-(デフォルトのタイムアウト設定では約8秒以内)。
+When cefappconsumer and cefappproducer are launched after cefnetd is started, cefappconsumer operates to obtain content from cefappproducer.
+The order in which cefappconsumer and cefappproducer are invoked is irrelevant, but the other must be started before either one times out (within about 8 seconds, which is the default timeout setting).
 
-CefApp特有の処理として、consumer/producer間でコンテンツのcob数情報を共有するために、
-consumerがproducerに対してコンテンツ名の最後に`/meta`を付けたコンテンツを要求し、
-cob数を取得する処理が事前に行われる。
-そのため、少なくともconsumerに関しては、
-他のData提供ツール(cefputfile等)と組み合わせて用いることができないので注意
-(cefappproducerとcefgetfileの組み合わせは通信可能)。
+As a CefApp-specific process, in order to share content cob count information between cefappconsumer and cefappproducer, cefappconsumer requests content with `/meta` at the end of the content name to cefappproducer, and obtains the number of cobs in advance. Therefore, at least for consumers, note that it cannot be used in combination with other data-provisioning tools (e.g., cefputfile). (The combination of cefappproducer and cefgetfile can be used.)
 
-直接コンテンツの取得・提供の目的で用いるよりは、
-開発者がCefpycoHandleを用いたプログラム作成の参考にすることを想定して作成されている。
+Since July 2021, Cefore has supported end chunk numbers, which makes the above trick unnecessary. However, because it is also useful for exchanging information other than cob counts in advance, implementation of the above metafile exchange method is retained.
 
-(2021年7月現在) Cefore が終端チャンク番号に対応したため、
-cob 数情報の共有のためだけにメタファイル交換を行うのは冗長となった。
-しかし、 cob 数以外の情報を事前に交換するためにも役立つため、
-メタファイル交換方式での実装を残す。
 
 ### cefappconsumer.py
 
-* 使用方法
+* Usage.
     ```
     cefappconsumer.py [OPTIONS] name
-    ```
-* 概要
-    - nameで指定したコンテンツ名のDataを要求し、受信したコンテンツの内容を出力する。
-* オプション
-    - `[-t|--timeout int]`: ConsumerがDataの待ち受け失敗を許容する回数を指定する。１回の待ち受け処理で約4秒間待ち受ける。デフォルトは2回。
-    - `[-p|--pipeline int]`: パイプライン数。多すぎるとPITがあふれる・cefnetdの処理限界を超える等の現象が起きうるので、cefnetd.confのPITサイズや処理性能の制約等に要注意。デフォルトは10。
-    - `[-f|--filename str]`: fileモード(`-o`オプション参照)使用時に使用するファイル名を指定する。また、`-o`オプションで明示的にfileモードにせずとも、ここでファイル名を指定した場合はfileモードとして扱われる。デフォルトではnameの最後のセグメント名が用いられる。
-    - `[-o|--output mode]`: 出力モードを指定する。modeには以下のいずれかの文字列を指定する。デフォルトはstdoutモード。
-        - none: 無出力モード。どこにもデータを出力しない(内部のバッファにも貯めないので軽量)。
-        - stdout: 標準出力モード。端末等の標準出力に対して受信したDataの内容を出力する。
-        - file: ファイル出力モード。nameの最後のセグメント名、もしくはfilenameで指定した名前の
-            ファイルに、受信したコンテンツの内容を出力する。
-    - `[-q|--quiet]`: 指定した場合、ログの出力を行わない。
-* 使用例
-    - `./cefappconsumer.py ccnx:/test`
-        - ccnx:/testという名前のコンテンツを受信し、標準出力に受信したコンテンツを出力する。
-    - `./cefappconsumer.py ccnx:/test/a -o file`
-        - ccnx:/test/aという名前のコンテンツを受信し、ファイル名`a`に受信したコンテンツを出力する。
-    - `./cefappconsumer.py ccnx:/test/a -o file -f b`
-        - ccnx:/test/aという名前のコンテンツを受信し、ファイル名`b`に受信したコンテンツを出力する。
-    - `./cefappconsumer.py ccnx:/test -o none -q`
-        - ccnx:/testを受信するための通信のみ行い、ログや受信したコンテンツを一切出力しない。
+    ````
+* Summary
+    - Requests a content specified by ``name'' and outputs the information contained in the received content.
+* Options.
+    - `[-t|--timeout int]`: Specifies the number of times Consumer will tolerate Data request failures. One request will wait for about 4 seconds. Default is two times.
+    - `[-p|--pipeline int]`: Number of pipelines. Too many pipelines may cause PIT overflow or exceed cefnetd's processing limit, etc. Pay attention to the PIT size limitation specified by cefnetd.conf and processing performance limitation. Default is 10.
+    - `[-f|--filename str]`: Specifies a filename to use in file mode (see the `-o` option). Even if you do not explicitly set file mode with the `-o` option, if you specify a filename here, it is treated as file mode. By default, the last segment name of ``name” is used.
+    - `[-o|--output mode]`: Specifies the output mode. “mode” can be one of the following strings (default is stdout mode).
+        - none: No output mode. No data is output anywhere (lightweight, because it is not stored in the internal buffer).
+        - stdout: Standard output mode. Outputs the contents of received data using the standard output of a terminal or other device.
+        - file: File output mode. This mode outputs the received contents to a file whose name is specified by filename or the last segment name of ``name’’.
+    - `[-q|--quiet]`: If specified, no log output.
+* Example usage
+    - `. /cefappconsumer.py ccnx:/test`.
+        - Receive content named `ccnx:/test` and output the received content to standard output.
+    - `. /cefappconsumer.py ccnx:/test/a -o file`.
+        - Receive content named `cccnx:/test/a' and output the received content to a file named `a`.
+    - `. /cefappconsumer.py ccnx:/test/a -o file -f b`
+        - Receive content named ccnx:/test/a and output the received content to a file named `b`.
+    - `. /cefappconsumer.py ccnx:/test -o none -q`
+        - Only communicate to receive ccnx:/test; do not output any log or received content.
 
 ### cefappproducer.py
 
-* 使用方法
+* Usage.
     ```
-    cefappproducer.py [OPTIONS] name [arg]
-    ```
-* 概要
-    - arg等で指定したコンテンツからDataを作成し、nameで指定したコンテンツ名でDataを提供する。
-* オプション
-    - `[-t|--timeout int]`: ProducerがDataの待ち受け失敗を許容する回数を指定する。１回の待ち受け処理で約4秒間待ち受ける。デフォルトは2回。
-    - `[-b|--block_size int]`: 1つのcobのサイズ。デフォルトは1024バイト。最小値・最大値の制約をつけていないため、MTUに注意して使用すること。
-    - `[-i|--input]`: 入力モードを指定する。modeには以下のいずれかの文字列を指定する。デフォルトはargモード。
-        - arg: インラインモード。引数argに直接コンテンツ内容を記述する。
-        - stdin: 標準入力モード。標準入力の内容からコンテンツを作成する。
-        - file: ファイル入力モード。nameの最後のセグメント名、もしくは引数argに指定したファイル名のファイルからコンテンツを作成する。
-    - `[-q|--quiet]`: 指定した場合、ログの出力を行わない。
-* 使用例
-    - `./cefappproducer.py ccnx:/test helloworld`
-        - `hellowolrd`という10文字のコンテンツをccnx:/testという名前で作成し、提供する。
-    - `./cefappproducer.py ccnx:/test helloworld -b 5`
-        - `hello`と`world`という5文字ごとのコンテンツをccnx:/testという名前で作成し、提供する
-            (`hello`はチャンク番号0,`world`はチャンク番号1として提供される)。
-    - `./cefappproducer.py ccnx:/test/a -i file`
-        - `a`という名前のファイルからコンテンツを作成し、ccnx:/test/aという名前で提供する。
-    - `./cefappproducer.py ccnx:/test/a b -i file -o none -q`
-        - `b`という名前のファイルからコンテンツを作成し、ccnx:/test/aという名前で提供する。
+    cefappproducer.py [OPTIONS] name [arg].
+    ````
+* Summary
+    - Create Data from the contents specified by ``arg'' etc., and provide Data with the content name specified by ``name''.
+* Options.
+    - `[-t|--timeout int]`: Specifies the number of times Producer will tolerate Data wait failures. One wait process will wait for about 4 seconds. Default is two times.
+    - `[-b|--block_size int]`: Size of one content object. Default is 1024 bytes. Use with care for MTU, since there is no constraint on minimum and maximum values.
+    - `[-i|--input]`: Specifies the input mode. “mode” can be one of the following strings (default is arg mode).
+        - arg: Inline mode. The content is written directly in the argument “arg”.
+        - stdin: Standard input mode. Content is created from standard input.
+        - file: File input mode. It creates a content from a file whose name is the last segment name of “name” or the file name specified in the argument “arg”.
+    - `[-q|--quiet]`: If specified, no log is output.
+* Example usage.
+    - `. /cefappproducer.py ccnx:/test helloworld`
+        - Create and serve a 10-character content named `helloworld` with the name ccnx:/test.
+    - `. /cefappproducer.py ccnx:/test helloworld -b 5`
+        - Create and serve a content named ccnx:/test for every five characters (i.e., a content `hello` and a content `world`)
+            (`hello` is provided as the data chunk number 0 and `world` as the data chunk number 1).
+    - `. /cefappproducer.py ccnx:/test/a -i file`.
+        - Create a content from a file named `a` and serve it under the name ccnx:/test/a.
+    - `. /cefappproducer.py ccnx:/test/a b -i file -o none -q`
+        - Create a content from a file named `b` and serve it under the name ccnx:/test/a.
 
-### 通信例
 
-cefappproducerが"hello"という文字列を`ccnx:/test`という名前で発行し、
-それをcefappconsumerが取りに行く通信例を示す。
+### Example
 
-以下では、cefnetdを起動した状態で、
-cefappproducerを端末t1、
-cefappconsumerを端末t2で起動する
-(尚、各ツールで指定可能なオプションは`--help`オプションで確認できる)。
+Below is an example of communication in which cefappproducer publishes the string "hello" as a Data packet with the name `ccnx:/test`, and cefappconsumer fetches it.
+
+The following shows that at terminal t1, cefappproducer is started with cefnetd running, and at terminal 2, cefappconsumer is started with cefnetd running. (You can check the available options for each tool with the `--help` option.)
 
 ```
-t1$ sudo ./cefappproducer.py ccnx:/test hello
+t1$ sudo . /cefappproducer.py ccnx:/test hello
 [cefpyco] Configure directory is /usr/local/cefore
-YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Config directory is /usr/local/cefore
-YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Local Socket Name is /tmp/cef_9896.0
-YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Listen Port is 9896
+YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Config directory is /usr/local/cefore
+YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Local Socket Name is /tmp/cef_9896.0
+YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Listen Port is 9896
 [cefapp] Receiving Interest...
-t2$ sudo ./cefappconsumer.py ccnx:/test
+t2$ sudo . /cefappconsumer.py ccnx:/test
 [cefpyco] Configure directory is /usr/local/cefore
-YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Config directory is /usr/local/cefore
-YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Local Socket Name is /tmp/cef_9896.0
-YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Listen Port is 9896
-YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: Send interest (name: ccnx:/test/meta, #chunk: 0)
-YYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: Send interest (name: ccnx:/test, #chunk: 0)
+YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Config directory is /usr/local/cefore
+YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Local Socket Name is /tmp/cef_9896.0
+YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Listen Port is 9896
+YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: Send interest (name: ccnx:/test/meta, #chunk: 0)
+YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: Send interest (name: ccnx:/test, #chunk: 0)
 [cefapp] Succeed to receive.
 hello
-```
+````
 
-## 注意事項
+## Notes
 
-* 本ツールはCeforeを用いたアプリ開発を簡易化することを目的に開発された。バグ報告は歓迎します。
-    - Ubuntu 16.04とRaspberry piでのみ動作確認済み(cefpyco 0.2.0現在)。
-    - python3での動作確認のみを行っている。
-    - バグ報告は [github](https://github.com/cefore/cefore/issues) または a-ooka@nict.go.jp (NICT 大岡) まで。
-* cefnetdをsudo権限で起動する場合、pythonツール使用時にもsudoが必要なことがある。
-    ツールの起動に失敗する場合は、起動時のログを確認して`Permission Denied`などと出ていないか確認し、
-    必要に応じてsudo権限で実行すること。
-* cefnetdをcefnetdstopを使わずにkillなどで強制終了させた場合、
-    `Already another cefnetd is using the same listen port`と出てその後の起動に失敗する場合がある。
-    * 原因はソケットファイルが`/tmp`に残存してしまうため。
-    * この場合は`sudo cefnetdstop -F`を実行すると、ソケットファイル削除を含む強制終了処理が実行されるので、それを試す。
-* ~~アプリがInterestを受け取れない場合は、FIBにマッチするエントリが無いか確認すること。~~
-    - ~~特にFIBに`ccnx:/`宛のエントリが登録されている場合等、そちらが優先される場合がある(cefore 0.7.2現在)。~~
-    - Cefore 0.8.0現在、アプリがInterestを優先して取得するように仕様変更された。
-* 通信に失敗する場合は、cefnetd起動前にバッファチューニングを行っているか確認すること。
-    - Linux OSの場合は以下を実行。
+* This tool was developed to simplify application development using Cefore. Bug reports are welcome.
+    - It has only been confirmed to work on Ubuntu 16.04 and Raspberry Pi (as of cefpyco 0.2.0).
+    - It has also only been confirmed to work with Python 3.
+    - Bug reports can be sent to GitHub (https://github.com/cefore/cefore/issues).
+* If cefnetd is started with sudo privileges, sudo may be required even when using Python tools. If the tool fails to start, check the startup log to see if `Permission Denied` or a similar message is present. If necessary, run the Python tool with sudo privileges.
+* If you terminate cefnetd using commands such as “kill” without using cefnetdstop, you will get the following error message:
+    “Another cefnetd is already listening on this port,” and subsequent startup may fail.
+    * The reason is that the socket file is still in the directory `/tmp`.
+    * In such a case, try `sudo cefnetdstop -F`, which will execute a forced termination, including deletion of the socket file.
+* If the application cannot receive Interests, check if there are some matching entries for the Interest name in the FIB. 
+    - In particular, if an entry for `ccnx:/` is registered in the FIB, that entry may be prioritized (as of Cefore 0.7.2).
+    - From Cefore 0.8.0, the specification has been changed so that the application preferentially receives the Interest.
+* If communication fails, check if buffer tuning is performed before starting cefnetd.
+    - For Linux OS, execute the following.
     ```
     $ _cef_mem_size=10000000
     $ sudo sysctl -w net.core.rmem_default=$_cef_mem_size
     $ sudo sysctl -w net.core.wmem_default=$_cef_mem_size
     $ sudo sysctl -w net.core.rmem_max=$_cef_mem_size
     $ sudo sysctl -w net.core.wmem_max=$_cef_mem_size
-    ```
-    - Mac OSの場合は以下を実行。
+    ````
+    - For Mac OS, do the following.
     ```
     $ sudo sysctl -w net.local.stream.sendspace=2000000
     $ sudo sysctl -w net.local.stream.recvspace=2000000
-    ```
-    - 特に高速通信・大容量ファイルの通信を行う場合は、バッファを大きくすることを推奨する。
-    - PCの再起動の度にこの値は初期化されるので、PC起動時の常時実行に入れる等、実行忘れ防止策を取ることを推奨。
-* Interestの生存期間は4秒、Dataのキャッシュ生存時間は10時間をデフォルト値に設定している。
-    - 変更する場合はcefpyco.cの該当箇所の値を変更すること。
-* cmake実行後、ディレクトリごと別の場所にコピーして再度cmakeを実行しようとすると失敗する。
-    - 再度cmakeする場合は、CMakeFilesディレクトリ・CMakeCache.txt・cmake_install.cmakeを手動で削除する必要がある。
-    - `cmake clean`などのコマンドは存在しない。
-
-## 更新履歴
-
-* 2021/07/20 (v0.6.０): cefore-0.8.3 に対応。InterestReturn へ対応(パケットタイプ0x02)。
-* 2021/05/31: name のプロコトル名を "ccn:/" から "ccnx:/" に変更。
-* 2021/02/25: Symbolic Interest (SMI) の送受信に対応。
-* 2019/08/21: バイナリデータの送受信に対応。CcnPacketInfo.payloadのデフォルトをバイト列に変更し、文字列用にpayload_sを追加。
-* 2019/08/06: Cefore-0.8.1に対応。Mac環境用に微調整。
-* 2019/05/15: Cefore-0.8.0に対応。テストコードを追加。Optionalヘッダ等の機能を追加。CefpycoHandle.send_dataの引数順が変更されたので要注意。
-* 2018/08/09: ceftoolからcefpycoに名称を変更。cefore-0.7.2に対応。setuptoolsを用いたインストールに対応。ファイル構造の大幅な修正を反映。
-* 2018/07/30: CefAppの使用方法を追記。ファイル構造の変更を反映。その他微修正。
-* 2018/07/23: 初版作成(cefore-0.7.1用)。
-
-## Credit
-
-* 大岡 睦 (Atsushi Ooka), National Institute of Information and Communications Technology (NICT), a-ooka@nict.go.jp
+    ````
+    - Using a larger buffer is recommended, especially for executing high-speed communication and/or dealing with large files.
+    - Since this setting is initialized every time the PC is rebooted, ensure that measures are put in place to prevent forgetting to execute it. The configuration should be automatically executed at PC startup.
+* The default value for Interest lifetime is 4 seconds, and the default value for Data cache time (i.e., cache survival time) is 10 hours.
+    - If you wish to change them, change the values in the corresponding parts of cefpyco.c.
+* After executing cmake, copying the entire directory to another location and trying to execute cmake again will fail.
+    - If you wish to run cmake again, you need to delete the CMakeFiles directory, CMakeCache.txt, and cmake_install.cmake manually.
+    - Commands such as `cmake clean` do not exist.
