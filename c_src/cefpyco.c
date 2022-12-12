@@ -304,14 +304,15 @@ MILESTONE
 	if (elapsedtime >= timeout_us) { // 13-tries take 1s, 18-tries take 4s
             if (error_on_timeout) {
                 if (cefpyco_enable_log) {
-        			cef_log_write(CefC_Log_Info, 
+        		cef_log_write(CefC_Log_Info, 
                         "\033[101m*** [CAUTION] Stop to wait. ***\033[0m\n");
                 }
-    			return -1;
+    		return -1;
             } else {
                 return 0;
             }
-		}
+	}
+	printf("%d\n", waittime);
         sleep((int) waittime/1000);
         elapsedtime += waittime;
         waittime += 500 * tryn * tryn;
