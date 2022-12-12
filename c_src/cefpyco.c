@@ -312,7 +312,7 @@ MILESTONE
                 return 0;
             }
 		}
-        sleep(waittime);
+        sleep(4);
         elapsedtime += waittime * 1000;
         waittime += tryn * tryn;
         tryn++;
