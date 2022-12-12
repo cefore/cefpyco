@@ -298,7 +298,7 @@ MILESTONE
     res = cpc_buf_remains();
     if (res) return res;
     while (1) {
-	// res = cef_client_read(handler, buf, CefpycoC_Buffer_Size);
+	res = cef_client_read(handler, buf, CefpycoC_Buffer_Size);
         elapsedtime += 1000000; // read takes 1 sec from cefore-0.8.2.2
         if (res > 0) break;
 	if (elapsedtime >= timeout_us) { // 13-tries take 1s, 18-tries take 4s
@@ -309,11 +309,11 @@ MILESTONE
                 }
     		return -1;
             } else {
-                return 0;
+            	return 0;
             }
 	}
 	printf("%d\n", waittime);
-        sleep((int) waittime/1000);
+        sleep(1);
         elapsedtime += waittime;
         waittime += 500 * tryn * tryn;
         tryn++;
