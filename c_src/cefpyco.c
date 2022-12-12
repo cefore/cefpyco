@@ -314,10 +314,8 @@ MILESTONE
             	}
 	    }
 	    
-	    printf("%d\n", waittime);
-	    
 	    Py_BEGIN_ALLOW_THREADS
-	    sleep(1);
+	    usleep(waittime);
 	    Py_END_ALLOW_THREADS
 		    
 	    elapsedtime += waittime;
