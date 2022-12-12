@@ -287,11 +287,11 @@ static int wait_receive(CefT_Client_Handle handler, int timeout_ms, int error_on
 MILESTONE
     int res = 0;
     int tryn = 0;
-    int waittime = 1;
+    int waittime = 1000;
     int elapsedtime = 0;
     int timeout_us;
 
-    if (timeout_ms < 0) { timeout_us = CefpycoC_Default_Timeout * 1; }
+    if (timeout_ms < 0) { timeout_us = CefpycoC_Default_Timeout * 1000; }
     else { timeout_us = timeout_ms * 1000; }
 
     if (handler < 1) return exit_with_error_msg(handler, "Handle must be created.");
@@ -299,7 +299,7 @@ MILESTONE
     if (res) return res;
     while (1) {
 		res = cef_client_read(handler, buf, CefpycoC_Buffer_Size);
-        elapsedtime += 1000; // read takes 1 sec from cefore-0.8.2.2
+        elapsedtime += 1000000; // read takes 1 sec from cefore-0.8.2.2
         if (res > 0) break;
 		if (elapsedtime >= timeout_us) { // 13-tries take 1s, 18-tries take 4s
             if (error_on_timeout) {
@@ -313,8 +313,8 @@ MILESTONE
             }
 		}
         sleep(1);
-        elapsedtime += waittime * 1000;
-        waittime += tryn * tryn;
+        elapsedtime += waittime;
+        waittime += 500 * tryn * tryn;
         tryn++;
 	}
     return res;
