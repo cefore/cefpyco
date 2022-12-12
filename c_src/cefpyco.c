@@ -32,6 +32,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <ctype.h>
+#include "Python.h"
 
 #include "cefpyco_util.h"
 #include "cefpyco_parse.h"
@@ -308,15 +309,16 @@ MILESTONE
                         "\033[101m*** [CAUTION] Stop to wait. ***\033[0m\n");
                 }
     		return -1;
-            } else {
-            	return 0;
-            }
-	}
-	printf("%d\n", waittime);
-        sleep(1);
-        elapsedtime += waittime;
-        waittime += 500 * tryn * tryn;
-        tryn++;
+            	} else {
+            		return 0;
+            	}
+	    }
+	    Py_BEGIN_ALLOW_THREADS
+	    printf("%d\n", waittime);
+	    sleep(1);
+	    elapsedtime += waittime;
+	    waittime += 500 * tryn * tryn;
+	    tryn++;
 	}
     return res;
 }
