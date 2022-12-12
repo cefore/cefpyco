@@ -312,7 +312,7 @@ MILESTONE
                 return 0;
             }
 		}
-        sleep(int(waittime/1000));
+        sleep((int) waittime/1000);
         elapsedtime += waittime;
         waittime += 500 * tryn * tryn;
         tryn++;
