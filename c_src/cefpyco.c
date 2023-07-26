@@ -316,13 +316,13 @@ MILESTONE
             }
         }
         usleep(waittime);
-        PyGILState_Release(gstate);
+        Py_END_ALLOW_THREADS
 
         elapsedtime += waittime;
         waittime += 500 * tryn * tryn;
         tryn++;
     }
-	Py_END_ALLOW_THREADS
+
     return res;
 }
 
