@@ -299,9 +299,8 @@ MILESTONE
     res = cpc_buf_remains();
     if (res) return res;
 
-    PyGILState_STATE gstate;
-    Py_BEGIN_ALLOW_THREADS
     while (1) {
+        Py_BEGIN_ALLOW_THREADS
 	    res = cef_client_read(handler, buf, CefpycoC_Buffer_Size);
         elapsedtime += 1000000; // read takes 1 sec from cefore-0.8.2.2
         if (res > 0) break;
@@ -316,7 +315,6 @@ MILESTONE
                 return 0;
             }
         }
-        gstate = PyGILState_Ensure();
         usleep(waittime);
         PyGILState_Release(gstate);
 
