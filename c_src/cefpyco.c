@@ -298,30 +298,33 @@ MILESTONE
     if (handler < 1) return exit_with_error_msg(handler, "Handle must be created.");
     res = cpc_buf_remains();
     if (res) return res;
+
+    PyGILState_STATE gstate;
+    Py_BEGIN_ALLOW_THREADS
     while (1) {
-	res = cef_client_read(handler, buf, CefpycoC_Buffer_Size);
+	    res = cef_client_read(handler, buf, CefpycoC_Buffer_Size);
         elapsedtime += 1000000; // read takes 1 sec from cefore-0.8.2.2
         if (res > 0) break;
-	if (elapsedtime >= timeout_us) { // 13-tries take 1s, 18-tries take 4s
+        if (elapsedtime >= timeout_us) { // 13-tries take 1s, 18-tries take 4s
             if (error_on_timeout) {
                 if (cefpyco_enable_log) {
-        		cef_log_write(CefC_Log_Info, 
+                    cef_log_write(CefC_Log_Info,
                         "\033[101m*** [CAUTION] Stop to wait. ***\033[0m\n");
                 }
-    		return -1;
-            	} else {
-            		return 0;
-            	}
-	    }
-	    
-	    Py_BEGIN_ALLOW_THREADS
-	    usleep(waittime);
-	    Py_END_ALLOW_THREADS
-		    
-	    elapsedtime += waittime;
-	    waittime += 500 * tryn * tryn;
-	    tryn++;
-	}
+            return -1;
+            } else {
+                return 0;
+            }
+        }
+        gstate = PyGILState_Ensure();
+        usleep(waittime);
+        PyGILState_Release(gstate);
+
+        elapsedtime += waittime;
+        waittime += 500 * tryn * tryn;
+        tryn++;
+    }
+	Py_END_ALLOW_THREADS
     return res;
 }
 
