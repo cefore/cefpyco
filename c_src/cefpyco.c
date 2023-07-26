@@ -300,7 +300,7 @@ MILESTONE
     if (res) return res;
 
     while (1) {
-        Py_BEGIN_ALLOW_THREADS
+        // Py_BEGIN_ALLOW_THREADS
 	    res = cef_client_read(handler, buf, CefpycoC_Buffer_Size);
         elapsedtime += 1000000; // read takes 1 sec from cefore-0.8.2.2
         if (res > 0) break;
@@ -315,6 +315,7 @@ MILESTONE
                 return 0;
             }
         }
+        Py_BEGIN_ALLOW_THREADS
         usleep(waittime);
         Py_END_ALLOW_THREADS
 
