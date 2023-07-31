@@ -288,7 +288,7 @@ static int wait_receive(CefT_Client_Handle handler, int timeout_ms, int error_on
 MILESTONE
     int res = 0;
     int tryn = 0;
-    int waittime = 1000;
+    int waittime = 10;
     int elapsedtime = 0;
     int timeout_us;
 
