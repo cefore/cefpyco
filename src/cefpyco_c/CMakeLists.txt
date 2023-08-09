@@ -24,9 +24,13 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-if (test)
-    add_executable(run_cefpyco run_cefpyco.c)
-    target_link_libraries(run_cefpyco cefore crypto cefpyco_csrc cefpyco_parse)
-    add_executable(test_cefpyco test_cefpyco.c)
-    target_link_libraries(test_cefpyco cefore crypto cefpyco_csrc cefpyco_parse)
-endif()
+add_subdirectory(cefparse)
+add_subdirectory(test)
+
+add_library(cefpyco_csrc STATIC
+    cefpyco_util.c cefpyco_parse.c cefpyco.c pywrap_cefpyco.c)
+target_include_directories(cefpyco_csrc 
+    PUBLIC include
+    PRIVATE ${Python_INCLUDE_DIRS})
+target_link_libraries(cefpyco_csrc 
+    PRIVATE cefore crypto cefpyco_parse)

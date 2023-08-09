@@ -32,6 +32,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <Python.h>
 
 #include "cefpyco_util.h"
 #include "cefpyco_parse.h"
@@ -69,20 +70,22 @@ int end_cef() {
 
 int send_interest(const char *uri, int chunk_num) {
     int res;
-    CefT_Interest_TLVs params_i;
-    
-    res = set_basic_interest_params(&params_i, uri, chunk_num);
+    CefT_CcnMsg_OptHdr opt_i;
+    CefT_CcnMsg_MsgBdy params_i;
+
+    res = set_basic_interest_params(&opt_i, &params_i, uri, chunk_num);
     if (res < 0) return exit_with_error_msg(fhdl, "Failed to set Interest parameters.");
-    return cph_send_interest(fhdl, &params_i);
+    return cph_send_interest(fhdl, &opt_i, &params_i);
 }
 
 int send_data(const char *uri, int chunk_num, const char *payload, int payload_len) {
     int res;
-    CefT_Object_TLVs params_d;
-    
-    res = set_basic_data_params(&params_d, uri, chunk_num, payload, payload_len);
+    CefT_CcnMsg_OptHdr opt_d;
+    CefT_CcnMsg_MsgBdy params_d;
+
+    res = set_basic_data_params(&opt_d, &params_d, uri, chunk_num, payload, payload_len);
     if (res < 0) return exit_with_error_msg(fhdl, "Failed to set Data parameters.");
-    return cph_send_data(fhdl, &params_d);
+    return cph_send_data(fhdl, &opt_d, &params_d);
 }
 
 int register_name(const char *uri) { return cph_register_name(fhdl, CefC_App_Reg, uri); }
@@ -113,21 +116,37 @@ MILESTONE
     return 0;
 }
 
-int cph_send_interest(CefT_Client_Handle handler, 
-    CefT_Interest_TLVs* params_i) {
+int cph_build_hdrorg_value(
+    unsigned char *buff,
+    CefT_HdrOrg_Params* org){
+MILESTONE
+    return cef_frame_build_hdrorg_value(buff, org);
+}
+
+int cph_build_msgorg_value(
+    unsigned char *buff,
+    CefT_MsgOrg_Params* org){
+MILESTONE
+    return cef_frame_build_msgorg_value(buff, org);
+}
+
+int cph_send_interest(CefT_Client_Handle handler,
+    CefT_CcnMsg_OptHdr* opt_i,
+    CefT_CcnMsg_MsgBdy* params_i) {
 MILESTONE
     if (handler < 1) return exit_with_error_msg(handler, "Handle must be created.");
 
-    cef_client_interest_input(handler, params_i);
+    cef_client_interest_input(handler, opt_i, params_i);
     return 0;
 }
 
-int cph_send_data(CefT_Client_Handle handler, 
-    CefT_Object_TLVs* params_d) {
+int cph_send_data(CefT_Client_Handle handler,
+    CefT_CcnMsg_OptHdr* opt_d,
+    CefT_CcnMsg_MsgBdy* params_d) {
 MILESTONE
     if (handler < 1) return exit_with_error_msg(handler, "Handle must be created.");
-    
-    cef_client_object_input(handler, params_d);
+
+    cef_client_object_input(handler, opt_d, params_d);
     return 0;
 }
 
@@ -137,7 +156,7 @@ MILESTONE
 }
 
 
-static int call_register_api(CefT_Client_Handle handler, 
+static int call_register_api(CefT_Client_Handle handler,
     cefore_reg_api api, uint16_t func, const char *uri) {
 MILESTONE
     int res;
@@ -148,7 +167,7 @@ MILESTONE
     return res;
 }
 
-int cph_receive(CefT_Client_Handle handler, 
+int cph_receive(CefT_Client_Handle handler,
     cefpyco_app_frame* app_frame, int timeout_ms, int error_on_timeout) {
 MILESTONE
     int res, rec_len;
@@ -156,7 +175,7 @@ MILESTONE
     cpc_set_null_name_info(app_frame);
     if (handler < 1) return exit_with_error_msg(handler, "Handle must be created.");
     rec_len = wait_receive(handler, timeout_ms, error_on_timeout);
-    
+
 #ifdef CEFPYCO_DEBUG
 fprintf(stderr, "\nrec_len: %d\n", rec_len);
 cpc_force_print(buf, rec_len);
@@ -171,60 +190,63 @@ MILESTONE
         if (app_frame->actual_data_len == 0)
             return exit_with_error_msg(handler, "Retrieved data is empty.");
     }
-    
+
 MILESTONE
 #ifdef CEFPYCO_DEBUG
 fprintf(stderr, "\nparse_len: %d\n", res);
 show_app_frame(app_frame);
 #endif
-    
+
 MILESTONE
     return 0;
 }
 
-int set_basic_interest_params(CefT_Interest_TLVs* params_i,
+int set_basic_interest_params(CefT_CcnMsg_OptHdr* opt_i,
+    CefT_CcnMsg_MsgBdy* params_i,
     const char *uri, int chunk_num) {
     int res;
-    
-    memset(params_i, 0, sizeof(CefT_Interest_TLVs));
+
+    memset(opt_i, 0, sizeof(CefT_CcnMsg_OptHdr));
+    memset(params_i, 0, sizeof(CefT_CcnMsg_MsgBdy));
     res = cef_frame_conversion_uri_to_name(uri, params_i->name);
     if (res < 0) return exit_with_error_msg(fhdl, CefpycoC_Err_Invalid_URI);
     params_i->name_len = res;
 
     params_i->hoplimit = 32;
-    params_i->opt.lifetime_f = 1;
-    params_i->opt.lifetime = 4000ull; /* 4 seconds */
+    opt_i->lifetime_f = 1;
+    opt_i->lifetime = 4000ull; /* 4 seconds */
 
-    params_i->opt.symbolic_f = CefC_T_OPT_REGULAR;
     params_i->chunk_num_f = 1;
     params_i->chunk_num   = chunk_num;
 
     return 0;
 }
 
-int set_basic_data_params(CefT_Object_TLVs* params_d,
-    const char *uri, int chunk_num, 
+int set_basic_data_params(CefT_CcnMsg_OptHdr* opt_d,
+    CefT_CcnMsg_MsgBdy* params_d,
+    const char *uri, int chunk_num,
     const char *payload, int payload_len) {
     struct timeval now_t;
     uint64_t now_ms;
     int res;
-    
-    memset(params_d, 0, sizeof(CefT_Object_TLVs));
+
+    memset(opt_d, 0, sizeof(CefT_CcnMsg_OptHdr));
+    memset(params_d, 0, sizeof(CefT_CcnMsg_MsgBdy));
     res = cef_frame_conversion_uri_to_name(uri, params_d->name);
     if (res < 0) return exit_with_error_msg(fhdl, CefpycoC_Err_Invalid_URI);
     params_d->name_len = res;
-    
+
     memcpy(params_d->payload, payload, sizeof(char) * payload_len);
     params_d->payload_len = payload_len;
-    
-    params_d->chnk_num_f = 1;
-    params_d->chnk_num = chunk_num;
+
+    params_d->chunk_num_f = 1;
+    params_d->chunk_num = chunk_num;
     gettimeofday(&now_t, NULL);
 	now_ms = now_t.tv_sec * 1000ull + now_t.tv_usec / 1000ull;
     params_d->expiry = now_ms + 36000ull * 1000ull; /* 36000 seconds (10 hours) */
-    
-    params_d->opt.cachetime_f = 1;
-    params_d->opt.cachetime   = now_ms + 36000ull * 1000ull; /* 36000 seconds (10 hours) */
+
+    opt_d->cachetime_f = 1;
+    opt_d->cachetime   = now_ms + 36000ull * 1000ull; /* 36000 seconds (10 hours) */
 
     return 0;
 }
@@ -239,8 +261,8 @@ int convert_nametlv_to_readable_str(
 int show_app_frame(cefpyco_app_frame *app_frame) {
     unsigned char* payload = (unsigned char *)CefpycoC_Null_Msg;
     char name[CefpycoC_Name_Len];
-    
-    if (app_frame == NULL || 
+
+    if (app_frame == NULL ||
         app_frame->actual_data_len == 0) return -1;
     convert_nametlv_to_readable_str(
         app_frame->name, app_frame->name_len, name);
@@ -250,7 +272,7 @@ int show_app_frame(cefpyco_app_frame *app_frame) {
     } else {
         payload = (unsigned char *)CefpycoC_Null_Msg;
     }
-    cef_log_write(CefC_Log_Info, 
+    cef_log_write(CefC_Log_Info,
         "\n[Packet info]\n"
         "  *         version: %08x\n"
         "  *            type: %08x\n"
@@ -287,7 +309,7 @@ static int wait_receive(CefT_Client_Handle handler, int timeout_ms, int error_on
 MILESTONE
     int res = 0;
     int tryn = 0;
-    int waittime = 1000;
+    int waittime = 10;
     int elapsedtime = 0;
     int timeout_us;
 
@@ -298,13 +320,14 @@ MILESTONE
     res = cpc_buf_remains();
     if (res) return res;
     while (1) {
-		res = cef_client_read(handler, buf, CefpycoC_Buffer_Size);
-        elapsedtime += 1000000; // read takes 1 sec from cefore-0.8.2.2
+//		res = cef_client_read(handler, buf, CefpycoC_Buffer_Size);		// 2022/11/03
+		res = cef_client_read2(handler, buf, CefpycoC_Buffer_Size);
         if (res > 0) break;
+		elapsedtime += 1000000; // read takes 1 sec from cefore-0.8.2.2
 		if (elapsedtime >= timeout_us) { // 13-tries take 1s, 18-tries take 4s
             if (error_on_timeout) {
                 if (cefpyco_enable_log) {
-        			cef_log_write(CefC_Log_Info, 
+        			cef_log_write(CefC_Log_Info,
                         "\033[101m*** [CAUTION] Stop to wait. ***\033[0m\n");
                 }
     			return -1;
@@ -312,7 +335,11 @@ MILESTONE
                 return 0;
             }
 		}
-        usleep(waittime);
+
+	    Py_BEGIN_ALLOW_THREADS
+	    usleep(waittime);
+	    Py_END_ALLOW_THREADS
+
         elapsedtime += waittime;
         waittime += 500 * tryn * tryn;
         tryn++;

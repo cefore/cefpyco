@@ -24,11 +24,13 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+# find_package(Python REQUIRED COMPONENTS Interpreter Development)
+# include_directories(${Python_INCLUDE_DIRS})
 if (test)
-    add_subdirectory(cefparse)
-    add_subdirectory(test)
-
-    add_library(cefpyco_csrc STATIC
-        cefpyco_util.c cefpyco_parse.c cefpyco.c pywrap_cefpyco.c)
-    target_link_libraries(cefpyco_csrc cefore crypto)
+    add_executable(run_cefpyco run_cefpyco.c)
+    target_link_libraries(run_cefpyco ${Python_LIBRARIES} 
+        cefore crypto cefpyco_csrc cefpyco_parse)
+    add_executable(test_cefpyco test_cefpyco.c)
+    target_link_libraries(test_cefpyco ${Python_LIBRARIES} 
+        cefore crypto cefpyco_csrc cefpyco_parse)
 endif()

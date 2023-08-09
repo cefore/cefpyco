@@ -36,14 +36,16 @@
 CefT_Client_Handle create_cef_handler(int port_num, char* conf_path);
 int destroy_cef_handler(CefT_Client_Handle handler);
 // int cph_send_interest(CefT_Client_Handle handler, const char *uri, int chunk_num);
-int cph_send_interest(CefT_Client_Handle handler, CefT_Interest_TLVs* params_i);
+int cph_send_interest(CefT_Client_Handle handler, CefT_CcnMsg_OptHdr* opt_i, CefT_CcnMsg_MsgBdy* params_i);
 // int cph_send_data(CefT_Client_Handle handler, const char *uri, int chunk_num, const char *payload, int payload_len);
-int cph_send_data(CefT_Client_Handle handler, CefT_Object_TLVs* params_d);
+int cph_send_data(CefT_Client_Handle handler, CefT_CcnMsg_OptHdr* opt_d, CefT_CcnMsg_MsgBdy* params_d);
 int cph_register_name(CefT_Client_Handle handler, uint16_t func, const char *uri);
 int cph_receive(CefT_Client_Handle handler, cefpyco_app_frame* app_frame, int timeout_ms, int error_on_timeout);
 
-int set_basic_interest_params(CefT_Interest_TLVs* params_i, const char *uri, int chunk_num);
-int set_basic_data_params(CefT_Object_TLVs* params_d, const char *uri, int chunk_num, const char *payload, int payload_len);
+int cph_build_hdrorg_value(unsigned char *buff, CefT_HdrOrg_Params *org);
+int cph_build_msgorg_value(unsigned char *buff, CefT_MsgOrg_Params *org);
+int set_basic_interest_params(CefT_CcnMsg_OptHdr* opt_i, CefT_CcnMsg_MsgBdy* params_i, const char *uri, int chunk_num);
+int set_basic_data_params(CefT_CcnMsg_OptHdr* opt_d, CefT_CcnMsg_MsgBdy* params_d, const char *uri, int chunk_num, const char *payload, int payload_len);
 unsigned long begin_cef(int port_num, char* conf_path);
 int end_cef(void);
 int send_interest(const char *uri, int chunk_num);

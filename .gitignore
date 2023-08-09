@@ -1,4 +1,3 @@
-
 Makefile
 
 CMakeCache.txt
@@ -19,9 +18,11 @@ __pycache__/
 *.so
 *.a
 *.o
-c_src/cefparse/libcefpyco_parse.a
-c_src/libcefpyco_csrc.a
+src/cefpyco_c/cefparse/libcefpyco_parse.a
+src/cefpyco_c/libcefpyco_csrc.a
 libcefpyco.so
 
-c_src/test/run_cefpyco
-c_src/test/test_cefpyco
+src/cefpyco_c/test/run_cefpyco
+src/cefpyco_c/test/test_cefpyco
+
+.vscode/

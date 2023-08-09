@@ -39,10 +39,10 @@ PYWRAP_DEF(begin) {
     int port_num = CefC_Unset_Port;
     int enable_log = 1;
     char* conf_path = "";
-    static char *keywords[] = 
+    static char *keywords[] =
         {"port_num", "conf_path", "enable_log", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kw, "|isi", keywords, 
+    if (!PyArg_ParseTupleAndKeywords(args, kw, "|isi", keywords,
         &port_num, &conf_path, &enable_log)) {
         return NULL;
     }
@@ -57,7 +57,7 @@ PYWRAP_DEF(end) {
     int res;
     static char *keywords[] = {"handler", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kw, "L", keywords, 
+    if (!PyArg_ParseTupleAndKeywords(args, kw, "L", keywords,
         &handler)) {
         return NULL;
     }
@@ -69,28 +69,36 @@ PYWRAP_DEF(end) {
 PYWRAP_DEF(send_interest) {
     int res;
     long long handler;
-    CefT_Interest_TLVs params_i;
-    static char *keywords[] = 
-        {"handler", "name", 
-         "chunk_num", "symbolic_f", 
-         "hop_limit", "lifetime", 
+    CefT_CcnMsg_OptHdr opt_i;
+    CefT_CcnMsg_MsgBdy params_i;
+    static char *keywords[] =
+        {"handler", "name",
+         "chunk_num", "symbolic_f",
+         "longlife_f",
+         "hop_limit", "lifetime",
+         "hdr_org", "msg_org",
          NULL};
     /* Mandatory arguments */
     const char* uri;
     /* Optional keyword arguments */
     int chunk_num = -1;
-    int symbolic_f = CefC_T_OPT_REGULAR;
+    int symbolic_f = 0;
+    int longlife_f = 0;
     int hop_limit = 32;
     long long lifetime = 4000ull; /* 4 seconds */
+    const char *hdr_org, *msg_org;
+    const Py_ssize_t hdr_org_siz, msg_org_siz;
 
     if (!PyArg_ParseTupleAndKeywords(
-        args, kw, "Ls|iiiL", keywords, 
-        &handler, &uri, 
-        &chunk_num, &symbolic_f,
-        &hop_limit, &lifetime)) {
+        args, kw, "Ls|iiiiLy#y#", keywords,
+        &handler, &uri,
+        &chunk_num, &symbolic_f, &longlife_f,
+        &hop_limit, &lifetime,
+        &hdr_org, &hdr_org_siz, &msg_org, &msg_org_siz)) {
         return NULL;
     }
-    memset(&params_i, 0, sizeof(CefT_Interest_TLVs));
+    memset(&opt_i, 0, sizeof(CefT_CcnMsg_OptHdr));
+    memset(&params_i, 0, sizeof(CefT_CcnMsg_MsgBdy));
     res = cef_frame_conversion_uri_to_name(uri, params_i.name);
     if (res < 0) {
         PyErr_SetString(PyExc_RuntimeError, CefpycoC_Err_Invalid_URI);
@@ -100,17 +108,25 @@ PYWRAP_DEF(send_interest) {
 
     params_i.hoplimit = hop_limit;
     if (lifetime >= 0) {
-        params_i.opt.lifetime_f = 1;
-        params_i.opt.lifetime = lifetime;
+        opt_i.lifetime_f = 1;
+        opt_i.lifetime = lifetime;
     }
 
-    params_i.opt.symbolic_f = symbolic_f;
+    params_i.org.symbolic_f = symbolic_f;
+    params_i.org.longlife_f = longlife_f;
+
     if (chunk_num >= 0) {
         params_i.chunk_num_f = 1;
         params_i.chunk_num   = chunk_num;
     }
 
-    res = cph_send_interest((CefT_Client_Handle)handler, &params_i);
+    if ( 0 < (opt_i.org_len = hdr_org_siz) ){
+        memcpy(opt_i.org_val, hdr_org, hdr_org_siz);
+    }
+    if ( 0 < (params_i.org_len = msg_org_siz) ){
+        memcpy(params_i.org_val, msg_org, msg_org_siz);
+    }
+    res = cph_send_interest((CefT_Client_Handle)handler, &opt_i, &params_i);
     PYWRAP_ERR;
     Py_RETURN_NONE;
 }
@@ -118,13 +134,15 @@ PYWRAP_DEF(send_interest) {
 PYWRAP_DEF(send_data) {
     int res;
     long long handler;
-    CefT_Object_TLVs params_d;
+    CefT_CcnMsg_OptHdr opt_d;
+    CefT_CcnMsg_MsgBdy params_d;
     struct timeval now_t;
     uint64_t now_ms;
-    static char *keywords[] = 
+    static char *keywords[] =
         {"handler", "name", "payload", "payload_len",
-         "chunk_num", "end_chunk_num", 
+         "chunk_num", "end_chunk_num",
          "hop_limit", "expiry", "cache_time",
+         "hdr_org", "msg_org",
          NULL};
 
     /* Mandatory arguments */
@@ -138,43 +156,165 @@ PYWRAP_DEF(send_data) {
     int hop_limit = 32;
     long long expiry = 36000ull * 1000ull; /* 36000 seconds (10 hours) */
     long long cache_time = -1;
+    const char *hdr_org, *msg_org;
+    const Py_ssize_t hdr_org_siz, msg_org_siz;
 
     if (!PyArg_ParseTupleAndKeywords(
-        args, kw, "Lss#i|iiiLL", keywords, 
+        args, kw, "Lss#i|iiiLLz#z#", keywords,
         &handler, &uri, &payload, &tmp, &payload_len,
-        &chunk_num, &end_chunk_num, 
-        &hop_limit, &expiry, &cache_time)) {
+        &chunk_num, &end_chunk_num,
+        &hop_limit, &expiry, &cache_time,
+        &hdr_org, &hdr_org_siz, &msg_org, &msg_org_siz)) {
         return NULL;
     }
-    memset(&params_d, 0, sizeof(CefT_Object_TLVs));
+    memset(&opt_d, 0, sizeof(CefT_CcnMsg_OptHdr));
+    memset(&params_d, 0, sizeof(CefT_CcnMsg_MsgBdy));
     res = cef_frame_conversion_uri_to_name(uri, params_d.name);
     if (res < 0) {
         PyErr_SetString(PyExc_RuntimeError, CefpycoC_Err_Invalid_URI);
         return NULL;
     }
     params_d.name_len = res;
-    
+
     memcpy(params_d.payload, payload, sizeof(char) * payload_len);
     params_d.payload_len = payload_len;
-    
+
     if (chunk_num >= 0) {
-        params_d.chnk_num_f = 1;
-        params_d.chnk_num = chunk_num;
+        params_d.chunk_num_f = 1;
+        params_d.chunk_num = chunk_num;
     }
     gettimeofday(&now_t, NULL);
 	now_ms = now_t.tv_sec * 1000ull + now_t.tv_usec / 1000ull;
     params_d.expiry = now_ms + expiry;
-    
+
     if (cache_time >= 0) {
-        params_d.opt.cachetime_f = 1;
-        params_d.opt.cachetime   = now_ms + cache_time;
+        opt_d.cachetime_f = 1;
+        opt_d.cachetime   = now_ms + cache_time;
     }
     if (end_chunk_num >= 0) {
         params_d.end_chunk_num_f = 1;
         params_d.end_chunk_num = end_chunk_num;
     }
-    res = cph_send_data((CefT_Client_Handle)handler, &params_d);
+    if ( 0 < (opt_d.org_len = hdr_org_siz) ){
+        memcpy(opt_d.org_val, hdr_org, hdr_org_siz);
+    }
+    if ( 0 < (params_d.org_len = msg_org_siz) ){
+        memcpy(params_d.org_val, msg_org, msg_org_siz);
+    }
+    res = cph_send_data((CefT_Client_Handle)handler, &opt_d, &params_d);
     PYWRAP_ERR;
+    Py_RETURN_NONE;
+}
+
+PYWRAP_DEF(build_hdrorg_value) {
+    unsigned char buff[4096];
+    Py_ssize_t siz;
+    CefT_HdrOrg_Params org;
+    static char *keywords[] =
+        { "t_hw_flags_f",
+          "t_hw_flags_symbolic_f", "t_hw_flags_enablecache_f",
+          "t_hw_timestamp_f",  "t_hw_timestamp_long_f",
+          "t_hw_timestamp_in", "t_hw_timestamp_out",
+          "tp_variant", "tp_val",
+         NULL};
+    /* Optional keyword arguments */
+    int t_hw_flags_f = 0;
+    int t_hw_flags_symbolic_f = 0;
+    int t_hw_flags_enablecache_f = 0;
+    int t_hw_timestamp_f = 0;
+    int t_hw_timestamp_long_f = 0;
+    int t_hw_timestamp_in = 0;
+    int t_hw_timestamp_out = 0;
+    int tp_variant = 0;
+    const char *tp_val;
+    const Py_ssize_t tp_siz = 0;
+
+    if (!PyArg_ParseTupleAndKeywords(
+        args, kw, "iiiiiiiiz#", keywords,
+        &t_hw_flags_f,
+        &t_hw_flags_symbolic_f, &t_hw_flags_enablecache_f,
+        &t_hw_timestamp_f,
+        &t_hw_timestamp_long_f,
+        &t_hw_timestamp_in,
+        &t_hw_timestamp_out,
+        &tp_variant, &tp_val, &tp_siz)) {
+        return NULL;
+    }
+    memset(&org, 0x00, sizeof(org));
+    org.t_hw_flags_f = t_hw_flags_f;
+    org.t_hw_flags_symbolic_f = t_hw_flags_symbolic_f;
+    org.t_hw_flags_enablecache_f = t_hw_flags_enablecache_f;
+    org.t_hw_timestamp_f = t_hw_timestamp_f;
+    org.t_hw_timestamp_long_f = t_hw_timestamp_long_f;
+    org.t_hw_timestamp_in = t_hw_timestamp_in;
+    org.t_hw_timestamp_out = t_hw_timestamp_out;
+
+    if ( tp_variant ){
+        org.tp_variant = tp_variant;
+        org.tp_len = tp_siz;
+        memcpy(org.tp_val, tp_val, tp_siz);
+    }
+
+    memset(buff, 0x00, sizeof(buff));
+    siz = cph_build_hdrorg_value(buff, &org);
+    if ( 0 < siz ){
+        return Py_BuildValue(BUILD_BYTES_ID "#", buff, siz);
+    }
+    Py_RETURN_NONE;
+}
+
+PYWRAP_DEF(build_msgorg_value) {
+    unsigned char buff[4096];
+    Py_ssize_t siz;
+    CefT_MsgOrg_Params org;
+    static char *keywords[] =
+        { "symbolic_f", "longlife_f",
+          "selective_f", "req_chunk", "first_chunk", "last_chunk",
+          "version_val",
+          "from_pub_f",
+         NULL};
+    /* Optional keyword arguments */
+    int symbolic_f = 0;
+    int longlife_f = 0;
+    int selective_f = 0;
+    int req_chunk = 0;
+    int first_chunk = 0;
+    int last_chunk = -1;
+    const char *version_val;
+    const Py_ssize_t version_siz;
+    int from_pub_f = 0;
+
+    if (!PyArg_ParseTupleAndKeywords(
+        args, kw, "iiiiiiz#i", keywords,
+        &symbolic_f, &longlife_f,
+        &selective_f, &req_chunk, &first_chunk, &last_chunk,
+        &version_val, &version_siz,
+        &from_pub_f)) {
+        return NULL;
+    }
+    memset(&org, 0x00, sizeof(org));
+    org.symbolic_f = symbolic_f;
+    org.longlife_f = longlife_f;
+    org.selective_f = selective_f;
+    if ( selective_f ){
+        org.req_chunk = req_chunk;
+        org.first_chunk = first_chunk;
+        if ( first_chunk <= last_chunk ){
+            org.last_chunk_f = 1;
+            org.last_chunk = last_chunk;
+        }
+    }
+    if ( version_siz ){
+        org.version_f = 1;
+        org.version_len = version_siz;
+        memcpy(org.version_val, version_val, version_siz);
+    }
+
+    memset(buff, 0x00, sizeof(buff));
+    siz = cph_build_msgorg_value(buff, &org);
+    if ( 0 < siz ){
+        return Py_BuildValue(BUILD_BYTES_ID "#", buff, siz);
+    }
     Py_RETURN_NONE;
 }
 
@@ -217,14 +357,18 @@ PYWRAP_DEF(receive) {
     Py_ssize_t r_name_len;
     char payload[4096];
     Py_ssize_t r_payload_len;
-    static char *keywords[] = 
+    char hdr_org[256];
+    Py_ssize_t hdr_org_len;
+    char msg_org[1024];
+    Py_ssize_t msg_org_len;
+    static char *keywords[] =
         {"handler", "error_on_timeout", "timeout_ms", NULL};
-    
-    if (!PyArg_ParseTupleAndKeywords(args, kw, "L|ii", keywords, 
+
+    if (!PyArg_ParseTupleAndKeywords(args, kw, "L|ii", keywords,
         &handler, &error_on_timeout, &timeout_ms)) {
         return NULL;
     }
-    res = cph_receive((CefT_Client_Handle)handler, 
+    res = cph_receive((CefT_Client_Handle)handler,
         &app_frame, timeout_ms, error_on_timeout);
     version = app_frame.version;
     type = app_frame.type;
@@ -247,8 +391,27 @@ PYWRAP_DEF(receive) {
         payload[app_frame.payload_len] = '\0';
         r_payload_len = app_frame.payload_len;
     }
-    PYWRAP_ERR;
 
+#define	minimum(a,b)	((a)<(b)?(a):(b))
+
+    hdr_org_len = minimum(sizeof(hdr_org)-1, app_frame.hdr_org_len);
+    if ( 0 < hdr_org_len ) {
+        memcpy(hdr_org, app_frame.hdr_org_val, hdr_org_len);
+        hdr_org[hdr_org_len] = '\0';
+    } else {
+        sprintf(hdr_org, "%s%c", CefpycoC_Null_Msg, '\0');
+        hdr_org_len = sizeof(CefpycoC_Null_Msg);
+    }
+
+    msg_org_len = minimum(sizeof(msg_org)-1, app_frame.msg_org_len);
+    if ( 0 < msg_org_len ) {
+        memcpy(msg_org, app_frame.msg_org_val, msg_org_len);
+        msg_org[msg_org_len] = '\0';
+    } else {
+        sprintf(msg_org, "%s%c", CefpycoC_Null_Msg, '\0');
+        msg_org_len = sizeof(CefpycoC_Null_Msg);
+    }
+    PYWRAP_ERR;
 
 #ifdef CEFPYCO_DUMP
     fprintf(stderr, "          res:%d\n",  res);
@@ -265,7 +428,7 @@ PYWRAP_DEF(receive) {
     fprintf(stderr, "  payload len:%d (%d)\n",  app_frame.payload_len, strlen(payload));
 #endif
 
-    return Py_BuildValue("iLLLLs#iiiL" BUILD_BYTES_ID "#i", 
+    return Py_BuildValue("iLLLLs#iiiL" BUILD_BYTES_ID "#i" BUILD_BYTES_ID "#i" BUILD_BYTES_ID "#i",
         res,
         version,
         type,
@@ -276,8 +439,9 @@ PYWRAP_DEF(receive) {
         (int)app_frame.chunk_num,
         (int)app_frame.end_chunk_num,
         (long long)app_frame.flags,
-        payload, r_payload_len,
-        (int)app_frame.payload_len
+        payload, r_payload_len, (int)app_frame.payload_len,
+        hdr_org, hdr_org_len, (int)app_frame.hdr_org_len,
+        msg_org, msg_org_len, (int)app_frame.msg_org_len
     );
 }
 
@@ -288,6 +452,8 @@ static PyMethodDef libcefpyco_methods[] = {
     {"send_data", (PyCFunction)pywrap_send_data, PYWRAP_METH, ""},
     {"register", (PyCFunction)pywrap_register, PYWRAP_METH, ""},
     {"receive", (PyCFunction)pywrap_receive, PYWRAP_METH, ""},
+    {"build_hdrorg", (PyCFunction)pywrap_build_hdrorg_value, PYWRAP_METH, ""},
+    {"build_msgorg", (PyCFunction)pywrap_build_msgorg_value, PYWRAP_METH, ""},
     {NULL, NULL, 0, NULL}
 };
 

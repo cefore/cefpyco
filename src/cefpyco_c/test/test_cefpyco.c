@@ -93,8 +93,8 @@ static void test_launch_two_cefore() {
 }
 
 static void test_send_and_receive_interest() {
-    CefT_Interest_TLVs params_i;
-    CefT_Object_TLVs params_d;
+    CefT_CcnMsg_MsgBdy params_i;
+    CefT_CcnMsg_MsgBdy params_d;
     cefpyco_app_frame frame;
     char uri_name[256];
     int res;
@@ -130,8 +130,8 @@ static void test_send_and_receive_interest() {
 }
 
 static void test_request_and_satisfy() {
-    CefT_Interest_TLVs params_i;
-    CefT_Object_TLVs params_d;
+    CefT_CcnMsg_MsgBdy params_i;
+    CefT_CcnMsg_MsgBdy params_d;
     cefpyco_app_frame frame;
     char uri_name[256];
     int res;
@@ -160,8 +160,8 @@ static void test_request_and_satisfy() {
 }
 
 static void test_request_and_satisfy_with_cast() {
-    CefT_Interest_TLVs params_i;
-    CefT_Object_TLVs params_d;
+    CefT_CcnMsg_MsgBdy params_i;
+    CefT_CcnMsg_MsgBdy params_d;
     long long handler_p, handler_c;
     cefpyco_app_frame frame;
     char uri_name[256];
@@ -193,8 +193,8 @@ static void test_request_and_satisfy_with_cast() {
 }
 
 static void test_send_and_receive_smi() {
-    CefT_Interest_TLVs params_i;
-    CefT_Object_TLVs params_d;
+    CefT_CcnMsg_MsgBdy params_i;
+    CefT_CcnMsg_MsgBdy params_d;
     cefpyco_app_frame frame;
     char uri_name[256];
     int res;

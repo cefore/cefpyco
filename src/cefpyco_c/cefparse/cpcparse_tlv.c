@@ -41,11 +41,11 @@
  *   - TYPE (2bytes)
  *   - LENGTH (2bytes)
  *   - VALUE (LENGTH bytes).
- * In cefore app, a name always has a segment for 
- * chunk number of 4 byte length, that is, 
- * name_len is 8 bytes larger than 
+ * In cefore app, a name always has a segment for
+ * chunk number of 4 byte length, that is,
+ * name_len is 8 bytes larger than
  * the length for only name segments.
- * 
+ *
  * For example, a name 'ccnx:/a' is 13 byte length as follows:
  *   - Name segument 'a' (5B): T(2B) + L(2B) + 'a'(1B)
  *   - Segment number   (8B): T(2B) + L(2B) + 0x0000(4B)
@@ -58,9 +58,9 @@ uint32_t cpcparse_tlv_read_length(unsigned char* tlv) {
 }
 
 // unsigned int cpcparse_tlv_read_segnum(unsigned char* tlv) {
-//    return ((uint64_t)tlv[4] << 24ull) + 
+//    return ((uint64_t)tlv[4] << 24ull) +
 //           ((uint64_t)tlv[5] << 16ull) +
-//           ((uint64_t)tlv[6] <<  8ull) + 
+//           ((uint64_t)tlv[6] <<  8ull) +
 //           ((uint64_t)tlv[7] <<  0ull);
 // }
 
@@ -71,25 +71,25 @@ uint32_t cpcparse_tlv_read_length(unsigned char* tlv) {
 ----------------------------------------------------------------------------------------*/
 int 											/* remaining length of buffer 			*/
 cpc_client_request_get_with_info (
-	unsigned char* buff, 
-	int buff_len, 
+	unsigned char* buff,
+	int buff_len,
 	struct cef_app_request* app_request
 ) {
 	int i = 0;
 	struct fixed_hdr* fix_hdr;
 	uint16_t 	pkt_len;
 	uint8_t 	hdr_len;
-	CefT_Parsed_Message 	pm;
-	CefT_Parsed_Opheader 	poh;
+	CefT_CcnMsg_MsgBdy 	pm;
+	CefT_CcnMsg_OptHdr 	poh;
 	int						res;
 	int new_len = 0;
-	
+
 	/* Searches the top of the message */
-	if ((buff[i] 	!= CefC_Version) || 
-		(buff[i + 1] > CefC_PT_PING_REP)) {
-		
+	if ((buff[i] 	!= CefC_Version) ||
+		(buff[i + 1] > CefC_PT_MAX)) {
+
 		while (i < buff_len) {
-			if ((buff[i] 	!= CefC_Version) || 
+			if ((buff[i] 	!= CefC_Version) ||
 				(buff[i + 1] != CefC_PT_INTEREST)) {
 				i += 2;
 			} else {
@@ -103,44 +103,40 @@ cpc_client_request_get_with_info (
 	if ((buff_len - i) < 8) {
 		return (-1);
 	}
-	
+
 	/* Parses the message */
 	fix_hdr = (struct fixed_hdr*)(&buff[i]);
 	pkt_len = ntohs (fix_hdr->pkt_len);
 	hdr_len = fix_hdr->hdr_len;
-	
+
 	if (pkt_len > (buff_len - i)) {
 		return (-1);
 	}
-	
+
 	new_len = buff_len - pkt_len;
-	
+
 	res = cef_frame_message_parse (
 				&buff[i], pkt_len, hdr_len, &poh, &pm, CefC_PT_INTEREST);
-	if ( pm.AppComp_num > 0 ) {
-		/* Free AppComp */
-		cef_frame_app_components_free ( pm.AppComp_num, pm.AppComp );
-	}
 	if (res < 0) {
 		memcpy (&work_buff[0], &buff[buff_len-new_len], new_len);
 		memcpy (&buff[0], &work_buff[0], new_len);
 		return(new_len);
 	}
-	
+
 /* [Restriction]												*/
 /* For renovation in FY 2018, only Regular/NWProc are allowed,	*/
 /* ignoring everything else.									*/
-	// if (pm.org.longlife_f || poh.piggyback_f || poh.bitmap_f || 
+	// if (pm.org.longlife_f || poh.piggyback_f || poh.bitmap_f ||
 	// 	poh.number_f || poh.symbolic_code_f || poh.app_reg_f) {
 	// 	memcpy (&work_buff[0], &buff[buff_len-new_len], new_len);
 	// 	memcpy (&buff[0], &work_buff[0], new_len);
 	// 	return(new_len);
 	// }
-	
+
 	app_request->version = CefC_App_Version;
 	app_request->type = CefC_App_Type_Internal;
-	if (pm.chnk_num_f) {
-		app_request->chunk_num = pm.chnk_num;
+	if (pm.chunk_num_f) {
+		app_request->chunk_num = pm.chunk_num;
 	} else {
 		app_request->chunk_num = -1;
 	}
@@ -151,9 +147,23 @@ cpc_client_request_get_with_info (
 	app_request->name_len = pm.name_len;
 	app_request->total_segs_len =
 		cef_frame_get_len_total_namesegments (pm.name, pm.name_len);
-	
+
 	memcpy (&(app_request->data_entity[0]), pm.name, pm.name_len);
 	app_request->name = &(app_request->data_entity[0]);
+
+	app_request->hdr_org_len   = poh.org_len;
+	if (0 < app_request->hdr_org_len) {
+		memcpy (app_request->hdr_org_val, poh.org_val, poh.org_len);
+	} else {
+		app_request->hdr_org_val[0] = 0x00;
+	}
+
+	app_request->msg_org_len   = pm.org_len;
+	if (0 < app_request->msg_org_len) {
+		memcpy (app_request->msg_org_val, pm.org_val, pm.org_len);
+	} else {
+		app_request->msg_org_val[0] = 0x00;
+	}
 
 	if (new_len !=  buff_len) {
 		memcpy (&work_buff[0], &buff[buff_len-new_len], new_len);

@@ -67,6 +67,10 @@ typedef struct {
 	int64_t         end_chunk_num;
 	unsigned char*  payload;
 	uint16_t        payload_len;
+	unsigned char*  hdr_org_val;
+	uint16_t        hdr_org_len;
+	unsigned char*  msg_org_val;
+	uint16_t        msg_org_len;
 } cefpyco_app_frame;
 
 #endif

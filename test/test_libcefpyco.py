@@ -112,7 +112,7 @@ def test_request_with_smi_and_satisfy():
     sleep(sleeptime)
     libcefpyco.send_interest(
         handler_c, "ccnx:/lib/e", 
-        symbolic_f=0x0002 # CefC_T_LONGLIFE
+        longlife_f=1 # CefC_T_LONGLIFE
         )
     sleep(0.2)
     libcefpyco.send_data(handler_p, "ccnx:/lib/e", "hello", 5, 0)

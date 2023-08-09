@@ -24,11 +24,13 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-if (test)
-    add_library(cefpyco_parse STATIC
-        cpcparse_type.c cpcparse_tlv.c 
-        # cpcparse_interest.c cpcparse_app_frame.c # Outdated after Cefore 0.7.5.
-        cpcparse_app_frame_7_5.c cpcparse_app_request.c
-        cpcparse_intreturn.c)
-    target_link_libraries(cefpyco_parse cefore crypto)
-endif()
+add_library(cefpyco_parse STATIC
+    cpcparse_type.c cpcparse_tlv.c 
+    # cpcparse_interest.c cpcparse_app_frame.c # Outdated after Cefore 0.7.5.
+    cpcparse_app_frame_7_5.c cpcparse_app_request.c
+    cpcparse_intreturn.c)
+target_include_directories(cefpyco_parse 
+    PRIVATE ${CMAKE_SOURCE_DIR}/src/cefpyco_c/include
+    PUBLIC include)
+target_link_libraries(cefpyco_parse 
+    PRIVATE cefore crypto)

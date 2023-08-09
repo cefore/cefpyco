@@ -40,11 +40,11 @@
 
 static int is_not_ccnx_1_0_content_packet(unsigned char *buf, int len);
 static int is_not_targeted_header(struct cef_app_frame* wrk_frame);
-    
+
 int cpcparse_try_parse_app_frame_7_5(
     cpcparse_parse_info* info,
     cefpyco_app_frame* app_frame)
-{        
+{
     int res;
     int actual_len;
     struct cef_app_frame *wrk_buf = &(info->wrk_frame);
@@ -52,15 +52,15 @@ int cpcparse_try_parse_app_frame_7_5(
     int remained_length = info->len - info->offset;
 MILESTONE
 
-    if (is_not_ccnx_1_0_content_packet(buf, remained_length)) { return 0; } 
+    if (is_not_ccnx_1_0_content_packet(buf, remained_length)) { return 0; }
     memset(wrk_buf, 0, sizeof(struct cef_app_frame));
     res = cef_client_payload_get_with_info(buf, remained_length, wrk_buf);
     if (res < 0) { return 0; }
     if (is_not_targeted_header(wrk_buf)) { return 0; }
-    
+
     actual_len = info->len - info->offset - res;
     if(info->offset + actual_len > info->len) { return -1; } // Too short body
-    
+
     app_frame->version = wrk_buf->version;
     app_frame->type = CPC_CCNX_PT_CONTENT;
     app_frame->flags = 0x00000000ul;
@@ -71,18 +71,22 @@ MILESTONE
     app_frame->end_chunk_num = wrk_buf->end_chunk_num;
     app_frame->payload = wrk_buf->payload;
     app_frame->payload_len = wrk_buf->payload_len;
+    app_frame->hdr_org_len = wrk_buf->hdr_org_len;
+    app_frame->hdr_org_val = wrk_buf->hdr_org_val;
+    app_frame->msg_org_len = wrk_buf->msg_org_len;
+    app_frame->msg_org_val = wrk_buf->msg_org_val;
     return actual_len;
 }
 
 static int is_not_ccnx_1_0_content_packet(unsigned char *buf, int len) {
     if (len < 2) return 1;
-    return 
+    return
         (buf[0] != CPC_CCNX_VERSION) ||
         (buf[1] != CPC_CCNX_PT_CONTENT);
 }
 
 static int is_not_targeted_header(struct cef_app_frame* wrk_buf) {
-    return 
-        (wrk_buf->version != CefC_App_Version) || 
+    return
+        (wrk_buf->version != CefC_App_Version) ||
         (wrk_buf->type != CefC_App_Type_Internal);
 }
