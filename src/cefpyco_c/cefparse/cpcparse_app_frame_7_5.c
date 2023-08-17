@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, National Institute of Information and Communications
+ * Copyright (c) 2016--2023, National Institute of Information and Communications
  * Technology (NICT). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,30 +27,27 @@
  * SUCH DAMAGE.
  */
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <unistd.h>
-#include <ctype.h>
 
 #include "cefpyco_util.h"
-#include "cpcparse_type.h"
-#include "cpcparse_tlv.h"
 #include "cpcparse_app_frame_7_5.h"
+#include "cpcparse_tlv.h"
+#include "cpcparse_type.h"
 
-static int is_not_ccnx_1_0_content_packet(unsigned char *buf, int len);
+static int is_not_ccnx_1_0_content_packet(unsigned char* buf, int len);
 static int is_not_targeted_header(struct cef_app_frame* wrk_frame);
 
-int cpcparse_try_parse_app_frame_7_5(
-    cpcparse_parse_info* info,
-    cefpyco_app_frame* app_frame)
-{
-    int res;
-    int actual_len;
-    struct cef_app_frame *wrk_buf = &(info->wrk_frame);
-    unsigned char *buf = info->buf;
-    int remained_length = info->len - info->offset;
-MILESTONE
+int cpcparse_try_parse_app_frame_7_5(cpcparse_parse_info* info, cefpyco_app_frame* app_frame) {
+    int                   res;
+    int                   actual_len;
+    struct cef_app_frame* wrk_buf = &(info->wrk_frame);
+    unsigned char*        buf = info->buf;
+    int                   remained_length = info->len - info->offset;
+    MILESTONE
 
     if (is_not_ccnx_1_0_content_packet(buf, remained_length)) { return 0; }
     memset(wrk_buf, 0, sizeof(struct cef_app_frame));
@@ -59,7 +56,7 @@ MILESTONE
     if (is_not_targeted_header(wrk_buf)) { return 0; }
 
     actual_len = info->len - info->offset - res;
-    if(info->offset + actual_len > info->len) { return -1; } // Too short body
+    if (info->offset + actual_len > info->len) { return -1; }  // Too short body
 
     app_frame->version = wrk_buf->version;
     app_frame->type = CPC_CCNX_PT_CONTENT;
@@ -78,15 +75,11 @@ MILESTONE
     return actual_len;
 }
 
-static int is_not_ccnx_1_0_content_packet(unsigned char *buf, int len) {
+static int is_not_ccnx_1_0_content_packet(unsigned char* buf, int len) {
     if (len < 2) return 1;
-    return
-        (buf[0] != CPC_CCNX_VERSION) ||
-        (buf[1] != CPC_CCNX_PT_CONTENT);
+    return (buf[0] != CPC_CCNX_VERSION) || (buf[1] != CPC_CCNX_PT_CONTENT);
 }
 
 static int is_not_targeted_header(struct cef_app_frame* wrk_buf) {
-    return
-        (wrk_buf->version != CefC_App_Version) ||
-        (wrk_buf->type != CefC_App_Type_Internal);
+    return (wrk_buf->version != CefC_App_Version) || (wrk_buf->type != CefC_App_Type_Internal);
 }

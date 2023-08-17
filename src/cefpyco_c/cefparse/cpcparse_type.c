@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, National Institute of Information and Communications
+ * Copyright (c) 2016--2023, National Institute of Information and Communications
  * Technology (NICT). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,25 +27,22 @@
  * SUCH DAMAGE.
  */
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <unistd.h>
-#include <ctype.h>
 
 #include "cpcparse_type.h"
 // #include "cpcparse_interest.h"
 // #include "cpcparse_app_frame.h"
+#include "cefpyco_util.h"
 #include "cpcparse_app_frame_7_5.h"
 #include "cpcparse_app_request.h"
 #include "cpcparse_intreturn.h"
-#include "cefpyco_util.h"
 
-int cpcparse_stop_parse_and_next_byte(
-    cpcparse_parse_info* info,
-    cefpyco_app_frame* app_frame
-) {
-MILESTONE
+int cpcparse_stop_parse_and_next_byte(cpcparse_parse_info* info, cefpyco_app_frame* app_frame) {
+    MILESTONE
     info->offset++;
     return 0;
 }
@@ -55,7 +52,5 @@ const try_parse try_parser_list[] = {
     cpcparse_try_parse_app_frame_7_5,
     // cpcparse_try_parse_interest,
     cpcparse_try_parse_app_request,
-    cpcparse_try_parse_intreturn, // from cefore 0.8.3
-    cpcparse_stop_parse_and_next_byte,
-    NULL
-};
+    cpcparse_try_parse_intreturn,  // from cefore 0.8.3
+    cpcparse_stop_parse_and_next_byte, NULL};

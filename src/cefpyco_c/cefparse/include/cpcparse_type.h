@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, National Institute of Information and Communications
+ * Copyright (c) 2016--2023, National Institute of Information and Communications
  * Technology (NICT). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,15 +27,14 @@
  * SUCH DAMAGE.
  */
 
-
 #ifndef __CEFPYCO_PARSE_TYPE_HEADER__
 #define __CEFPYCO_PARSE_TYPE_HEADER__
 
-#include <cefore/cef_define.h>
+#include "cefpyco_def.h"
 #include <cefore/cef_client.h>
+#include <cefore/cef_define.h>
 #include <cefore/cef_frame.h>
 #include <cefore/cef_log.h>
-#include "cefpyco_def.h"
 
 #define CPC_CCNX_VERSION     (0x01)
 #define CPC_CCNX_PT_INTEREST (0x00)
@@ -43,20 +42,20 @@
 #define CPC_CCNX_PT_RETURN   (0x02)
 
 typedef struct {
-	unsigned char*  buf;
-    int             len;
-    int             offset;
+    unsigned char*         buf;
+    int                    len;
+    int                    offset;
     struct cef_app_frame   wrk_frame;
     struct cef_app_request wrk_request;
 } cpcparse_parse_info;
 
-typedef int (*try_parse)(
+typedef int (*try_parse)(  //
     cpcparse_parse_info* info,
-    cefpyco_app_frame* app_frame);
+    cefpyco_app_frame*   app_frame);
 
-int cpcparse_stop_parse_and_next_byte(
+int cpcparse_stop_parse_and_next_byte(  //
     cpcparse_parse_info* info,
-    cefpyco_app_frame* app_frame);
+    cefpyco_app_frame*   app_frame);
 
 extern const try_parse try_parser_list[];
 

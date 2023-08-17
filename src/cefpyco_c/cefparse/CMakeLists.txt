@@ -1,17 +1,17 @@
-# Copyright (c) 2018, National Institute of Information and Communications
+# Copyright (c) 2016--2023, National Institute of Information and Communications
 # Technology (NICT). All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 # 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
+# this list of conditions and the following disclaimer.
 # 2. Redistributions in binary form must reproduce the above copyright
-#    notice this list of conditions and the following disclaimer in the
-#    documentation and/or other materials provided with the distribution.
+# notice this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
 # 3. Neither the name of the NICT nor the names of its contributors may be
-#    used to endorse or promote products derived from this software
-#    without specific prior written permission.
-# 
+# used to endorse or promote products derived from this software
+# without specific prior written permission.
+#
 # THIS SOFTWARE IS PROVIDED BY THE NICT AND CONTRIBUTORS "AS IS" AND ANY
 # EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,13 +24,15 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-add_library(cefpyco_parse STATIC
-    cpcparse_type.c cpcparse_tlv.c 
+add_library(cefpyco_parse SHARED
+    cpcparse_type.c cpcparse_tlv.c
+
     # cpcparse_interest.c cpcparse_app_frame.c # Outdated after Cefore 0.7.5.
     cpcparse_app_frame_7_5.c cpcparse_app_request.c
     cpcparse_intreturn.c)
-target_include_directories(cefpyco_parse 
-    PRIVATE ${CMAKE_SOURCE_DIR}/src/cefpyco_c/include
-    PUBLIC include)
-target_link_libraries(cefpyco_parse 
-    PRIVATE cefore crypto)
+target_include_directories(cefpyco_parse
+    PUBLIC include
+    PRIVATE ${CMAKE_BINARY_DIR}/src/cefpyco_c/include /usr/local/include)
+target_link_libraries(cefpyco_parse
+    PRIVATE OpenSSL::Crypto OpenSSL::SSL cefore)
+set_property(TARGET cefpyco_parse PROPERTY POSITION_INDEPENDENT_CODE ON)

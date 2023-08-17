@@ -1,39 +1,37 @@
 # Cefore Python Compact package: cefpyco
 
 - [Cefore Python Compact package: cefpyco](#cefore-python-compact-package-cefpyco)
-  - [Overview](#Overview)
-  - [Installation](#Installation)
-    - [Installing Cefore](#Installing-Cefore)
-    - [Installing Cefpyco](#Installing-Cefpyco)
-    - [Uninstalling Cefpyco](#Uninstalling-Cefpyco)
-  - [Configuration](#Configuration)
-    - [cefpyco](#cefpyco)
+  - [Overview](#overview)
+  - [Installation](#installation)
+    - [Installing Cefore](#installing-cefore)
+    - [Installing Cefpyco (for Linux)](#installing-cefpyco-for-linux)
+    - [Installing Cefpyco (for OS X)](#installing-cefpyco-for-os-x)
+    - [Build.bash script](#buildbash-script)
+    - [Uninstalling Cefpyco](#uninstalling-cefpyco)
+  - [Configuration](#configuration)
+    - [src/cefpyco](#srccefpyco)
+    - [src/cefpyco\_wrap](#srccefpyco_wrap)
+    - [src/cefpyco\_c](#srccefpyco_c)
     - [cefapp](#cefapp)
-    - [c_src](#c_src)
     - [test](#test)
-  - [How to use cefpyco](#cefpyco)
-    - [Connecting to and disconnecting from cefnetd](#Connecting-to-and-disconnecting-from-cefnetd)
-    - [Sending Interest packets](#Sending-Interest-Packets)
-    - [Sending Data packets](#Sending-Data-Packets)
-    - [Receiving packets](#Receiving-packets)
-    - [Creating Publisher app](#Creating-Publisher-App)
-    - [Creating Consumer app](#Creating-Consumer-App)
-  - [How to use CefApp](#How-to-use-cefapp)
-    - [Overview](#Overview-1)
-    - [cefappconsumer.py](#cefappconsumerpy)
-    - [cefappproducer.py](#cefappproducerpy)
-    - [Example](#Example)
-  - [Notes](#Notes)
+  - [How to use cefpyco](#how-to-use-cefpyco)
+    - [Connecting to and disconnecting from cefnetd](#connecting-to-and-disconnecting-from-cefnetd)
+    - [Sending Interest packets](#sending-interest-packets)
+    - [Sending Data packets](#sending-data-packets)
+    - [Receiving packets](#receiving-packets)
+    - [Creating Publisher App](#creating-publisher-app)
+    - [Creating Consumer app](#creating-consumer-app)
+  - [Notes](#notes)
 
 ## Overview
 
-cefpyco is a Python package for Cefore applications.
+`cefpyco` is a Python package for Cefore applications.
 It has the following features.
 
 * Cefore functions, which are written in C, can be called from Python programs.
   * It is easier to develop Cefore applications in Python than in C.
 * Interest and Data transmission/reception can be executed with a single function.
-* Support for “with” blocks, enabling the easy programming of initialization and termination of connections with cefnetd.
+* Support for "with" blocks, enabling the easy programming of initialization and termination of connections with cefnetd.
 * A simple application that sends back Data in response to receiving an Interest can be easily developed.
   * This means content can be provided without accessing csmgrd.
 * Optional TLVs are supported (e.g., chunk number, termination chunk number, maximum hop count, Interest lifetime, content expiration, and cache expiration).
@@ -45,58 +43,116 @@ It has the following features.
 
 ### Installing Cefore	
 
-First, install Cefore on your PC (target version: 0.8.3 or later).
+First, install Cefore on your PC (target version: 0.10.0d or later).
 To install Cefore, visit the Cefore website (https://cefore.net) or GitHub (https://github.com/cefore/cefore).
 (The user manual is available at https://cefore.net/instruction and the source code is available at https://cefore.net/download).
 
-### Installing Cefpyco
+### Installing Cefpyco (for Linux)
 
 Execute the following commands in an environment where Cefore and Python are installed.
 (Do not forget to add "." with cmake).
 
-```
-sudo apt-get install cmake python3-pip
-pip3 install setuptools click numpy
+```bash
+sudo apt-get install cmake python3-pip python3-dev python3-venv
+pip3 install --upgrade build
+pip3 install numpy click rich pytest pytest-sugar
 cmake .
-sudo make install
-````
+make
+make install
+```
 
 After executing the above commands, you can `import cefpyco` from any directory.
 
-For Python packages, setuptools is required for installation, but click and numpy are not necessary if you do not use cefapp.
+For Python packages, setuptools is required for installation, but numpy, click, rich and pytest are options when using cefapp.
+
+### Installing Cefpyco (for OS X)
+
+This manual assumes an environment built using brew and pyenv.
+Specifically, assume an environment installed with the following commands:
+
+```bash
+brew install cmake pyenv openssl
+env PYTHON_CONFIGURE_OPTS='--enable-framework' pyenv install 3.x.x # Choose the version you want.
+pyenv global 3.x.x
+echo 'eval "$(pyenv init -)"' >> ~/.bash_profile # Option.
+```
+
+Note that you must set the environment variables when you run `pyenv install`; 
+otherwise later `make` command will fail.
+
+After rebooting your terminal or running `source ~/.bash_profile`, install the following packages:
+
+```bash
+python -m pip --upgrade pip build
+python -m pip install numpy click rich pytest pytest-sugar
+```
+
+Because cmake cannot automatically find the Python and OpenSSL root directories, 
+you need to set the necessary variables.
+The root directory of the Python interpreter that you are using 
+can be found with the following Python script:
+
+```py
+from sysconfig import get_config_var
+print(get_config_var("base"))
+```
+
+The OpenSSL root directory can be found with `brew --prefix openssl`.
+
+Using these paths, run the build process as follows:
+
+```bash
+py_root=... # Set by the above command.
+ssl_root=... # Set by the above command.
+cmake -DPython_ROOT_DIR="$py_root" -DOPENSSL_ROOT_DIR="$ssl_root" .
+make
+make install
+```
+
+### Build.bash script
+
+We provide `build.bash` to support the build process 
+except for installing the required libraries. 
+Note that this script is experimental. 
+If you run this script and encounter any problems, 
+please return to the manual build procedure explained above.
 
 ### Uninstalling Cefpyco
 
-You can uninstall cefpyco by running `sudo make uninstall`.
+You can uninstall cefpyco by running `make uninstall`.
 
 ## Configuration
 
 This cefpyco package consists of the following files and directories.
 
 * `README.md(.html)`: This document file.
-* `LICENSE.md(.html)`: License file.
+* `LICENSE`: License file.
 * `CmakeLists.txt`: Configuration file for cmake.
-* `cefpyco/`: Main Python package for cefpyco.
-* `cefapp/`: Example applications for cefpyco.
-* `c_src/`: C code for Cefore function calls.
-* `setup.py`: File containing configuration for cefpyco installation.
+* `src`: Source codes:
+  + `cefpyco/`: Main Python package for cefpyco (Python).
+  + `cefpyco_wrap/`: C code for Cefore function calls (C-lang).
+  + `cefpyco_c/`: Python/C wrapper code for cefpyco_c (C-lang).
+* `cefapp`: Example applications for cefpyco.
+* `test`: Test codes. You can run them via `make test` or `pytest`.
+* `setup.py(.cfg)`, `pyproject.toml`: File containing configuration for cefpyco installation.
+
+`CMakeLists.txt` exists in each directory as a configuration file for cmake.
 
 The files in each directory are as follows.
 
-### cefpyco
+### src/cefpyco
 
 * `__init__.py`: File to be executed when importing a cefpyco package.
 * `core.py`: File describing the main functions of cefpyco.
 
-### cefapp
+### src/cefpyco_wrap
 
-* `cefapp.py`: File that provides the CefApp class for applications that can communicate with pipelines using cefpyco.
-* `cefappproducer.py`: Consumer application using CefApp.
-* `cefappconsumer.py`: Producer application using CefApp.
+* `pywrap_cefpyco.c`, `include/pywrap.h`: Python wrapper for Cefore that calls functions defined in cefpyco.c from Python programs.
 
-### c_src
+### src/cefpyco_c
 
-* `pywrap_cefpyco.c`: Python wrapper for Cefore that calls functions defined in cefpyco.c from Python programs.
+The source and header files are listed together, but the header files are under the `include` directory.
+
 * `cefpyco.c(.h)`: Wraps Cefore functions and provides simplified functions.
 * `cefpyco_parse.c(.h)`: Provides functions to parse TLVs received by the cef_client_read function.
 * `cefpyco_def.h`: Definition of various constants.
@@ -106,14 +162,21 @@ The files in each directory are as follows.
 * `cefparse/cpcparse_app_frame_7_5.c(.h)`: Provides functions to parse received Data (`struct cef_app_frame`). Used in Cefore 0.7.5 or later versions.
 * `cefparse/cpcparse_app_frame.c(.h)`: Provides functions to parse received Data (`struct cef_app_frame`). Used in versions earlier than Cefore 0.7.5.
 * `cefparse/cpcparse_interest.c(.h)`: Provides functions to parse received Interest packets. Used in Cefore 0.7.5 or later versions.
+* `cefparse/cpcparse_intreturn.c(.h)`: Provides functions to parse received Interest Return packets. Used in Cefore 0.8.2.2 or later versions.
 
-`CMakeLists.txt` exists in each directory as a configuration file for cmake.
+### cefapp
+
+`cefapp` is the Python application that can communicate using cefpyco.
+`cefapp.py` provides the CefApp class for the communication with pipelines.
+
+Please read the [README.md](./cefapp/README.md) of cefapp.
 
 ### test
 
-* `cefpycotest.py`: Code for manual testing of features in the libcefpyco.so shared library.
+* `test_cefpyco.c`: Code for automatic testing of features in the libcefpyco.so shared library.
 * `test_libcefpycotest.py`: Code for automatic testing of features in the libcefpyco.so shared library.
 * `test_core.py`: Code for automatic testing of cefpyco/core.py.
+* `cefpycotest.py`: Code for manual testing of features in the libcefpyco.so shared library.
 
 ## How to use cefpyco
 
@@ -129,9 +192,9 @@ import cefpyco
 with cefpyco.create_handle() as handle:
     # Write code.
     Pass: # Write code.
-````
+```
 
-“handle” is an instance of the CefpycoHandle class, through which applications communicate. As in the case of file processing with the “with” block, at the beginning of the “with” block, the connection with Cefore is initialized, and at the end of the “with” block, the connection is terminated.
+"handle" is an instance of the CefpycoHandle class, through which applications communicate. As in the case of file processing with the "with" block, at the beginning of the "with" block, the connection with Cefore is initialized, and at the end of the "with" block, the connection is terminated.
 
 The `create_handle()` function has the following optional arguments.
 
@@ -141,10 +204,10 @@ The `create_handle()` function has the following optional arguments.
     - If the environment variable is also empty, the default installation directory `/usr/local/cefore` is used.
 * portnum (default value: 9896): cefnetd port number to which the application connects.
 
-Note: If you use the “with” block, you cannot use “handle” outside of that block. Additionally, unlike file handling,
-**It is not possible to execute `cefpyco.create_handle()` again inside a “with” block** (singleton pattern).
+Note: If you use the "with" block, you cannot use "handle" outside of that block. Additionally, unlike file handling,
+**It is not possible to execute `cefpyco.create_handle()` again inside a "with" block** (singleton pattern).
 
-If you do not want to use the “with” block, create a CefpycoHandle instance (see below), call the `begin()` method before your code, and call the `end()` method at the end.
+If you do not want to use the "with" block, create a CefpycoHandle instance (see below), call the `begin()` method before your code, and call the `end()` method at the end.
 
 ````python
 import cefpyco
@@ -188,9 +251,11 @@ It also has the following keyword arguments.
 In addition, if you wish to use Symbolic Interest (SMI) instead of regular Interest, use
 **`h.send_symbolic_interest(name)`**.
 SMI has the following two characteristics.
-(1) The PIT entry is not deleted when cefnetd receives Data, only after timeout.
-(2) Any chunk data can be received if a name prefix without a chunk number is specified.
-(Example: If you request `ccnx:/a` in SMI, you will receive all chunks named `ccnx:/a/Chunk=0`, `ccnx:/a/Chunk=1`, ..., etc.).
+
+1. The PIT entry is not deleted when cefnetd receives Data, only after timeout.
+2. Any chunk data can be received if a name prefix without a chunk number is specified.
+    * Example: If you request `ccnx:/a` in SMI, you will receive all chunks named `ccnx:/a/Chunk=0`, `ccnx:/a/Chunk=1`, ..., etc.
+
 This is mainly useful for real-time video streaming.
 
 ### Sending Data packets
@@ -245,8 +310,8 @@ with cefpyco.create_handle() as h:
 
 The **receive method has the optional argument `error_on_timeout` (default value: False).
 It waits for about 4 seconds after the method is executed and returns the process if it cannot receive the message. **
-If you want to receive packets until a successful packet reception, you need to use a loop syntax such as “while.”
-In this case, if error_on_timeout is set to “True,” CefpycoHandle disconnects from Cefore. (It cannot receive anything anymore.)
+If you want to receive packets until a successful packet reception, you need to use a loop syntax such as "while."
+In this case, if error_on_timeout is set to "True," CefpycoHandle disconnects from Cefore. (It cannot receive anything anymore.)
 
 The receive method returns the received result in a CcnPacketInfo object, regardless of whether the received packet is an Interest or Data packet. The meaning of each property value of this object is as follows.
 
@@ -259,7 +324,7 @@ The receive method returns the received result in a CcnPacketInfo object, regard
 * name_len: Length of the name.
 * chunk_num: Number of chunks.
 * end_chunk_num: Last chunk number of the content (available only when you set it at the data producer app.).
-* payload: Byte sequence of the payload (displayed as `(empty)` if the value is empty); returns “str” in Python 2, “bytes” in Python 3.
+* payload: Byte sequence of the payload (displayed as `(empty)` if the value is empty); returns "str" in Python 2, "bytes" in Python 3.
 * payload_len: Length of the payload. If it is empty, it is set to 0.
 
 The CcnPacketInfo object also has the `is_interest`, `is_data`, and `is_interest_return` (or `is_return`) properties.
@@ -272,7 +337,7 @@ The `is_regular_interest` and `is_symbolic_interest` properties are used to dist
 The following points should be noted.
 
 * The receive method does not wait for all packets received by cefnetd.
-    - To receive Interest packets in your app, you need to call the “register” method.
+    - To receive Interest packets in your app, you need to call the "register" method.
     - In order to receive Data packets in your app, Interest packets must be sent first.
 * Because the cefnetd buffer cannot store many packets, the receive method must be called at appropriate intervals.
     We recommend that you implement such that the application receives packets from cefnetd by calling the receive method at appropriate intervals.
@@ -298,7 +363,7 @@ with cefpyco.create_handle() as h:
 This method registers the prefix of the Interest that you want to receive from cefnetd.
 For example, in addition to `ccnx:/test`, you can receive Interests with a name such as `ccnx:/test/foo/bar.txt`.
 
-Then, by using the “while loop” syntax, the Publisher app continues to execute `h.receive()`.
+Then, by using the "while loop" syntax, the Publisher app continues to execute `h.receive()`.
 If the target Interest is successfully received, `h.send_data()` is called and a Data packet will be sent back.
 Because this is a Publisher app, it will keep looping indefinitely. If you want to provide the content just once, you can break the loop by inserting `break`.
 
@@ -329,106 +394,6 @@ In this example, the receive method loops until Data is received. Note that if t
 
 In this example, the loop exits after one chunk is received. It is also possible to receive content consisting of multiple chunks by changing each chunk number. If you wish to receive content consisting of many chunks, you can send multiple Interests concurrently for high-speed communication. However, in such a case, you must make preparations for the sending of a large number of Interests simultaneously (due to the PIT size configured in cefnetd.conf and the limitation of the processing performance). It is recommended that you implement pipeline processing for such cases.
 
-## How to use CefApp
-
-The following describes the cefappconsumer and cefappproducer tools, which are content request and provision tools, respectively, implemented using CefpycoHandle.
-
-### Overview
-
-The cefappconsumer and cefappproducer tools have the following characteristics.
-
-* cefappconsumer sends out an Interest and receives Data, while cefappproducer listens for an Interest and sends Data.
-* Three types of input/output can be selected: inline, standard input/output, and file.
-* cefappconsumer implements pipeline processing and can communicate with cefappproducer at high speed.
-    - As a reference, approximately 80 Mbps was observed in a simple environment.
-
-When cefappconsumer and cefappproducer are launched after cefnetd is started, cefappconsumer operates to obtain content from cefappproducer.
-The order in which cefappconsumer and cefappproducer are invoked is irrelevant, but the other must be started before either one times out (within about 8 seconds, which is the default timeout setting).
-
-As a CefApp-specific process, in order to share content cob count information between cefappconsumer and cefappproducer, cefappconsumer requests content with `/meta` at the end of the content name to cefappproducer, and obtains the number of cobs in advance. Therefore, at least for consumers, note that it cannot be used in combination with other data-provisioning tools (e.g., cefputfile). (The combination of cefappproducer and cefgetfile can be used.)
-
-Since July 2021, Cefore has supported end chunk numbers, which makes the above trick unnecessary. However, because it is also useful for exchanging information other than cob counts in advance, implementation of the above metafile exchange method is retained.
-
-
-### cefappconsumer.py
-
-* Usage.
-    ```
-    cefappconsumer.py [OPTIONS] name
-    ````
-* Summary
-    - Requests a content specified by ``name'' and outputs the information contained in the received content.
-* Options.
-    - `[-t|--timeout int]`: Specifies the number of times Consumer will tolerate Data request failures. One request will wait for about 4 seconds. Default is two times.
-    - `[-p|--pipeline int]`: Number of pipelines. Too many pipelines may cause PIT overflow or exceed cefnetd's processing limit, etc. Pay attention to the PIT size limitation specified by cefnetd.conf and processing performance limitation. Default is 10.
-    - `[-f|--filename str]`: Specifies a filename to use in file mode (see the `-o` option). Even if you do not explicitly set file mode with the `-o` option, if you specify a filename here, it is treated as file mode. By default, the last segment name of ``name” is used.
-    - `[-o|--output mode]`: Specifies the output mode. “mode” can be one of the following strings (default is stdout mode).
-        - none: No output mode. No data is output anywhere (lightweight, because it is not stored in the internal buffer).
-        - stdout: Standard output mode. Outputs the contents of received data using the standard output of a terminal or other device.
-        - file: File output mode. This mode outputs the received contents to a file whose name is specified by filename or the last segment name of ``name’’.
-    - `[-q|--quiet]`: If specified, no log output.
-* Example usage
-    - `. /cefappconsumer.py ccnx:/test`.
-        - Receive content named `ccnx:/test` and output the received content to standard output.
-    - `. /cefappconsumer.py ccnx:/test/a -o file`.
-        - Receive content named `cccnx:/test/a' and output the received content to a file named `a`.
-    - `. /cefappconsumer.py ccnx:/test/a -o file -f b`
-        - Receive content named ccnx:/test/a and output the received content to a file named `b`.
-    - `. /cefappconsumer.py ccnx:/test -o none -q`
-        - Only communicate to receive ccnx:/test; do not output any log or received content.
-
-### cefappproducer.py
-
-* Usage.
-    ```
-    cefappproducer.py [OPTIONS] name [arg].
-    ````
-* Summary
-    - Create Data from the contents specified by ``arg'' etc., and provide Data with the content name specified by ``name''.
-* Options.
-    - `[-t|--timeout int]`: Specifies the number of times Producer will tolerate Data wait failures. One wait process will wait for about 4 seconds. Default is two times.
-    - `[-b|--block_size int]`: Size of one content object. Default is 1024 bytes. Use with care for MTU, since there is no constraint on minimum and maximum values.
-    - `[-i|--input]`: Specifies the input mode. “mode” can be one of the following strings (default is arg mode).
-        - arg: Inline mode. The content is written directly in the argument “arg”.
-        - stdin: Standard input mode. Content is created from standard input.
-        - file: File input mode. It creates a content from a file whose name is the last segment name of “name” or the file name specified in the argument “arg”.
-    - `[-q|--quiet]`: If specified, no log is output.
-* Example usage.
-    - `. /cefappproducer.py ccnx:/test helloworld`
-        - Create and serve a 10-character content named `helloworld` with the name ccnx:/test.
-    - `. /cefappproducer.py ccnx:/test helloworld -b 5`
-        - Create and serve a content named ccnx:/test for every five characters (i.e., a content `hello` and a content `world`)
-            (`hello` is provided as the data chunk number 0 and `world` as the data chunk number 1).
-    - `. /cefappproducer.py ccnx:/test/a -i file`.
-        - Create a content from a file named `a` and serve it under the name ccnx:/test/a.
-    - `. /cefappproducer.py ccnx:/test/a b -i file -o none -q`
-        - Create a content from a file named `b` and serve it under the name ccnx:/test/a.
-
-
-### Example
-
-Below is an example of communication in which cefappproducer publishes the string "hello" as a Data packet with the name `ccnx:/test`, and cefappconsumer fetches it.
-
-The following shows that at terminal t1, cefappproducer is started with cefnetd running, and at terminal 2, cefappconsumer is started with cefnetd running. (You can check the available options for each tool with the `--help` option.)
-
-```
-t1$ sudo . /cefappproducer.py ccnx:/test hello
-[cefpyco] Configure directory is /usr/local/cefore
-YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Config directory is /usr/local/cefore
-YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Local Socket Name is /tmp/cef_9896.0
-YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Listen Port is 9896
-[cefapp] Receiving Interest...
-t2$ sudo . /cefappconsumer.py ccnx:/test
-[cefpyco] Configure directory is /usr/local/cefore
-YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Config directory is /usr/local/cefore
-YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Local Socket Name is /tmp/cef_9896.0
-YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: [client] Listen Port is 9896
-YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: Send interest (name: ccnx:/test/meta, #chunk: 0)
-YYYYY-MM-DD hh:mm:ss.xxx [cefpyco] INFO: Send interest (name: ccnx:/test, #chunk: 0)
-[cefapp] Succeed to receive.
-hello
-````
-
 ## Notes
 
 * This tool was developed to simplify application development using Cefore. Bug reports are welcome.
@@ -436,8 +401,8 @@ hello
     - It has also only been confirmed to work with Python 3.
     - Bug reports can be sent to GitHub (https://github.com/cefore/cefore/issues).
 * If cefnetd is started with sudo privileges, sudo may be required even when using Python tools. If the tool fails to start, check the startup log to see if `Permission Denied` or a similar message is present. If necessary, run the Python tool with sudo privileges.
-* If you terminate cefnetd using commands such as “kill” without using cefnetdstop, you will get the following error message:
-    “Another cefnetd is already listening on this port,” and subsequent startup may fail.
+* If you terminate cefnetd using commands such as "kill" without using cefnetdstop, you will get the following error message:
+    "Another cefnetd is already listening on this port," and subsequent startup may fail.
     * The reason is that the socket file is still in the directory `/tmp`.
     * In such a case, try `sudo cefnetdstop -F`, which will execute a forced termination, including deletion of the socket file.
 * If the application cannot receive Interests, check if there are some matching entries for the Interest name in the FIB. 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, National Institute of Information and Communications
+ * Copyright (c) 2016--2023, National Institute of Information and Communications
  * Technology (NICT). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,10 +27,10 @@
  * SUCH DAMAGE.
  */
 
-#include <Python.h>
 #include "cefpyco.h"
+#include <Python.h>
 
-#define NAME ("ccnx:/a")
+#define NAME  ("ccnx:/a")
 #define NAMEA ("ccnx:/a/a")
 #define NAMEB ("ccnx:/b")
 
@@ -41,8 +41,8 @@ static int ask_state();
 static int respond_state();
 static int stop_on_error(int is_err, char* msg, int status);
 
-int main(int argc, char const *argv[]) {
-    int res;
+int main(int argc, char const* argv[]) {
+    int   res;
     char* mode_text;
     int (*run_on_state)();
     switch (argc) {
@@ -69,28 +69,28 @@ int main(int argc, char const *argv[]) {
     }
     printf("Cefpycotest (mode=%s)\n", mode_text);
     res = begin_cef(9896, "/usr/local/cefore");
-    stop_on_error(res<0, "Error on begin_cef.", res);
+    stop_on_error(res < 0, "Error on begin_cef.", res);
     printf("Begin connection with cefore(%d)\n", res);
     run_on_state();
     usleep(1);
     res = end_cef();
-    stop_on_error(res<0, "Error on end_cef.", res);
+    stop_on_error(res < 0, "Error on end_cef.", res);
     printf("End connection with cefore(%d)\n", res);
     return 0;
 }
 
 static int request_state() {
-    int res;
+    int               res;
     cefpyco_app_frame app_frame;
-    
+
     res = send_interest(NAME, 0);
     res = send_interest(NAME, 1);
-    stop_on_error(res<0, "Failed to send Interest.", res);
+    stop_on_error(res < 0, "Failed to send Interest.", res);
     printf("Send Interest with name %s(%d)\n", NAME, res);
     res = receive(&app_frame, -1, 1);
-    stop_on_error(res<0, "Failed to satisfy Interest.", res);
+    stop_on_error(res < 0, "Failed to satisfy Interest.", res);
     res = receive(&app_frame, -1, 1);
-    stop_on_error(res<0, "Failed to satisfy Interest.", res);
+    stop_on_error(res < 0, "Failed to satisfy Interest.", res);
     printf("Succeeded to receive Data with name %s(%d)\n", NAME, res);
     return 0;
 }
@@ -98,36 +98,30 @@ static int request_state() {
 static int provide_state() {
     int res;
     res = send_data(NAME, 0, "hello", 5);
-    stop_on_error(res<0, "Failed to send Data.", res);
+    stop_on_error(res < 0, "Failed to send Data.", res);
     // usleep(1000000);
     res = send_data(NAME, 1, "world", 5);
-    stop_on_error(res<0, "Failed to send Data.", res);
+    stop_on_error(res < 0, "Failed to send Data.", res);
     printf("Send Data with name %s (%d)\n", NAME, res);
     return 0;
 }
 
 static int listen_state() {
-    int res;
+    int               res;
     cefpyco_app_frame app_frame;
-    
+
     res = register_name(NAME);
     res = register_name(NAMEA);
     if (res < 0) printf("Failed to register name to receive Interest.");
     res = receive(&app_frame, -1, 1);
-    printf("%s to receive Interest with name %s(%d)\n", 
-        res == 0 ? "Succeeded" : "Failed",
-        NAME,
-        res);
+    printf(
+        "%s to receive Interest with name %s(%d)\n", res == 0 ? "Succeeded" : "Failed", NAME, res);
     res = receive(&app_frame, -1, 1);
-    printf("%s to receive Interest with name %s(%d)\n", 
-        res == 0 ? "Succeeded" : "Failed",
-        NAME,
-        res);
+    printf(
+        "%s to receive Interest with name %s(%d)\n", res == 0 ? "Succeeded" : "Failed", NAME, res);
     res = receive(&app_frame, -1, 0);
-    printf("%s to receive Interest with name %s(%d)\n", 
-        res == 0 ? "Succeeded" : "Failed",
-        NAME,
-        res);
+    printf(
+        "%s to receive Interest with name %s(%d)\n", res == 0 ? "Succeeded" : "Failed", NAME, res);
     return 0;
 }
 
@@ -135,22 +129,20 @@ static int ask_state() {
     int res;
     res = send_interest(NAME, 0);
     res = send_interest(NAME, 1);
-    stop_on_error(res<0, "Failed to send Interest.", res);
+    stop_on_error(res < 0, "Failed to send Interest.", res);
     printf("Send Interest with name %s(%d)\n", NAME, res);
     return 0;
 }
 
 static int respond_state() {
-    int res;
+    int               res;
     cefpyco_app_frame app_frame;
-    
+
     res = register_name(NAME);
     if (res < 0) printf("Failed to register name to receive Interest.");
     res = receive(&app_frame, -1, 1);
-    printf("%s to receive Interest with name %s(%d)\n", 
-        res == 0 ? "Succeeded" : "Failed",
-        NAME,
-        res);
+    printf(
+        "%s to receive Interest with name %s(%d)\n", res == 0 ? "Succeeded" : "Failed", NAME, res);
     res = send_data(NAME, 0, "hello", 5);
     res = send_data(NAME, 1, "world", 5);
     printf("Send Data with name %s (%d)\n", NAME, res);

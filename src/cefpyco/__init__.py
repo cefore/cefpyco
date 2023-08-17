@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2018, National Institute of Information and Communications
+# Copyright (c) 2016--2023, National Institute of Information and Communications
 # Technology (NICT). All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@
 
 name = "cefpyco"
 
-import libcefpyco
+from . import libcefpyco
 import cefpyco.core
 from cefpyco.core import create_handle
 from cefpyco.core import CefpycoHandle

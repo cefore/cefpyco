@@ -27,18 +27,32 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __CEFPYCO_PARSE_INTEREST_HEADER__
-#define __CEFPYCO_PARSE_INTEREST_HEADER__
+#ifndef __PYWRAP_HEADER__
+#define __PYWRAP_HEADER__
 
-#include "cefpyco_def.h"
-#include "cpcparse_type.h"
-#include <cefore/cef_client.h>
-#include <cefore/cef_define.h>
-#include <cefore/cef_frame.h>
-#include <cefore/cef_log.h>
+#define PY_SSIZE_T_CLEAN
+#include <Python.h>
 
-int cpcparse_try_parse_interest(  //
-    cpcparse_parse_info* info,
-    cefpyco_app_frame*   app_frame);
+struct module_state {
+    PyObject* error;
+};
 
+#define PYWRAP_DEF(name) \
+    static PyObject* pywrap_##name(PyObject* self, PyObject* args, PyObject* kw)
+
+#define PYWRAP_ERR                                            \
+    if (res < 0) {                                            \
+        PyErr_SetString(PyExc_RuntimeError, get_error_msg()); \
+        return NULL;                                          \
+    }
+
+#define PYWRAP_METH (METH_VARARGS | METH_KEYWORDS)
+
+#define GETSTATE(m) ((struct module_state*)PyModule_GetState(m))
+
+#define INITERROR          return NULL
+#define INITFUNC_DEF(name) PyMODINIT_FUNC PyInit_##name(void)
+#define BUILD_BYTES_ID     "y"
+
+#else
 #endif

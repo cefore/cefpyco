@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, National Institute of Information and Communications
+ * Copyright (c) 2016--2023, National Institute of Information and Communications
  * Technology (NICT). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,11 +27,11 @@
  * SUCH DAMAGE.
  */
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <unistd.h>
-#include <ctype.h>
 
 #include "cefpyco_util.h"
 
@@ -45,8 +45,8 @@ void cpc_force_print(const unsigned char* src, int len) {
     outputbuf[1] = '\0';
     for (int i = 0; i < len; i++) {
         sprintf(outputbuf, "%s%2c[%02x]", outputbuf, isalnum(src[i]) ? src[i] : ' ', src[i]);
-		if ((i % 8) == 7) sprintf(outputbuf, "%s\n", outputbuf);
-	}
+        if ((i % 8) == 7) sprintf(outputbuf, "%s\n", outputbuf);
+    }
     fprintf(stderr, "%s\n", outputbuf);
 #endif
 }
@@ -55,10 +55,10 @@ void cpc_set_null_name_info(cefpyco_app_frame* app_frame) {
     app_frame->version = 0;
     app_frame->type = 0;
     app_frame->actual_data_len = 0;
-    app_frame->name = (unsigned char *)CefpycoC_Null_Msg;
+    app_frame->name = (unsigned char*)CefpycoC_Null_Msg;
     app_frame->name_len = 0;
     app_frame->chunk_num = 0;
     app_frame->end_chunk_num = 0;
-    app_frame->payload = (unsigned char *)CefpycoC_Null_Msg;
+    app_frame->payload = (unsigned char*)CefpycoC_Null_Msg;
     app_frame->payload_len = 0;
 }

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2018, National Institute of Information and Communications
+# Copyright (c) 2016--2023, National Institute of Information and Communications
 # Technology (NICT). All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 # 1. Redistributions of source code must retain the above copyright notice,
@@ -14,7 +14,7 @@
 # 3. Neither the name of the NICT nor the names of its contributors may be
 #    used to endorse or promote products derived from this software
 #    without specific prior written permission.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE NICT AND CONTRIBUTORS "AS IS" AND ANY
 # EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -29,12 +29,13 @@
 
 import mock
 
-import libcefpyco
+from cefpyco import libcefpyco
 import os
 from struct import pack
 from time import sleep
 
-sleeptime=0.1
+sleeptime = 0.1
+
 
 def test_launch_app():
     cefdir = "/usr/local/cefore"
@@ -42,6 +43,7 @@ def test_launch_app():
     handler = libcefpyco.begin(portnum, cefdir, 1)
     libcefpyco.end(handler)
     assert True
+
 
 def test_launch_two_app():
     cefdir = "/usr/local/cefore"
@@ -56,6 +58,7 @@ def test_launch_two_app():
     sleep(sleeptime)
     assert True
 
+
 def test_request_and_satisfy():
     handler_p = libcefpyco.begin(9896, "/usr/local/cefore", 1)
     sleep(sleeptime)
@@ -66,19 +69,20 @@ def test_request_and_satisfy():
     res = libcefpyco.receive(handler_p, 1)
     assert res[0] >= 0
     print(res)
-    assert res[5] == 11 # name_len
-    assert res[4] == "ccnx:/lib/d"
+    assert res[6] == 11  # name_len
+    assert res[5] == "ccnx:/lib/d"
     libcefpyco.send_data(handler_p, "ccnx:/lib/d", "hello", 5, 0)
     res = libcefpyco.receive(handler_c, 1)
     assert res[0] >= 0
-    assert res[4] == "ccnx:/lib/d"
-    assert res[6] == 0 # chunk_num
-    assert res[10] == 5 # payload_len
-    assert res[9] == b"hello"
+    assert res[5] == "ccnx:/lib/d"
+    assert res[7] == 0  # chunk_num
+    assert res[11] == 5  # payload_len
+    assert res[10] == b"hello"
     libcefpyco.end(handler_p)
     sleep(sleeptime)
     libcefpyco.end(handler_c)
     sleep(sleeptime)
+
 
 def test_request_and_satisfy_with_binary_data():
     handler_p = libcefpyco.begin(9896, "/usr/local/cefore", 1)
@@ -90,50 +94,47 @@ def test_request_and_satisfy_with_binary_data():
     res = libcefpyco.receive(handler_p, 1)
     assert res[0] >= 0
     print(res)
-    assert res[5] == 11 # name_len
-    assert res[4] == "ccnx:/lib/f"
-    data = pack("B"*256, *range(256))
+    assert res[6] == 11  # name_len
+    assert res[5] == "ccnx:/lib/f"
+    data = pack("B" * 256, *range(256))
     libcefpyco.send_data(handler_p, "ccnx:/lib/f", data, 256, 0)
     res = libcefpyco.receive(handler_c, 1)
     assert res[0] >= 0
-    assert res[4] == "ccnx:/lib/f"
-    assert res[6] == 0 # chunk_num
-    assert res[10] == 256 # payload_len
-    assert res[9] == data
+    assert res[5] == "ccnx:/lib/f"
+    assert res[7] == 0  # chunk_num
+    assert res[11] == 256  # payload_len
+    assert res[10] == data
     libcefpyco.end(handler_p)
     sleep(sleeptime)
     libcefpyco.end(handler_c)
     sleep(sleeptime)
+
 
 def test_request_with_smi_and_satisfy():
     handler_p = libcefpyco.begin(9896, "/usr/local/cefore", 1)
     sleep(sleeptime)
     handler_c = libcefpyco.begin(9896, "/usr/local/cefore", 1)
     sleep(sleeptime)
-    libcefpyco.send_interest(
-        handler_c, "ccnx:/lib/e", 
-        longlife_f=1 # CefC_T_LONGLIFE
-        )
+    libcefpyco.send_interest(handler_c, "ccnx:/lib/e", longlife_f=1)  # CefC_T_LONGLIFE
     sleep(0.2)
     libcefpyco.send_data(handler_p, "ccnx:/lib/e", "hello", 5, 0)
     libcefpyco.send_data(handler_p, "ccnx:/lib/e", "world", 5, 1, end_chunk_num=10)
     sleep(sleeptime)
     res = libcefpyco.receive(handler_c, 1)
     assert res[0] >= 0
-    assert res[4] == "ccnx:/lib/e"
-    assert res[6] == 0 # chunk_num
-    assert res[10] == 5 # payload_len
-    assert res[9] == b"hello"
+    assert res[5] == "ccnx:/lib/e"
+    assert res[7] == 0  # chunk_num
+    assert res[11] == 5  # payload_len
+    assert res[10] == b"hello"
     sleep(sleeptime)
     res = libcefpyco.receive(handler_c, 1)
     assert res[0] >= 0
-    assert res[4] == "ccnx:/lib/e"
-    assert res[6] == 1 # chunk_num
-    assert res[7] == 10 # end_chunk_num
-    assert res[10] == 5 # payload_len
-    assert res[9] == b"world"
+    assert res[5] == "ccnx:/lib/e"
+    assert res[7] == 1  # chunk_num
+    assert res[8] == 10  # end_chunk_num
+    assert res[11] == 5  # payload_len
+    assert res[10] == b"world"
     libcefpyco.end(handler_p)
     sleep(sleeptime)
     libcefpyco.end(handler_c)
     sleep(sleeptime)
-

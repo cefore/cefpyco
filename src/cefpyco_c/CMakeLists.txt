@@ -1,17 +1,17 @@
-# Copyright (c) 2018, National Institute of Information and Communications
+# Copyright (c) 2016--2023, National Institute of Information and Communications
 # Technology (NICT). All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 # 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
+# this list of conditions and the following disclaimer.
 # 2. Redistributions in binary form must reproduce the above copyright
-#    notice this list of conditions and the following disclaimer in the
-#    documentation and/or other materials provided with the distribution.
+# notice this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
 # 3. Neither the name of the NICT nor the names of its contributors may be
-#    used to endorse or promote products derived from this software
-#    without specific prior written permission.
-# 
+# used to endorse or promote products derived from this software
+# without specific prior written permission.
+#
 # THIS SOFTWARE IS PROVIDED BY THE NICT AND CONTRIBUTORS "AS IS" AND ANY
 # EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,10 +27,11 @@
 add_subdirectory(cefparse)
 add_subdirectory(test)
 
-add_library(cefpyco_csrc STATIC
-    cefpyco_util.c cefpyco_parse.c cefpyco.c pywrap_cefpyco.c)
-target_include_directories(cefpyco_csrc 
+add_library(cefpyco_csrc SHARED
+    cefpyco_util.c cefpyco_parse.c cefpyco.c)
+target_include_directories(cefpyco_csrc
     PUBLIC include
-    PRIVATE ${Python_INCLUDE_DIRS})
-target_link_libraries(cefpyco_csrc 
-    PRIVATE cefore crypto cefpyco_parse)
+    PRIVATE /usr/local/include)
+target_link_libraries(cefpyco_csrc
+    PRIVATE Python::Python OpenSSL::Crypto OpenSSL::SSL cefore cefpyco_parse)
+set_property(TARGET cefpyco_csrc PROPERTY POSITION_INDEPENDENT_CODE ON)

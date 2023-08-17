@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-# Copyright (c) 2018, National Institute of Information and Communications
+# Copyright (c) 2016--2023, National Institute of Information and Communications
 # Technology (NICT). All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -27,44 +24,9 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-import sys
-import click
-import cefpyco
-from cefapp import CefAppProducer
-
-@click.command()
-@click.argument("name")
-@click.argument("arg", default="")
-@click.option("--timeout", "-t", default=2,
-    help=("How many times producer tries to receive Interest "
-    "(one receiving action takes about 4 seconds)."))
-@click.option("--block_size", "-b", default=1024, 
-    help="Size of content object.")
-@click.option("--input", "-i",
-    type=click.Choice(["arg", "stdin", "file"]), default="arg",
-    help=("Input mode: "
-    "[arg] Inline mode. [stdin] Input from stdin. [file] Input from file."))
-@click.option("--quiet", "-q", is_flag=True, help="Enable quiet flag.")
-def main(name, arg, timeout, block_size, input, quiet):
-    enb_log = not quiet
-    if input == "arg":
-        data = arg
-    elif input == "stdin":
-        data = sys.stdin.read()
-    elif input == "file":
-        with open(arg or name.split("/")[-1], "r") as f:
-            data = f.read()
-    else:
-        print("Invalid argument")
-        return
-    with cefpyco.create_handle(enable_log=enb_log) as h:
-        app = CefAppProducer(
-            h, 
-            timeout_limit=timeout, 
-            data=data, 
-            cob_len=block_size,
-            enable_log=enb_log)
-        app.run(name)
-            
-if __name__ == '__main__':
-    main()
+add_custom_target(cefpyco ALL
+    COMMAND ${CMAKE_COMMAND} -E copy
+    $<TARGET_FILE:cefpyco_wrap>
+    libcefpyco.so
+    DEPENDS cefpyco_wrap
+)

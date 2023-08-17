@@ -4,10 +4,12 @@ CMakeCache.txt
 install_manifest.txt
 uninstall.txt
 uninstall.txt.bak
+CTestTestfile.cmake
 
 cmake_install.cmake
 
 CMakeFiles/
+Testing/
 cefpyco.egg-info/
 build/
 dist/
@@ -16,6 +18,7 @@ dist/
 __pycache__/
 
 *.so
+*.dylib
 *.a
 *.o
 src/cefpyco_c/cefparse/libcefpyco_parse.a
@@ -23,6 +26,8 @@ src/cefpyco_c/libcefpyco_csrc.a
 libcefpyco.so
 
 src/cefpyco_c/test/run_cefpyco
-src/cefpyco_c/test/test_cefpyco
+test/test_cefpyco
 
+.venv*
 .vscode/
+.utils/

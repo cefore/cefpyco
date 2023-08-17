@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, National Institute of Information and Communications
+ * Copyright (c) 2016--2023, National Institute of Information and Communications
  * Technology (NICT). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,24 +27,22 @@
  * SUCH DAMAGE.
  */
 
-
 #ifndef __CEFPYCO_PARSE_TLV_HEADER__
 #define __CEFPYCO_PARSE_TLV_HEADER__
 
-#include <cefore/cef_define.h>
 #include <cefore/cef_client.h>
+#include <cefore/cef_define.h>
 #include <cefore/cef_frame.h>
 #include <cefore/cef_log.h>
 
-#define CefpycoC_AppBuff_Size       (10000000)
+#define CefpycoC_AppBuff_Size (10000000)
 
 uint32_t cpcparse_tlv_read_length(unsigned char* tlv);
 // unsigned int cpcparse_tlv_read_segnum(unsigned char* tlv);
 
-int cpc_client_request_get_with_info (
-	unsigned char* buff, 
-	int buff_len, 
-	struct cef_app_request* app_request
-);
+int cpc_client_request_get_with_info(  //
+    unsigned char*          buff,
+    int                     buff_len,
+    struct cef_app_request* app_request);
 
 #endif

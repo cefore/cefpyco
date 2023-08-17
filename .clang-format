@@ -1,0 +1,35 @@
+---
+# Align
+AlignAfterOpenBracket: AlwaysBreak
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: true
+AlignConsecutiveMacros: true
+AlignEscapedNewlines: Left
+AlignOperands: true
+AlignTrailingComments: true
+
+# AllowSingleLine
+AllowShortBlocksOnASingleLine: true
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: true
+AllowShortLoopsOnASingleLine: true
+
+# BreakLine
+AlwaysBreakBeforeMultilineStrings: true
+BreakBeforeBraces: Attach
+
+# Indent
+IndentWidth: 4
+IndentCaseLabels: true
+UseTab: Never
+
+# Space
+SpaceAfterCStyleCast: false
+SpaceBeforeParens: ControlStatements
+SpacesBeforeTrailingComments: 2
+
+# Others
+DerivePointerAlignment: false
+PointerAlignment: Left
+BinPackParameters: false
+ColumnLimit: 100

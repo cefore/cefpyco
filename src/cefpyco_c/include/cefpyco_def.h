@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, National Institute of Information and Communications
+ * Copyright (c) 2016--2023, National Institute of Information and Communications
  * Technology (NICT). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,12 +27,11 @@
  * SUCH DAMAGE.
  */
 
-
 #ifndef __CEFPYCO_DEF_HEADER__
 #define __CEFPYCO_DEF_HEADER__
 
-#include <cefore/cef_define.h>
 #include <cefore/cef_client.h>
+#include <cefore/cef_define.h>
 #include <cefore/cef_frame.h>
 #include <cefore/cef_log.h>
 
@@ -41,36 +40,36 @@
 // #define CEFPYCO_DUMP
 
 #define CefpycoC_Default_Timeout (4000)
-#define CefpycoC_Null_Msg ("(empty)")
-#define CefpycoC_Name_Len (2048)
-#define CefpycoC_APIData_Len (65536)
-#define CefpycoC_Payload_Len (CefpycoC_APIData_Len - CefpycoC_Name_Len)
+#define CefpycoC_Null_Msg        ("(empty)")
+#define CefpycoC_Name_Len        (2048)
+#define CefpycoC_APIData_Len     (65536)
+#define CefpycoC_Payload_Len     (CefpycoC_APIData_Len - CefpycoC_Name_Len)
 
 #define CefpycoC_Err_Invalid_URI "Invalid URI is specified."
 
 enum cefpycoC_packet_flags {
-	REGULAR = (0x00000000ul),
-	ONLY_SYMBOLIC = (0x00000001ul),
-	ONLY_LONGLIFE = (0x00000002ul),
-	SYMBOLIC = (0x00000003ul),
+    REGULAR = (0x00000000ul),
+    ONLY_SYMBOLIC = (0x00000001ul),
+    ONLY_LONGLIFE = (0x00000002ul),
+    SYMBOLIC = (0x00000003ul),
 };
 
 typedef struct {
-	uint32_t        version;
-	uint32_t        type;
-	uint32_t        returncode;
-	uint32_t        flags;
-	uint64_t        actual_data_len;
-	unsigned char*  name;
-	uint16_t        name_len;
-	uint32_t        chunk_num;
-	int64_t         end_chunk_num;
-	unsigned char*  payload;
-	uint16_t        payload_len;
-	unsigned char*  hdr_org_val;
-	uint16_t        hdr_org_len;
-	unsigned char*  msg_org_val;
-	uint16_t        msg_org_len;
+    uint32_t       version;
+    uint32_t       type;
+    uint32_t       returncode;
+    uint32_t       flags;
+    uint64_t       actual_data_len;
+    unsigned char* name;
+    uint16_t       name_len;
+    uint32_t       chunk_num;
+    int64_t        end_chunk_num;
+    unsigned char* payload;
+    uint16_t       payload_len;
+    unsigned char* hdr_org_val;
+    uint16_t       hdr_org_len;
+    unsigned char* msg_org_val;
+    uint16_t       msg_org_len;
 } cefpyco_app_frame;
 
 #endif

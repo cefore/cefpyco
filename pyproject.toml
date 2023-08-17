@@ -1,35 +1,9 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
-
-[project]
-name = "cefpyco"
-version = "0.10.1.post20230727"
-authors = [
-  { name="National Institute of Information and Communications Technology", email="na5icn@ml.nict.go.jp" },
-  { name="Atsushi Ooka", email="a-ooka@nict.go.jp" },
-]
-description = "Cefore Python Compact (cefpyco) package for developing a Cefore application in Python"
-readme = "README.md"
-requires-python = ">=3.7"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: BSD License 2.0",
-    "Operating System :: Linux OS or Mac OS",
-]
-
-[project.urls]
-"Homepage" = "https://cefore.net/"
-"Github (Cefore)" = "https://github.com/cefore/cefore"
-"Github (cefpyco)" = "https://github.com/cefore/cefpyco"
-"Handson in ICN-WS 2021 (JP)" = "https://github.com/cefore/2021-hands-on"
-"References in ICN-WS (JP)" = "https://www.ieice.org/~icn/?page_id=1208"
 
 [tool.pytest.ini_options]
 pythonpath = [
-  "src"
+  "src",
+  "cefapp/src"
 ]
-
-[tool.build-system]
-requires = ["cmake>=3.15"]
-build-backend = "cmake"

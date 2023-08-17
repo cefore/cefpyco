@@ -1,4 +1,4 @@
-# Copyright (c) 2018, National Institute of Information and Communications
+# Copyright (c) 2016--2023, National Institute of Information and Communications
 # Technology (NICT). All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,53 +24,76 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.16)
 project(cefpyco)
 
 find_package(Python REQUIRED COMPONENTS Interpreter Development)
+find_package(OpenSSL REQUIRED)
 
-# for debug
-# add_custom_target(find_python_includes ALL
-#     COMMAND echo " Python include directory  is: ${Python_INCLUDE_DIRS}"
-#     COMMAND echo " Python include libraries are: ${Python_LIBRARIES}"
-#     # COMMAND echo "Python3 include directory  is: ${Python3_INCLUDE_DIRS}"
-#     # COMMAND echo "Python3 include libraries are: ${Python3_LIBRARIES}"
-# )
+add_custom_target(debug_cmake ALL
+    COMMAND echo "          Python_FOUND: ${Python_FOUND}"
+    COMMAND echo "      Python_LIBRARIES: ${Python_LIBRARIES}"
+    COMMAND echo "   Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}"
+    COMMAND echo "     Python_EXECUTABLE: ${Python_EXECUTABLE}"
+    # COMMAND echo "         OPENSSL_FOUND: ${OPENSSL_FOUND}"
+    # COMMAND echo "   OPENSSL_SSL_LIBRARY: ${OPENSSL_SSL_LIBRARY}"
+    # COMMAND echo "OPENSSL_CRYPTO_LIBRARY: ${OPENSSL_CRYPTO_LIBRARY}"
+    # COMMAND echo "     OPENSSL_LIBRARIES: ${OPENSSL_LIBRARIES}"
+)
 
-include_directories(
-    ${Python_INCLUDE_DIRS}
-    /usr/local/include /usr/local/lib
-    src src/cefpyco_c src/cefpyco_c/cefparse)
-add_definitions("-fPIC")
-
-add_subdirectory(src/cefpyco_c)
-
-add_library(cefpyco SHARED src/cefpyco_c/pywrap_cefpyco.c)
-target_link_libraries(cefpyco
-    ${Python_LIBRARIES}
-    cefore crypto cefpyco_csrc cefpyco_parse)
-
-# add_custom_command(
-# TARGET ${PROJECT_NAME}
-# POST_BUILD
-# COMMAND ${CMAKE_COMMAND} -E copy libcefpyco.so test/
-# )
-set(cefpyco_ver latest CACHE STRING "The version for cefpyco when not specified.")
-if (COMMAND sudo)
-    install(
-        CODE "execute_process(COMMAND sudo -EH python3 setup.py install --record uninstall.txt)"
-    )
-else()
-    install(
-        CODE "execute_process(COMMAND python3 setup.py install --record uninstall.txt)"
-    )
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    message("[CMakeLists.txt] Debug mode.")
+    add_definitions(-DCEFPYCO_DEBUG)
 endif()
 
+add_subdirectory(src/cefpyco_c)
+add_subdirectory(src/cefpyco_wrap)
+add_subdirectory(src/cefpyco)
+add_subdirectory(test)
+
+################################################################################
+### TESTING ####################################################################
+################################################################################
+enable_testing()
+
+add_test(NAME test_with_libcefpyco COMMAND test_cefpyco
+    WORKING_DIRECTORY test)
+
+add_test(NAME test_with_pytest COMMAND ${Python_EXECUTABLE} -m pytest
+    WORKING_DIRECTORY test)
+set_tests_properties(test_with_pytest PROPERTIES
+    ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}/src:$ENV{PYTHONPATH}")
+
+add_test(NAME test_with_cefapp COMMAND ${Python_EXECUTABLE} -m pytest
+    WORKING_DIRECTORY cefapp/test)
+set_tests_properties(test_with_cefapp PROPERTIES
+    ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}/src:${CMAKE_BINARY_DIR}/cefapp/src:$ENV{PYTHONPATH}")
+
+################################################################################
+### INSTALLATION ###############################################################
+################################################################################
+file(STRINGS ${CMAKE_BINARY_DIR}/setup.cfg version
+    REGEX "^version = [0-9]+\\.[0-9]+\\.[0-9]+.+$")
+string(REGEX REPLACE "^version = ([0-9]+\\.[0-9]+\\.[0-9]+.+)$" "\\1" version "${version}")
+
+set(cefpyco_ver latest CACHE STRING "The version for cefpyco when not specified.")
+
+install(CODE "
+    execute_process(COMMAND ${Python_EXECUTABLE} -m build
+        RESULT_VARIABLE result)
+    if(NOT result EQUAL 0)
+        message(FATAL_ERROR \"Build process failed with error code: ${result}\")
+    endif()
+    message(\"Install '${CMAKE_BINARY_DIR}/dist/cefpyco-${version}.tar.gz'.\")
+    execute_process(COMMAND ${Python_EXECUTABLE} -m pip install
+        ${CMAKE_BINARY_DIR}/dist/cefpyco-${version}.tar.gz
+        RESULT_VARIABLE result)
+    if(NOT result EQUAL 0)
+        message(FATAL_ERROR \"Installation failed with error code: ${result}\")
+    endif()
+    message(\"Installation completed.\")
+")
+
 add_custom_target(uninstall
-    COMMAND echo "[Uninstall] Checking uninstall.txt..."
-    COMMAND test -f uninstall.txt
-    COMMAND echo "[Uninstall] Removing following files..."
-    COMMAND cat uninstall.txt | sed 's/^/\ \ \ \ + /g'
-    COMMAND xargs rm < uninstall.txt
-    COMMAND mv uninstall.txt uninstall.txt.bak
-    COMMAND echo "[Uninstall] Completed.")
+    COMMAND ${Python_EXECUTABLE} -m pip uninstall --yes cefpyco
+)

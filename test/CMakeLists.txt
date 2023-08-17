@@ -24,10 +24,8 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-# find_package(Python REQUIRED COMPONENTS Interpreter Development)
-# include_directories(${Python_INCLUDE_DIRS})
-if(test)
-    add_executable(run_cefpyco run_cefpyco.c)
-    target_link_libraries(run_cefpyco
-        PRIVATE Python::Python OpenSSL::Crypto OpenSSL::SSL cefore cefpyco_csrc)
-endif()
+add_executable(test_cefpyco test_cefpyco.c)
+target_include_directories(test_cefpyco
+    PRIVATE /usr/local/include)
+target_link_libraries(test_cefpyco
+    PRIVATE Python::Python OpenSSL::Crypto OpenSSL::SSL cefore cefpyco_csrc)

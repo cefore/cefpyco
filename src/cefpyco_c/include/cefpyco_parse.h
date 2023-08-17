@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, National Institute of Information and Communications
+ * Copyright (c) 2016--2023, National Institute of Information and Communications
  * Technology (NICT). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,20 +27,24 @@
  * SUCH DAMAGE.
  */
 
-
 #ifndef __CEFPYCO_PARSE_HEADER__
 #define __CEFPYCO_PARSE_HEADER__
 
-#include <cefore/cef_define.h>
+#include "cefpyco_def.h"
 #include <cefore/cef_client.h>
+#include <cefore/cef_define.h>
 #include <cefore/cef_frame.h>
 #include <cefore/cef_log.h>
-#include "cefpyco_def.h"
 
 int cpc_buf_remains(void);
-int cpc_parse_info(unsigned char *buf, int len, cefpyco_app_frame* app_frame);
-int cpc_convert_nametlv_to_readable_str(
-    unsigned char* tlv, int name_len, unsigned char* output);
+int cpc_parse_info(  //
+    unsigned char*     buf,
+    int                len,
+    cefpyco_app_frame* app_frame);
+int cpc_convert_nametlv_to_readable_str(  //
+    unsigned char* tlv,
+    int            name_len,
+    unsigned char* output);
 
 #ifdef CEFPYCO_DEBUG
 void cpc_parse_show_current_state(void);

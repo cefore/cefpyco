@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, National Institute of Information and Communications
+ * Copyright (c) 2016--2023, National Institute of Information and Communications
  * Technology (NICT). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,18 +27,18 @@
  * SUCH DAMAGE.
  */
 
-
 #ifndef __CEFPYCO_PARSE_APP_FRAME_HEADER__
 #define __CEFPYCO_PARSE_APP_FRAME_HEADER__
 
-#include <cefore/cef_define.h>
+#include "cefpyco_def.h"
+#include "cpcparse_type.h"
 #include <cefore/cef_client.h>
+#include <cefore/cef_define.h>
 #include <cefore/cef_frame.h>
 #include <cefore/cef_log.h>
-#include "cefpyco_def.h"
 
-int cpcparse_try_parse_app_frame(
+int cpcparse_try_parse_app_frame(  //
     cpcparse_parse_info* info,
-    cefpyco_app_frame* app_frame);
+    cefpyco_app_frame*   app_frame);
 
 #endif
