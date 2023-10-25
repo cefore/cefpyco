@@ -59,6 +59,7 @@ int cpc_parse_info(unsigned char* _buf, int _len, cefpyco_app_frame* app_frame) 
     MILESTONE
     /* Seek the head of message 		*/
     res = 0;
+    memset(app_frame, 0, sizeof(cefpyco_app_frame));
     while (res == 0 && info.offset < info.len) {
         for (pi = try_parser_list; *pi != NULL; pi++) {
             res = (*pi)(&info, app_frame);
