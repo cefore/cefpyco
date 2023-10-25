@@ -61,4 +61,8 @@ void cpc_set_null_name_info(cefpyco_app_frame* app_frame) {
     app_frame->end_chunk_num = 0;
     app_frame->payload = (unsigned char*)CefpycoC_Null_Msg;
     app_frame->payload_len = 0;
+    app_frame->hdr_org_val = NULL;
+    app_frame->hdr_org_len = 0;
+    app_frame->msg_org_val = NULL;
+    app_frame->msg_org_len = 0;
 }
