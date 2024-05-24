@@ -38,16 +38,16 @@ sleeptime = 0.1
 
 
 def test_launch_app():
-    cefdir = "/usr/local/cefore"
-    portnum = 9896
+    cefdir = ""
+    portnum = 0
     handler = libcefpyco.begin(portnum, cefdir, 1)
     libcefpyco.end(handler)
     assert True
 
 
 def test_launch_two_app():
-    cefdir = "/usr/local/cefore"
-    portnum = 9896
+    cefdir = ""
+    portnum = 0
     handler1 = libcefpyco.begin(portnum, cefdir, 1)
     sleep(sleeptime)
     handler2 = libcefpyco.begin(portnum, cefdir, 1)
@@ -60,9 +60,9 @@ def test_launch_two_app():
 
 
 def test_request_and_satisfy():
-    handler_p = libcefpyco.begin(9896, "/usr/local/cefore", 1)
+    handler_p = libcefpyco.begin(0, "", 1)
     sleep(sleeptime)
-    handler_c = libcefpyco.begin(9896, "/usr/local/cefore", 1)
+    handler_c = libcefpyco.begin(0, "", 1)
     sleep(sleeptime)
     libcefpyco.register(handler_p, "ccnx:/lib/d")
     libcefpyco.send_interest(handler_c, "ccnx:/lib/d", 0)
@@ -85,9 +85,9 @@ def test_request_and_satisfy():
 
 
 def test_request_and_satisfy_with_binary_data():
-    handler_p = libcefpyco.begin(9896, "/usr/local/cefore", 1)
+    handler_p = libcefpyco.begin(0, "", 1)
     sleep(sleeptime)
-    handler_c = libcefpyco.begin(9896, "/usr/local/cefore", 1)
+    handler_c = libcefpyco.begin(0, "", 1)
     sleep(sleeptime)
     libcefpyco.register(handler_p, "ccnx:/lib/f")
     libcefpyco.send_interest(handler_c, "ccnx:/lib/f", 0)
@@ -111,9 +111,9 @@ def test_request_and_satisfy_with_binary_data():
 
 
 def test_request_with_smi_and_satisfy():
-    handler_p = libcefpyco.begin(9896, "/usr/local/cefore", 1)
+    handler_p = libcefpyco.begin(0, "", 1)
     sleep(sleeptime)
-    handler_c = libcefpyco.begin(9896, "/usr/local/cefore", 1)
+    handler_c = libcefpyco.begin(0, "", 1)
     sleep(sleeptime)
     libcefpyco.send_interest(handler_c, "ccnx:/lib/e", longlife_f=1)  # CefC_T_LONGLIFE
     sleep(0.2)

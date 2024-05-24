@@ -34,8 +34,8 @@
 
 static const struct timespec slee_time_ns = {0, 10 * 1000 * 1000};
 
-#define TEST_CEF_PORT (9896)
-#define TEST_CEF_CONF ("/usr/local/cefore")
+#define TEST_CEF_PORT (CefC_Unset_Port)
+#define TEST_CEF_CONF ("")
 
 CefT_Client_Handle cphp, cphc;
 

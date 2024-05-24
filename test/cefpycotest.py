@@ -3,7 +3,7 @@
 
 # Copyright (c) 2016--2023, National Institute of Information and Communications
 # Technology (NICT). All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 # 1. Redistributions of source code must retain the above copyright notice,
@@ -14,7 +14,7 @@
 # 3. Neither the name of the NICT nor the names of its contributors may be
 #    used to endorse or promote products derived from this software
 #    without specific prior written permission.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE NICT AND CONTRIBUTORS "AS IS" AND ANY
 # EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -31,8 +31,15 @@ import libcefpyco as cefpyco
 import click
 import os
 
+
+def get_portnum():
+    return 0
+
+
 def get_cefdir():
-    return "%s/cefore" % (os.environ.get("CEFORE_DIR") or  "/usr/local")
+    # return "%s/cefore" % (os.environ.get("CEFORE_DIR") or  "/usr/local")
+    return ""
+
 
 def show_res(res):
     result, version, type, len, name, namelen, chunknum, payload, payloadlen = res
@@ -48,11 +55,12 @@ def show_res(res):
         "    payload: {7}\n"
         "payload_len: {8}\n"
         "--------------------\n".format(*res)
-        )
+    )
+
 
 def send_i():
     print("1")
-    cefpyco.begin(9896, get_cefdir())
+    cefpyco.begin(get_portnum(), get_cefdir())
     print("2")
     cefpyco.send_interest("ccnx:/a", 0)
     print("3")
@@ -60,14 +68,16 @@ def send_i():
     print("4")
     cefpyco.end()
 
+
 def send_d():
-    cefpyco.begin(9896, get_cefdir())
+    cefpyco.begin(get_portnum(), get_cefdir())
     cefpyco.send_data("ccnx:/a", "hello", 5, 0)
     cefpyco.send_data("ccnx:/a", "world", 5, 1)
     cefpyco.end()
 
+
 def recv_i():
-    cefpyco.begin(9896, get_cefdir())
+    cefpyco.begin(get_portnum(), get_cefdir())
     cefpyco.register("ccnx:/a")
     res = cefpyco.receive()
     show_res(res)
@@ -75,8 +85,9 @@ def recv_i():
     show_res(res)
     cefpyco.end()
 
+
 def recv_d():
-    cefpyco.begin(9896, get_cefdir())
+    cefpyco.begin(get_portnum(), get_cefdir())
     cefpyco.send_interest("ccnx:/a", 0)
     cefpyco.send_interest("ccnx:/a", 1)
     res = cefpyco.receive()
@@ -85,8 +96,9 @@ def recv_d():
     show_res(res)
     cefpyco.end()
 
+
 def response():
-    cefpyco.begin(9896, get_cefdir())
+    cefpyco.begin(get_portnum(), get_cefdir())
     cefpyco.register("ccnx:/a")
     res = cefpyco.receive()
     show_res(res)
@@ -95,6 +107,7 @@ def response():
     show_res(res)
     cefpyco.send_data("ccnx:/a", "world", 5, 1)
     cefpyco.end()
+
 
 @click.command()
 @click.option("--id", "-i", default=1)
@@ -117,5 +130,6 @@ def main(id):
     else:
         print("[ERROR] Please specify mode with option '-i'")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

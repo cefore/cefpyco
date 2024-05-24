@@ -68,7 +68,7 @@ int main(int argc, char const* argv[]) {
             break;
     }
     printf("Cefpycotest (mode=%s)\n", mode_text);
-    res = begin_cef(9896, "/usr/local/cefore");
+    res = begin_cef(CefC_Unset_Port, "");
     stop_on_error(res < 0, "Error on begin_cef.", res);
     printf("Begin connection with cefore(%d)\n", res);
     run_on_state();

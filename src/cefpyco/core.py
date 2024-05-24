@@ -272,7 +272,7 @@ class CefpycoHandle(object):
         if self.enable_log or force:
             stderr.write("[cefpyco] %s\n" % msg)
 
-    def begin(self, ceforedir=None, portnum=9896):
+    def begin(self, ceforedir=None, portnum=0):
         if self.handler is not None:
             raise Exception("This handler has been already used.")
         if ceforedir is None:
@@ -445,7 +445,7 @@ class CefpycoHandle(object):
 
 
 @contextmanager
-def create_handle(ceforedir=None, portnum=9896, enable_log=True):
+def create_handle(ceforedir=None, portnum=0, enable_log=True):
     h = None
     try:
         h = CefpycoHandle(enable_log)
